@@ -1,9 +1,6 @@
 <script lang="ts">
-	import PDFMerger from 'pdf-merger-js';
 	import { PDFDocument } from 'pdf-lib';
 	import { v4 as uuidv4 } from 'uuid';
-
-	let merger = new PDFMerger();
 
 	let files: FileList;
 	let docs: File[] = [];
@@ -34,33 +31,17 @@
 
 	let numOfPages = getPages(docs);
 
-	// let pages = [];
-	// $: getPages(docs).then((d) => {
-	// 	console.log('run');
-	// 	let prev = [...previews];
-	// 	for (let i = 0; i < d.length; i++) {
-	// 		prev = prev.map((p, index) => (i === index ? { ...p, pages: d[i] } : p));
-	// 	}
-	// 	previews = prev;
-	// 	// pages.push(d);
-	// });
-
-	// function deleteFile(url: File) {
-	// 	docs = docs.filter((u) => u !== url);
-	// }
-
 	async function merge() {
-		for (const file of docs) {
-			await merger.add(file);
-		}
-
-		await merger.setMetadata({
-			producer: 'pdf-merger-js based script'
-		});
-
-		//@ts-ignore
-		const mergedPdf = await merger.saveAsBlob();
-		mergedPdfUrl = URL.createObjectURL(mergedPdf);
+		// let merger = await PDFDocument.create()
+		// for (const file of docs) {
+		// 	await merger.addPage(file);
+		// }
+		// await merger.setMetadata({
+		// 	producer: 'pdf-merger-js based script'
+		// });
+		// //@ts-ignore
+		// const mergedPdf = await merger.saveAsBlob();
+		// mergedPdfUrl = URL.createObjectURL(mergedPdf);
 	}
 
 	async function _getInputAsUint8Array(input: any) {
