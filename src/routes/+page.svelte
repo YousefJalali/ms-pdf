@@ -32,16 +32,35 @@
 	let numOfPages = getPages(docs);
 
 	async function merge() {
-		// let merger = await PDFDocument.create()
-		// for (const file of docs) {
-		// 	await merger.addPage(file);
-		// }
-		// await merger.setMetadata({
-		// 	producer: 'pdf-merger-js based script'
-		// });
-		// //@ts-ignore
-		// const mergedPdf = await merger.saveAsBlob();
-		// mergedPdfUrl = URL.createObjectURL(mergedPdf);
+		try {
+			let merger = await PDFDocument.create();
+			for (const file of docs) {
+				let src = await _getInputAsUint8Array(file);
+				let doc = await PDFDocument.load(src);
+
+				let indices = doc.getPageIndices();
+
+				console.log(indices);
+
+				const copiedPages = await merger.copyPages(doc, indices);
+				copiedPages.forEach((page) => {
+					merger.addPage(page);
+				});
+			}
+			// await merger.setMetadata({
+			// 	producer: 'pdf-merger-js based script'
+			// });
+			//@ts-ignore
+			// const mergedPdf = await merger.saveAsBase64({ dataUri: true });
+			const mergedPdf = await merger.save();
+			let blob = new Blob([mergedPdf], {
+				type: 'application/pdf'
+			});
+			mergedPdfUrl = URL.createObjectURL(blob);
+			console.log(mergedPdfUrl);
+		} catch (error) {
+			console.log(error);
+		}
 	}
 
 	async function _getInputAsUint8Array(input: any) {
