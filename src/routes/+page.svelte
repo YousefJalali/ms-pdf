@@ -16,6 +16,7 @@
 	// let docs: File[] = []
 	type Preview = {
 		id: string
+		name: string
 		parentId: string
 		file: File
 	}
@@ -31,6 +32,7 @@
 			let id = uuidv4()
 			previews = previews.concat({
 				id,
+				name: file.name,
 				parentId: id,
 				file
 			})
@@ -39,11 +41,14 @@
 		numOfPages = getPages(previews)
 	}
 
-	let colors: { [key: string]: string } = {}
+	let colors: { [key: string]: { name: string; color: string } } = {}
 	$: if (previews) {
 		for (let f of previews) {
 			if (!colors[f.parentId]) {
-				colors[f.parentId] = randomColor()
+				colors[f.parentId] = {
+					name: f.name,
+					color: randomColor()
+				}
 			}
 		}
 	}
@@ -153,7 +158,7 @@
 			}
 			let file = new File([blob], `file-${i + 1}.pdf`, metadata)
 
-			newDocs = [...newDocs, { id: uuidv4(), parentId: previews[inputIndex].id, file }]
+			newDocs = [...newDocs, { ...previews[inputIndex], id: uuidv4(), file }]
 		}
 		previews = [...previews.slice(0, inputIndex), ...newDocs, ...previews.slice(inputIndex + 1)]
 
@@ -169,10 +174,26 @@
 	}
 </script>
 
+{#if Object.values(colors).length > 1}
+	<ul>
+		{#each Object.values(colors) as c}
+			<li class="flex items-center gap-2">
+				<span class="inline-block h-4 w-4 rounded-full" style="background-color: {c.color};" />
+				{c.name}
+			</li>
+		{/each}
+	</ul>
+{/if}
+
 <div class="flex gap-8">
 	<div class="flex flex-wrap gap-8 w-full bg-slate-200 rounded-2xl p-6">
 		{#each previews as file, i}
-			<div class="w-fit h-fit border-2 p-2" style="border-color: {colors[file.parentId]}">
+			<div
+				class="w-fit h-fit border-2 p-2"
+				style="border-color: {Object.keys(colors).length > 1
+					? colors[file.parentId].color
+					: 'transparent'}"
+			>
 				<iframe height={250} width={150} src={URL.createObjectURL(file.file)} title="pdf-viewer"
 				></iframe>
 
@@ -180,7 +201,7 @@
 					<p>...waiting</p>
 				{:then page}
 					<div>
-						<p class="text-center">{page[file.id] || 0} pages</p>
+						<p class="text-center">{page[file.id] || 0} page{page[file.id] > 1 ? 's' : ''}</p>
 						<div class="flex justify-between">
 							<button
 								disabled={page[file.id] <= 1}
