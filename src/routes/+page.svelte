@@ -127,8 +127,6 @@
 			pages[file.id] = pdfDoc.getPages().length
 		}
 
-		console.log(pages)
-
 		return pages
 	}
 
@@ -162,6 +160,10 @@
 		numOfPages = getPages(previews)
 	}
 
+	function remove(fileId: string) {
+		previews = previews.filter((f) => f.id !== fileId)
+	}
+
 	function addPdfFromUrl() {
 		if (!value) return
 	}
@@ -179,11 +181,14 @@
 				{:then page}
 					<div>
 						<p class="text-center">{page[file.id] || 0} pages</p>
-						<button
-							disabled={page[file.id] <= 1}
-							on:click={() => split(file.id)}
-							class="disabled:bg-slate-600">split</button
-						>
+						<div class="flex justify-between">
+							<button
+								disabled={page[file.id] <= 1}
+								on:click={() => split(file.id)}
+								class="disabled:bg-slate-600">split</button
+							>
+							<button class="text-red-600" on:click={() => remove(file.id)}>remove</button>
+						</div>
 						<!-- <p>{file.id}</p> -->
 					</div>
 				{:catch error}
