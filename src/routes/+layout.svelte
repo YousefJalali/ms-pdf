@@ -1,5 +1,8 @@
 <script>
-	import '../app.css';
+	import '../app.css'
 </script>
 
-<slot />
+<main class="container mx-auto">
+	<header class="border-2 py-8 mb-16">header</header>
+	<slot />
+</main>
