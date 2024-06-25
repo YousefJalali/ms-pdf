@@ -2,6 +2,8 @@
 	import { PDFDocument } from 'pdf-lib'
 	import { v4 as uuidv4 } from 'uuid'
 	import FileInput from '../components/FileInput.svelte'
+	import { dndzone } from 'svelte-dnd-action'
+	import { flip } from 'svelte/animate'
 
 	function randomColor() {
 		return '#' + (0x1000000 + Math.random() * 0xffffff).toString(16).substr(1, 6)
@@ -172,6 +174,14 @@
 	function addPdfFromUrl() {
 		if (!value) return
 	}
+
+	const flipDurationMs = 300
+	function handleDndConsider(e) {
+		previews = e.detail.items
+	}
+	function handleDndFinalize(e) {
+		previews = e.detail.items
+	}
 </script>
 
 {#if Object.values(colors).length > 1}
@@ -186,16 +196,26 @@
 {/if}
 
 <div class="flex gap-8">
-	<div class="flex flex-wrap gap-8 w-full bg-slate-200 rounded-2xl p-6">
-		{#each previews as file, i}
+	<div
+		class="flex flex-wrap gap-8 w-full bg-slate-200 rounded-2xl p-6"
+		use:dndzone={{ items: previews, flipDurationMs }}
+		on:consider={handleDndConsider}
+		on:finalize={handleDndFinalize}
+	>
+		{#each previews as file (file.id)}
 			<div
 				class="w-fit h-fit border-2 p-2"
 				style="border-color: {Object.keys(colors).length > 1
 					? colors[file.parentId].color
 					: 'transparent'}"
+				animate:flip={{ duration: flipDurationMs }}
 			>
-				<iframe height={250} width={150} src={URL.createObjectURL(file.file)} title="pdf-viewer"
-				></iframe>
+				<div class="relative">
+					<div class="absolute top-0 left-0 h-full w-full z-10" />
+
+					<iframe height={250} width={150} src={URL.createObjectURL(file.file)} title="pdf-viewer"
+					></iframe>
+				</div>
 
 				{#await numOfPages}
 					<p>...waiting</p>
