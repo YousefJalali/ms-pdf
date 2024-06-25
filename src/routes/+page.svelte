@@ -1,72 +1,86 @@
 <script lang="ts">
-	import { PDFDocument } from 'pdf-lib';
-	import { v4 as uuidv4 } from 'uuid';
+	import { PDFDocument } from 'pdf-lib'
+	import { v4 as uuidv4 } from 'uuid'
+	import FileInput from '../components/FileInput.svelte'
 
-	let files: FileList;
-	let docs: File[] = [];
+	function randomColor() {
+		return '#' + (0x1000000 + Math.random() * 0xffffff).toString(16).substr(1, 6)
+	}
+
+	const _loadOptions = {
+		ignoreEncryption: true
+	}
+	type SupportedTypes = File | Uint8Array | ArrayBuffer | Blob | URL
+	let value: string
+	let files: FileList | null
+	// let docs: File[] = []
 	type Preview = {
-		id: string;
-		file: File;
-		pages: number;
-	};
+		id: string
+		parentId: string
+		file: File
+	}
+	let previews: Preview[] = []
 
-	let mergedPdfUrl: string;
+	let mergedPdfUrl: string
 
 	$: if (files) {
 		for (const file of files) {
-			console.log(`${file.name}: ${file.size} bytes`);
-			docs = [...docs, file];
-			// const pages = await getPages(file);
-			// console.log();
+			console.log(file)
+			console.log(`${file.name}: ${file.size} bytes`)
+			// docs = [...docs, file]
+			let id = uuidv4()
+			previews = previews.concat({
+				id,
+				parentId: id,
+				file
+			})
 		}
-		numOfPages = getPages(docs);
+		files = null
+		numOfPages = getPages(previews)
 	}
 
-	let previews: Preview[] = [];
-	$: previews = docs.map((file) => ({
-		id: uuidv4(),
-		file,
-		pages: 0
-	}));
+	let colors: { [key: string]: string } = {}
+	$: if (previews) {
+		for (let f of previews) {
+			if (!colors[f.parentId]) {
+				colors[f.parentId] = randomColor()
+			}
+		}
+	}
 
-	let numOfPages = getPages(docs);
+	let numOfPages: Promise<{ [key: string]: number }> = getPages(previews)
 
 	async function merge() {
 		try {
-			let merger = await PDFDocument.create();
-			for (const file of docs) {
-				let src = await _getInputAsUint8Array(file);
-				let doc = await PDFDocument.load(src);
+			let merger = await PDFDocument.create()
 
-				let indices = doc.getPageIndices();
+			// docs.push(new URL('https://pdf-lib.js.org/assets/with_update_sections.pdf'))
+			for (const file of previews) {
+				let src = await _getInputAsUint8Array(file.file)
+				let pdfDoc = await PDFDocument.load(src)
 
-				console.log(indices);
+				let indices = pdfDoc.getPageIndices()
+				const copiedPages = await merger.copyPages(pdfDoc, indices)
 
-				const copiedPages = await merger.copyPages(doc, indices);
-				copiedPages.forEach((page) => {
-					merger.addPage(page);
-				});
+				for (let page of copiedPages) {
+					merger.addPage(page)
+				}
 			}
-			// await merger.setMetadata({
-			// 	producer: 'pdf-merger-js based script'
-			// });
-			//@ts-ignore
-			// const mergedPdf = await merger.saveAsBase64({ dataUri: true });
-			const mergedPdf = await merger.save();
+
+			const mergedPdf = await merger.save()
 			let blob = new Blob([mergedPdf], {
 				type: 'application/pdf'
-			});
-			mergedPdfUrl = URL.createObjectURL(blob);
-			console.log(mergedPdfUrl);
+			})
+			mergedPdfUrl = URL.createObjectURL(blob)
 		} catch (error) {
-			console.log(error);
+			console.log(error)
 		}
 	}
 
 	async function _getInputAsUint8Array(input: any) {
 		// see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array
 		if (input instanceof Uint8Array) {
-			return input;
+			return input
 		}
 
 		// see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer
@@ -74,137 +88,128 @@
 			input instanceof ArrayBuffer ||
 			Object.prototype.toString.call(input) === '[object ArrayBuffer]'
 		) {
-			return new Uint8Array(input);
+			return new Uint8Array(input)
 		}
 
 		// see https://developer.mozilla.org/en-US/docs/Web/API/Blob
 		if (typeof Blob !== 'undefined' && input instanceof Blob) {
-			const aBuffer = await input.arrayBuffer();
-			return new Uint8Array(aBuffer);
+			const aBuffer = await input.arrayBuffer()
+			return new Uint8Array(aBuffer)
 		}
 
 		// see https://developer.mozilla.org/en-US/docs/Web/API/URL
 		if (input instanceof URL) {
 			if (typeof fetch === 'undefined') {
-				throw new Error('fetch is not defined. You need to use a polyfill for this to work.');
+				throw new Error('fetch is not defined. You need to use a polyfill for this to work.')
 			}
-			const res = await fetch(input);
-			const aBuffer = await res.arrayBuffer();
-			return new Uint8Array(aBuffer);
+			const res = await fetch(input)
+			const aBuffer = await res.arrayBuffer()
+			return new Uint8Array(aBuffer)
 		}
 
 		// throw a meaningful error if input type is unknown or invalid
-		const allowedTypes = ['Uint8Array', 'ArrayBuffer', 'File', 'Blob', 'URL'];
-		let errorMsg = `pdf-input must be of type ${allowedTypes.join(', ')}, a valid filename or url!`;
+		const allowedTypes = ['Uint8Array', 'ArrayBuffer', 'File', 'Blob', 'URL']
+		let errorMsg = `pdf-input must be of type ${allowedTypes.join(', ')}, a valid filename or url!`
 		if (typeof input === 'string' || input instanceof String) {
-			errorMsg += ` Input was "${input}" wich is not an existing file, nor a valid URL!`;
+			errorMsg += ` Input was "${input}" wich is not an existing file, nor a valid URL!`
 		} else {
-			errorMsg += ` Input was of type "${typeof input}" instead.`;
+			errorMsg += ` Input was of type "${typeof input}" instead.`
 		}
-		throw new Error(errorMsg);
+		throw new Error(errorMsg)
 	}
 
-	async function getPage(file: any) {
-		const src = await _getInputAsUint8Array(file);
-		const pdfDoc = await PDFDocument.load(src, _loadOptions);
-
-		return pdfDoc.getPages().length;
-	}
-
-	async function getPages(files: any) {
-		let pages: number[] = [];
+	async function getPages(files: Preview[]) {
+		let pages: { [key: string]: number } = {}
 		for (let file of files) {
-			const src = await _getInputAsUint8Array(file);
-			const pdfDoc = await PDFDocument.load(src, _loadOptions);
+			const src = await _getInputAsUint8Array(file.file)
+			const pdfDoc = await PDFDocument.load(src, _loadOptions)
 
-			pages = [...pages, pdfDoc.getPages().length];
+			pages[file.id] = pdfDoc.getPages().length
 		}
 
-		return pages;
+		console.log(pages)
+
+		return pages
 	}
 
-	const _loadOptions = {
-		ignoreEncryption: true
-	};
-	async function getPagesFromDocument(input: any, pages = undefined) {
-		let file = input.file;
-		const src = await _getInputAsUint8Array(file);
-		const pdfDoc = await PDFDocument.load(src, _loadOptions);
+	async function split(fileId: string, pages = undefined) {
+		let inputIndex = previews.findIndex((f) => f.id === fileId)
+		let file = previews[inputIndex].file
+		const src = await _getInputAsUint8Array(file)
+		const pdfDoc = await PDFDocument.load(src, _loadOptions)
 
-		const numberOfPages = pdfDoc.getPages().length;
-		let newDocs: Preview[] = [];
+		const numberOfPages = pdfDoc.getPages().length
+		let newDocs: Preview[] = []
 		for (let i = 0; i < numberOfPages; i++) {
 			// Create a new "sub" document
-			const subDocument = await PDFDocument.create();
+			const subDocument = await PDFDocument.create()
 			// copy the page at current index
-			const [copiedPage] = await subDocument.copyPages(pdfDoc, [i]);
-			subDocument.addPage(copiedPage);
-			const pdfBytes = await subDocument.save();
-			const blob = await new Blob([pdfBytes], {
+			const [copiedPage] = await subDocument.copyPages(pdfDoc, [i])
+			subDocument.addPage(copiedPage)
+			const pdfBytes = await subDocument.save()
+			const blob = new Blob([pdfBytes], {
 				type: 'application/pdf'
-			});
+			})
 			let metadata = {
 				type: 'application/pdf'
-			};
-			let file = new File([blob], `file-${i + 1}.pdf`, metadata);
-			// const pdfBytes = await subDocument.save();
-			newDocs = [...newDocs, { id: uuidv4(), file, pages: 1 }];
-		}
-		previews = previews.filter((f) => f.id !== input.id);
-		previews = [...previews, ...newDocs];
-		// let indices = []
-		// if (pages === undefined) {
-		//   // add the whole document
-		//   indices = srcDoc.getPageIndices()
-		// } else {
-		//   // add selected pages switching to a 0-based index
-		//   indices = pages.map(p => p - 1)
-		// }
+			}
+			let file = new File([blob], `file-${i + 1}.pdf`, metadata)
 
-		// const copiedPages = await this._doc.copyPages(srcDoc, indices)
-		// copiedPages.forEach((page) => {
-		//   this._doc.addPage(page)
-		// }
+			newDocs = [...newDocs, { id: uuidv4(), parentId: previews[inputIndex].id, file }]
+		}
+		previews = [...previews.slice(0, inputIndex), ...newDocs, ...previews.slice(inputIndex + 1)]
+
+		numOfPages = getPages(previews)
+	}
+
+	function addPdfFromUrl() {
+		if (!value) return
 	}
 </script>
 
-<input bind:files type="file" accept="application/pdf" />
+<div class="flex gap-8">
+	<div class="flex flex-wrap gap-8 w-full bg-slate-200 rounded-2xl p-6">
+		{#each previews as file, i}
+			<div class="w-fit h-fit border-2 p-2" style="border-color: {colors[file.parentId]}">
+				<iframe height={250} width={150} src={URL.createObjectURL(file.file)} title="pdf-viewer"
+				></iframe>
 
-<div class="border-2 flex gap-8">
-	{#each previews as file, i}
-		<div class="border-2 w-fit">
-			{#if !file.pages}
 				{#await numOfPages}
 					<p>...waiting</p>
-				{:then number}
+				{:then page}
 					<div>
-						<p>The number is {number[i]}</p>
+						<p class="text-center">{page[file.id] || 0} pages</p>
 						<button
-							disabled={number[i] <= 1}
-							on:click={() => getPagesFromDocument(file)}
+							disabled={page[file.id] <= 1}
+							on:click={() => split(file.id)}
 							class="disabled:bg-slate-600">split</button
 						>
+						<!-- <p>{file.id}</p> -->
 					</div>
 				{:catch error}
 					<p style="color: red">error</p>
 				{/await}
-			{:else}
-				<div>
-					<p>The number is {file.pages}</p>
-					<button
-						disabled={file.pages <= 1}
-						on:click={() => getPagesFromDocument(file)}
-						class="disabled:bg-slate-600">split</button
-					>
-				</div>
-			{/if}
-			<iframe height={250} width={150} src={URL.createObjectURL(file.file)} title="pdf-viewer"
-			></iframe>
-		</div>
-	{/each}
-</div>
+			</div>
+		{/each}
+	</div>
 
-<button on:click={merge}>merge</button>
+	<div class="flex flex-col gap-8 items-center w-1/2 mx-auto bg-slate-200 p-6 rounded-2xl">
+		<div class="flex w-full">
+			<input bind:value type="text" class="border w-full" />
+			<button on:click={addPdfFromUrl}>add</button>
+		</div>
+
+		<span
+			class="w-full h-0.5 bg-black relative before:absolute before:-top-[calc(1.25rem/2)] before:-translate-x-1/2 before:px-2 before:bg-slate-200 before:text-sm before:font-bold opacity-30 before:left-1/2 before:content-['OR']"
+		></span>
+
+		<FileInput bind:files />
+
+		{#if previews.length}
+			<button on:click={merge} class="bg-red-300 w-full p-4 rounded-xl mt-12">Merge</button>
+		{/if}
+	</div>
+</div>
 
 {#if mergedPdfUrl}
 	<iframe height={250} width={150} src={mergedPdfUrl} title="pdf-viewer"></iframe>
