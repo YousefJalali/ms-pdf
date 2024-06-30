@@ -4,10 +4,18 @@
 	import FileInput from '../components/FileInput.svelte'
 	import { dndzone } from 'svelte-dnd-action'
 	import { flip } from 'svelte/animate'
+	import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs'
+	import { tick } from 'svelte'
+	pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
+		'pdfjs-dist/build/pdf.worker.min.mjs',
+		import.meta.url
+	).toString()
 
 	function randomColor() {
 		return '#' + (0x1000000 + Math.random() * 0xffffff).toString(16).substr(1, 6)
 	}
+
+	const PREVIEW_HEIGHT = 150
 
 	const _loadOptions = {
 		ignoreEncryption: true
@@ -40,7 +48,7 @@
 			})
 		}
 		files = null
-		numOfPages = getPages(previews)
+		renderPreviews = getPages(previews)
 	}
 
 	let colors: { [key: string]: { name: string; color: string } } = {}
@@ -55,7 +63,7 @@
 		}
 	}
 
-	let numOfPages: Promise<{ [key: string]: number }> = getPages(previews)
+	let renderPreviews: Promise<{ [key: string]: number }> = getPages(previews)
 
 	async function merge() {
 		try {
@@ -131,6 +139,8 @@
 			const src = await _getInputAsUint8Array(file.file)
 			const pdfDoc = await PDFDocument.load(src, _loadOptions)
 
+			await thumbnail(file)
+
 			pages[file.id] = pdfDoc.getPages().length
 		}
 
@@ -164,7 +174,7 @@
 		}
 		previews = [...previews.slice(0, inputIndex), ...newDocs, ...previews.slice(inputIndex + 1)]
 
-		numOfPages = getPages(previews)
+		renderPreviews = getPages(previews)
 	}
 
 	function remove(fileId: string) {
@@ -176,13 +186,101 @@
 	}
 
 	const flipDurationMs = 300
-	function handleDndConsider(e) {
+	function handleDndConsider(e: CustomEvent<DndEvent<Preview>>) {
 		previews = e.detail.items
 	}
-	function handleDndFinalize(e) {
+	function handleDndFinalize(e: CustomEvent<DndEvent<Preview>>) {
+		console.log(e)
 		previews = e.detail.items
+		// await tick()
+		// await thumbnail(e.detail.items[0])
+		// renderPreviews = getPages(previews)
 	}
+
+	async function thumbnail(file: Preview) {
+		// if (document.getElementById(file.id)) return
+		console.log('here:', canvases, document.getElementById(file.id))
+
+		let loadingTask = pdfjsLib.getDocument(URL.createObjectURL(file.file))
+		// try {
+		// 	let pdf = await loadingTask.promise
+		// 	console.log(pdf, 'PDF loaded')
+
+		// 	let pageNumber = 1
+		// 	let page = await pdf.getPage(pageNumber)
+
+		// 	const scale = PREVIEW_HEIGHT / page.getViewport({ scale: 1 }).height
+		// 	const viewport = page.getViewport({ scale })
+
+		// 	const canvas = canvases[file.id]
+		// 	console.log(canvas, canvases)
+		// 	if (!canvas) return
+
+		// 	const context = canvas.getContext('2d')
+		// 	canvas.height = viewport.height
+		// 	canvas.width = viewport.width
+
+		// 	const renderContext = {
+		// 		canvasContext: context,
+		// 		viewport: viewport
+		// 	}
+
+		// 	let renderTask = page.render(renderContext)
+
+		// 	await renderTask.promise
+		// 	console.log('Page rendered')
+		// } catch (error) {
+		// 	console.log(error)
+		// }
+
+		loadingTask.promise.then(
+			function (pdf) {
+				console.log('PDF loaded')
+				// Fetch the first page
+				let pageNumber = 1
+				pdf.getPage(pageNumber).then(function (page) {
+					console.log('Page loaded')
+					//scale based on fixed height
+					const scale = PREVIEW_HEIGHT / page.getViewport({ scale: 1 }).height
+					const viewport = page.getViewport({ scale })
+
+					// Prepare canvas using PDF page dimensions
+					// const canvas = document.getElementById(file.id) as HTMLCanvasElement
+					const canvas = canvases[file.id]
+
+					const context = canvas?.getContext('2d')
+					if (!context) return
+
+					canvas.height = viewport.height
+					canvas.width = viewport.width
+
+					// Render PDF page into canvas context
+					const renderContext = {
+						canvasContext: context,
+						viewport: viewport
+					}
+
+					console.log(renderContext)
+
+					let renderTask = page.render(renderContext)
+
+					renderTask.promise.then(function () {
+						console.log('Page rendered')
+					})
+				})
+			},
+			function (reason) {
+				// PDF loading error
+				console.error(reason)
+			}
+		)
+	}
+
+	let canvases: { [key: string]: HTMLCanvasElement } = {}
 </script>
+
+<!-- <canvas id="the-canvas"></canvas> -->
+<div id="canvas-container" class="flex max-h-[{PREVIEW_HEIGHT}px]"></div>
 
 {#if Object.values(colors).length > 1}
 	<ul>
@@ -210,27 +308,32 @@
 					: 'transparent'}"
 				animate:flip={{ duration: flipDurationMs }}
 			>
-				<div class="relative">
+				<!-- <div class="relative">
 					<div class="absolute top-0 left-0 h-full w-full z-10" />
 
 					<iframe height={250} width={150} src={URL.createObjectURL(file.file)} title="pdf-viewer"
 					></iframe>
-				</div>
+				</div> -->
 
-				{#await numOfPages}
-					<p>...waiting</p>
+				{#await renderPreviews}
+					<!-- <p>...waiting</p> -->
+					<div class="h-[150px] w-[105px] bg-white" />
 				{:then page}
-					<div>
-						<p class="text-center">{page[file.id] || 0} page{page[file.id] > 1 ? 's' : ''}</p>
-						<div class="flex justify-between">
-							<button
-								disabled={page[file.id] <= 1}
-								on:click={() => split(file.id)}
-								class="disabled:bg-slate-600">split</button
-							>
-							<button class="text-red-600" on:click={() => remove(file.id)}>remove</button>
+					<div class="relative">
+						<!-- <div class="absolute top-0 left-0 h-full w-full z-10" /> -->
+						<canvas bind:this={canvases[file.id]} id={file.id} height="1" width="1"></canvas>
+						<div>
+							<p class="text-center">{page[file.id] || 0} page{page[file.id] > 1 ? 's' : ''}</p>
+							<div class="flex justify-between">
+								<button
+									disabled={page[file.id] <= 1}
+									on:click={() => split(file.id)}
+									class="disabled:bg-slate-600">split</button
+								>
+								<button class="text-red-600" on:click={() => remove(file.id)}>remove</button>
+							</div>
+							<!-- <p>{file.id}</p> -->
 						</div>
-						<!-- <p>{file.id}</p> -->
 					</div>
 				{:catch error}
 					<p style="color: red">error</p>
