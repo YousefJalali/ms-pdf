@@ -252,81 +252,37 @@
 	}
 
 	async function getThumbnail(file: Preview) {
-		// if (document.getElementById(file.id)) return
-		// console.log('here:', canvases, document.getElementById(file.id))
-
 		let loadingTask = pdfjsLib.getDocument(URL.createObjectURL(file.file))
-		// try {
-		// 	let pdf = await loadingTask.promise
-		// 	console.log(pdf, 'PDF loaded')
+		try {
+			let pdf = await loadingTask.promise
+			console.log(pdf, 'PDF loaded')
 
-		// 	let pageNumber = 1
-		// 	let page = await pdf.getPage(pageNumber)
+			let pageNumber = 1
+			let page = await pdf.getPage(pageNumber)
 
-		// 	const scale = PREVIEW_HEIGHT / page.getViewport({ scale: 1 }).height
-		// 	const viewport = page.getViewport({ scale })
+			const scale = PREVIEW_HEIGHT / page.getViewport({ scale: 1 }).height
+			const viewport = page.getViewport({ scale })
 
-		// 	const canvas = document.createElement('canvas')
-		// 	const context = canvas.getContext('2d')
-		// 	if (!context) throw 'no context'
+			const canvas = document.createElement('canvas')
+			const context = canvas.getContext('2d')
+			if (!context) throw 'no context'
 
-		// 	canvas.height = viewport.height
-		// 	canvas.width = viewport.width
+			canvas.height = viewport.height
+			canvas.width = viewport.width
 
-		// 	const renderContext = {
-		// 		canvasContext: context,
-		// 		viewport: viewport
-		// 	}
+			const renderContext = {
+				canvasContext: context,
+				viewport: viewport
+			}
 
-		// 	let renderTask = page.render(renderContext)
+			let renderTask = page.render(renderContext)
 
-		// 	await renderTask.promise
-		// 	console.log('Page rendered')
-		// 	return { [file.docId]: canvas.toDataURL() }
-		// } catch (error) {
-		// 	console.log(error)
-		// }
-
-		return Promise.resolve(loadingTask.promise)
-			.then(async (pdf) => {
-				console.log('PDF loaded')
-				// Fetch the first page
-				let pageNumber = 1
-
-				return Promise.resolve(pdf.getPage(pageNumber)).then(function (page) {
-					console.log('Page loaded')
-					//scale based on fixed height
-					const scale = PREVIEW_HEIGHT / page.getViewport({ scale: 1 }).height
-					const viewport = page.getViewport({ scale })
-
-					// Prepare canvas using PDF page dimensions
-					// const canvas = document.getElementById(file.id) as HTMLCanvasElement
-					// const canvas = canvases[file.docId]
-					const canvas = document.createElement('canvas')
-
-					const context = canvas?.getContext('2d')
-					if (!context) return
-
-					canvas.height = viewport.height
-					canvas.width = viewport.width
-
-					// Render PDF page into canvas context
-					const renderContext = {
-						canvasContext: context,
-						viewport: viewport
-					}
-
-					let renderTask = page.render(renderContext)
-
-					return Promise.resolve(renderTask.promise).then(function () {
-						console.log('Page rendered')
-						return { [file.docId]: canvas.toDataURL() }
-					})
-				})
-			})
-			.catch((err) => {
-				console.error(err)
-			})
+			await renderTask.promise
+			console.log('Page rendered')
+			return { [file.docId]: canvas.toDataURL() }
+		} catch (error) {
+			console.log(error)
+		}
 	}
 
 	let canvases: { [key: string]: HTMLCanvasElement } = {}
