@@ -33,7 +33,6 @@
 	}
 	let previews = writable<Preview[]>([])
 
-	// let pages = asyncDerivedStream(previews, getNumOfPages, {})
 	let pages: Readable<{ [ket: string]: number }> = derived(
 		previews,
 		($st, set) => {
@@ -129,17 +128,33 @@
 		files = null
 	}
 
-	let colors: { [key: string]: { name: string; color: string } } = {}
-	$: if (previews) {
-		for (let f of $previews) {
-			if (!colors[f.parentId]) {
-				colors[f.parentId] = {
-					name: f.name,
-					color: randomColor()
+	let colors: Readable<{ [key: string]: { name: string; color: string } }> = derived(
+		previews,
+		($st, set, update) => {
+			let colorsToBeRemoved = { ...$colors }
+			for (let f of $st) {
+				delete colorsToBeRemoved[f.parentId]
+
+				if (!$colors[f.parentId]) {
+					let newColor = {
+						[f.parentId]: { name: f.name, color: randomColor() }
+					}
+					update((c) => ({ ...c, ...newColor }))
 				}
 			}
-		}
-	}
+
+			//clear colors of removed docs
+			if (Object.keys(colorsToBeRemoved).length) {
+				let temp = { ...$colors }
+				for (let key in colorsToBeRemoved) {
+					delete temp[key]
+				}
+				set(temp)
+				colorsToBeRemoved = {}
+			}
+		},
+		{}
+	)
 
 	async function merge() {
 		try {
@@ -253,6 +268,7 @@
 
 	function remove(fileId: string) {
 		previews.update((d) => d.filter((f) => f.docId !== fileId))
+		// delete colors[fileId]
 	}
 
 	function addPdfFromUrl() {
@@ -270,11 +286,8 @@
 	async function getThumbnail(file: Preview) {
 		let loadingTask = pdfjsLib.getDocument(URL.createObjectURL(file.file))
 		try {
-			// previews.update((pages) =>
-			// 	pages.map((p) => (p.docId === file.docId ? { ...p, thumbnailStatus: 'loading' } : p))
-			// )
 			let pdf = await loadingTask.promise
-			console.log(pdf, 'PDF loaded')
+			console.log('PDF loaded')
 
 			let pageNumber = 1
 			let page = await pdf.getPage(pageNumber)
@@ -300,7 +313,6 @@
 			console.log('Page rendered')
 
 			return { id: [file.docId], src: canvas.toDataURL() }
-			// return { [file.docId]: canvas.toDataURL() }
 		} catch (error) {
 			console.log(error)
 		}
@@ -309,9 +321,9 @@
 	// let canvases: { [key: string]: HTMLCanvasElement } = {}
 </script>
 
-{#if Object.values(colors).length > 1}
+{#if Object.values($colors).length > 1}
 	<ul>
-		{#each Object.values(colors) as c}
+		{#each Object.values($colors) as c}
 			<li class="flex items-center gap-2">
 				<span class="inline-block h-4 w-4 rounded-full" style="background-color: {c.color};" />
 				{c.name}
@@ -330,8 +342,8 @@
 		{#each $previews as file (file.id)}
 			<div
 				class="w-fit h-fit border-2 p-2"
-				style="border-color: {Object.keys(colors).length > 1
-					? colors[file.parentId].color
+				style="border-color: {Object.keys($colors).length > 1
+					? $colors[file.parentId].color
 					: 'transparent'}"
 				animate:flip={{ duration: flipDurationMs }}
 			>
