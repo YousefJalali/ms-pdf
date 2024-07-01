@@ -44,7 +44,13 @@
 		{}
 	)
 
-	let thumbnails: Readable<{ [key: string]: string }> = derived(
+	type Thumbnail = {
+		[key: string]: {
+			status: 'loading' | 'loaded' | 'failed'
+			src: string | null
+		}
+	}
+	let thumbnails: Readable<Thumbnail> = derived(
 		previews,
 		($st, set, update) => {
 			let hasNewItem = false
@@ -59,6 +65,14 @@
 
 					if (!$thumbnails[f.docId]) {
 						hasNewItem = true
+						let newThumbnail: Thumbnail = {
+							[f.docId]: { status: 'loading', src: null }
+						}
+						update((thumb) => ({
+							...thumb,
+							...newThumbnail
+						}))
+
 						return getThumbnail(f)
 					} else {
 						return []
@@ -68,7 +82,11 @@
 				if (hasNewItem) {
 					value.forEach((v) => {
 						if (v.status === 'fulfilled') {
-							update((d) => ({ ...d, ...v.value }))
+							update((thumb) => ({
+								...thumb,
+								//@ts-ignore
+								[v.value.id]: { status: 'loaded', src: v.value.src }
+							}))
 						}
 					})
 					hasNewItem = false
@@ -235,8 +253,6 @@
 
 	function remove(fileId: string) {
 		previews.update((d) => d.filter((f) => f.docId !== fileId))
-
-		console.log($thumbnails, $previews)
 	}
 
 	function addPdfFromUrl() {
@@ -254,6 +270,9 @@
 	async function getThumbnail(file: Preview) {
 		let loadingTask = pdfjsLib.getDocument(URL.createObjectURL(file.file))
 		try {
+			// previews.update((pages) =>
+			// 	pages.map((p) => (p.docId === file.docId ? { ...p, thumbnailStatus: 'loading' } : p))
+			// )
 			let pdf = await loadingTask.promise
 			console.log(pdf, 'PDF loaded')
 
@@ -279,13 +298,15 @@
 
 			await renderTask.promise
 			console.log('Page rendered')
-			return { [file.docId]: canvas.toDataURL() }
+
+			return { id: [file.docId], src: canvas.toDataURL() }
+			// return { [file.docId]: canvas.toDataURL() }
 		} catch (error) {
 			console.log(error)
 		}
 	}
 
-	let canvases: { [key: string]: HTMLCanvasElement } = {}
+	// let canvases: { [key: string]: HTMLCanvasElement } = {}
 </script>
 
 {#if Object.values(colors).length > 1}
@@ -316,8 +337,13 @@
 			>
 				<div class="relative">
 					<!-- <div class="absolute top-0 left-0 h-full w-full z-10" /> -->
+
 					{#if $thumbnails[file.docId]}
-						<img src={$thumbnails[file.docId]} alt="ha" />
+						{#if $thumbnails[file.docId].status === 'loading'}
+							<p>loading...</p>
+						{:else}
+							<img src={$thumbnails[file.docId].src} alt="ha" />
+						{/if}
 					{/if}
 					<!-- <canvas bind:this={canvases[file.docId]} id={file.docId} height="1" width="1"></canvas> -->
 					<div>
