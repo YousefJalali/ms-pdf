@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { derived, writable, type Readable, type Writable } from 'svelte/store'
 	import { PDFDocument } from 'pdf-lib'
 	import { v4 as uuidv4 } from 'uuid'
 	import FileInput from '../components/FileInput.svelte'
@@ -20,17 +21,60 @@
 	const _loadOptions = {
 		ignoreEncryption: true
 	}
-	type SupportedTypes = File | Uint8Array | ArrayBuffer | Blob | URL
+
 	let value: string
 	let files: FileList | null
-	// let docs: File[] = []
+
 	type Preview = {
 		id: string
+		docId: string
 		name: string
 		parentId: string
 		file: File
 	}
-	let previews: Preview[] = []
+	let previews = writable<Preview[]>([])
+
+	// let pages = asyncDerivedStream(previews, getNumOfPages, {})
+	let pages: Readable<{ [ket: string]: number }> = derived(
+		previews,
+		($st, set) => {
+			Promise.resolve(getNumOfPages($st)).then((value) => {
+				set(value)
+			})
+		},
+		{}
+	)
+
+	let thumbnails: Readable<{ [key: string]: string }> = derived(
+		previews,
+		($st, set, update) => {
+			let hasNewItem = false
+
+			Promise.allSettled(
+				$st.map((f) => {
+					if (!$thumbnails[f.docId]) {
+						hasNewItem = true
+						console.log('no have')
+						return getThumbnail(f)
+					} else {
+						console.log('yes have')
+						return []
+					}
+				})
+			).then((value) => {
+				if (hasNewItem) {
+					value.forEach((v) => {
+						if (v.status === 'fulfilled') {
+							update((d) => ({ ...d, ...v.value }))
+						}
+					})
+					console.log({ value }, $thumbnails)
+					hasNewItem = false
+				}
+			})
+		},
+		{}
+	)
 
 	let mergedPdfUrl: string
 
@@ -40,20 +84,24 @@
 			console.log(`${file.name}: ${file.size} bytes`)
 			// docs = [...docs, file]
 			let id = uuidv4()
-			previews = previews.concat({
-				id,
-				name: file.name,
-				parentId: id,
-				file
-			})
+
+			previews.update((d) => [
+				...d,
+				{
+					id,
+					docId: id,
+					name: file.name,
+					parentId: id,
+					file
+				}
+			])
 		}
 		files = null
-		renderPreviews = getPages(previews)
 	}
 
 	let colors: { [key: string]: { name: string; color: string } } = {}
 	$: if (previews) {
-		for (let f of previews) {
+		for (let f of $previews) {
 			if (!colors[f.parentId]) {
 				colors[f.parentId] = {
 					name: f.name,
@@ -63,14 +111,12 @@
 		}
 	}
 
-	let renderPreviews: Promise<{ [key: string]: number }> = getPages(previews)
-
 	async function merge() {
 		try {
 			let merger = await PDFDocument.create()
 
 			// docs.push(new URL('https://pdf-lib.js.org/assets/with_update_sections.pdf'))
-			for (const file of previews) {
+			for (const file of $previews) {
 				let src = await _getInputAsUint8Array(file.file)
 				let pdfDoc = await PDFDocument.load(src)
 
@@ -133,23 +179,22 @@
 		throw new Error(errorMsg)
 	}
 
-	async function getPages(files: Preview[]) {
+	//to be enhanced
+	async function getNumOfPages(files: Preview[]) {
 		let pages: { [key: string]: number } = {}
 		for (let file of files) {
 			const src = await _getInputAsUint8Array(file.file)
 			const pdfDoc = await PDFDocument.load(src, _loadOptions)
 
-			await thumbnail(file)
-
-			pages[file.id] = pdfDoc.getPages().length
+			pages[file.docId] = pdfDoc.getPages().length
 		}
 
 		return pages
 	}
 
 	async function split(fileId: string, pages = undefined) {
-		let inputIndex = previews.findIndex((f) => f.id === fileId)
-		let file = previews[inputIndex].file
+		let inputIndex = $previews.findIndex((f) => f.docId === fileId)
+		let file = $previews[inputIndex].file
 		const src = await _getInputAsUint8Array(file)
 		const pdfDoc = await PDFDocument.load(src, _loadOptions)
 
@@ -170,15 +215,17 @@
 			}
 			let file = new File([blob], `file-${i + 1}.pdf`, metadata)
 
-			newDocs = [...newDocs, { ...previews[inputIndex], id: uuidv4(), file }]
+			let id = uuidv4()
+			newDocs = [...newDocs, { ...$previews[inputIndex], id, docId: id, file }]
 		}
-		previews = [...previews.slice(0, inputIndex), ...newDocs, ...previews.slice(inputIndex + 1)]
+		previews.update((d) => [...d.slice(0, inputIndex), ...newDocs, ...d.slice(inputIndex + 1)])
+		// previews = [...previews.slice(0, inputIndex), ...newDocs, ...previews.slice(inputIndex + 1)]
 
-		renderPreviews = getPages(previews)
+		// renderPreviews = getPages($previews)
 	}
 
 	function remove(fileId: string) {
-		previews = previews.filter((f) => f.id !== fileId)
+		previews.update((d) => d.filter((f) => f.docId !== fileId))
 	}
 
 	function addPdfFromUrl() {
@@ -187,19 +234,15 @@
 
 	const flipDurationMs = 300
 	function handleDndConsider(e: CustomEvent<DndEvent<Preview>>) {
-		previews = e.detail.items
+		previews.set(e.detail.items)
 	}
 	function handleDndFinalize(e: CustomEvent<DndEvent<Preview>>) {
-		console.log(e)
-		previews = e.detail.items
-		// await tick()
-		// await thumbnail(e.detail.items[0])
-		// renderPreviews = getPages(previews)
+		previews.set(e.detail.items)
 	}
 
-	async function thumbnail(file: Preview) {
+	async function getThumbnail(file: Preview) {
 		// if (document.getElementById(file.id)) return
-		console.log('here:', canvases, document.getElementById(file.id))
+		// console.log('here:', canvases, document.getElementById(file.id))
 
 		let loadingTask = pdfjsLib.getDocument(URL.createObjectURL(file.file))
 		// try {
@@ -233,12 +276,13 @@
 		// 	console.log(error)
 		// }
 
-		loadingTask.promise.then(
-			function (pdf) {
+		return Promise.resolve(loadingTask.promise)
+			.then(async (pdf) => {
 				console.log('PDF loaded')
 				// Fetch the first page
 				let pageNumber = 1
-				pdf.getPage(pageNumber).then(function (page) {
+
+				return Promise.resolve(pdf.getPage(pageNumber)).then(function (page) {
 					console.log('Page loaded')
 					//scale based on fixed height
 					const scale = PREVIEW_HEIGHT / page.getViewport({ scale: 1 }).height
@@ -246,7 +290,8 @@
 
 					// Prepare canvas using PDF page dimensions
 					// const canvas = document.getElementById(file.id) as HTMLCanvasElement
-					const canvas = canvases[file.id]
+					// const canvas = canvases[file.docId]
+					const canvas = document.createElement('canvas')
 
 					const context = canvas?.getContext('2d')
 					if (!context) return
@@ -260,27 +305,21 @@
 						viewport: viewport
 					}
 
-					console.log(renderContext)
-
 					let renderTask = page.render(renderContext)
 
-					renderTask.promise.then(function () {
+					return Promise.resolve(renderTask.promise).then(function () {
 						console.log('Page rendered')
+						return { [file.docId]: canvas.toDataURL() }
 					})
 				})
-			},
-			function (reason) {
-				// PDF loading error
-				console.error(reason)
-			}
-		)
+			})
+			.catch((err) => {
+				console.error(err)
+			})
 	}
 
 	let canvases: { [key: string]: HTMLCanvasElement } = {}
 </script>
-
-<!-- <canvas id="the-canvas"></canvas> -->
-<div id="canvas-container" class="flex max-h-[{PREVIEW_HEIGHT}px]"></div>
 
 {#if Object.values(colors).length > 1}
 	<ul>
@@ -296,11 +335,11 @@
 <div class="flex gap-8">
 	<div
 		class="flex flex-wrap gap-8 w-full bg-slate-200 rounded-2xl p-6"
-		use:dndzone={{ items: previews, flipDurationMs }}
+		use:dndzone={{ items: $previews, flipDurationMs }}
 		on:consider={handleDndConsider}
 		on:finalize={handleDndFinalize}
 	>
-		{#each previews as file (file.id)}
+		{#each $previews as file (file.id)}
 			<div
 				class="w-fit h-fit border-2 p-2"
 				style="border-color: {Object.keys(colors).length > 1
@@ -308,36 +347,27 @@
 					: 'transparent'}"
 				animate:flip={{ duration: flipDurationMs }}
 			>
-				<!-- <div class="relative">
-					<div class="absolute top-0 left-0 h-full w-full z-10" />
-
-					<iframe height={250} width={150} src={URL.createObjectURL(file.file)} title="pdf-viewer"
-					></iframe>
-				</div> -->
-
-				{#await renderPreviews}
-					<!-- <p>...waiting</p> -->
-					<div class="h-[150px] w-[105px] bg-white" />
-				{:then page}
-					<div class="relative">
-						<!-- <div class="absolute top-0 left-0 h-full w-full z-10" /> -->
-						<canvas bind:this={canvases[file.id]} id={file.id} height="1" width="1"></canvas>
-						<div>
-							<p class="text-center">{page[file.id] || 0} page{page[file.id] > 1 ? 's' : ''}</p>
-							<div class="flex justify-between">
-								<button
-									disabled={page[file.id] <= 1}
-									on:click={() => split(file.id)}
-									class="disabled:bg-slate-600">split</button
-								>
-								<button class="text-red-600" on:click={() => remove(file.id)}>remove</button>
-							</div>
-							<!-- <p>{file.id}</p> -->
+				<div class="relative">
+					<!-- <div class="absolute top-0 left-0 h-full w-full z-10" /> -->
+					{#if $thumbnails[file.docId]}
+						<img src={$thumbnails[file.docId]} alt="ha" />
+					{/if}
+					<!-- <canvas bind:this={canvases[file.docId]} id={file.docId} height="1" width="1"></canvas> -->
+					<div>
+						<p class="text-center">
+							{$pages[file.docId] || 0} page{$pages[file.docId] > 1 ? 's' : ''}
+						</p>
+						<div class="flex justify-between">
+							<button
+								disabled={$pages[file.docId] <= 1}
+								on:click={() => split(file.docId)}
+								class="disabled:bg-slate-600">split</button
+							>
+							<button class="text-red-600" on:click={() => remove(file.docId)}>remove</button>
 						</div>
+						<!-- <p>{file.id}</p> -->
 					</div>
-				{:catch error}
-					<p style="color: red">error</p>
-				{/await}
+				</div>
 			</div>
 		{/each}
 	</div>
@@ -354,7 +384,7 @@
 
 		<FileInput bind:files />
 
-		{#if previews.length}
+		{#if $previews.length}
 			<button on:click={merge} class="bg-red-300 w-full p-4 rounded-xl mt-12">Merge</button>
 		{/if}
 	</div>
