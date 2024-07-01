@@ -6,7 +6,6 @@
 	import { dndzone } from 'svelte-dnd-action'
 	import { flip } from 'svelte/animate'
 	import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs'
-	import { tick } from 'svelte'
 	pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
 		'pdfjs-dist/build/pdf.worker.min.mjs',
 		import.meta.url
@@ -49,15 +48,19 @@
 		previews,
 		($st, set, update) => {
 			let hasNewItem = false
+			let thumbnailsToBeRemoved = { ...$thumbnails }
 
 			Promise.allSettled(
 				$st.map((f) => {
+					//remove existing thumbnail from temp object
+					if (thumbnailsToBeRemoved[f.docId]) {
+						delete thumbnailsToBeRemoved[f.docId]
+					}
+
 					if (!$thumbnails[f.docId]) {
 						hasNewItem = true
-						console.log('no have')
 						return getThumbnail(f)
 					} else {
-						console.log('yes have')
 						return []
 					}
 				})
@@ -68,8 +71,17 @@
 							update((d) => ({ ...d, ...v.value }))
 						}
 					})
-					console.log({ value }, $thumbnails)
 					hasNewItem = false
+				}
+
+				//remove thumbnails of removed pages
+				if (Object.keys(thumbnailsToBeRemoved).length) {
+					let temp = { ...$thumbnails }
+					for (let key in thumbnailsToBeRemoved) {
+						delete temp[key]
+					}
+					set(temp)
+					thumbnailsToBeRemoved = {}
 				}
 			})
 		},
@@ -219,13 +231,12 @@
 			newDocs = [...newDocs, { ...$previews[inputIndex], id, docId: id, file }]
 		}
 		previews.update((d) => [...d.slice(0, inputIndex), ...newDocs, ...d.slice(inputIndex + 1)])
-		// previews = [...previews.slice(0, inputIndex), ...newDocs, ...previews.slice(inputIndex + 1)]
-
-		// renderPreviews = getPages($previews)
 	}
 
 	function remove(fileId: string) {
 		previews.update((d) => d.filter((f) => f.docId !== fileId))
+
+		console.log($thumbnails, $previews)
 	}
 
 	function addPdfFromUrl() {
@@ -255,11 +266,10 @@
 		// 	const scale = PREVIEW_HEIGHT / page.getViewport({ scale: 1 }).height
 		// 	const viewport = page.getViewport({ scale })
 
-		// 	const canvas = canvases[file.id]
-		// 	console.log(canvas, canvases)
-		// 	if (!canvas) return
-
+		// 	const canvas = document.createElement('canvas')
 		// 	const context = canvas.getContext('2d')
+		// 	if (!context) throw 'no context'
+
 		// 	canvas.height = viewport.height
 		// 	canvas.width = viewport.width
 
@@ -272,6 +282,7 @@
 
 		// 	await renderTask.promise
 		// 	console.log('Page rendered')
+		// 	return { [file.docId]: canvas.toDataURL() }
 		// } catch (error) {
 		// 	console.log(error)
 		// }
