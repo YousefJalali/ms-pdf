@@ -5,17 +5,7 @@
 	import FileInput from '../../components/FileInput.svelte'
 	import { dndzone } from 'svelte-dnd-action'
 	import { flip } from 'svelte/animate'
-	import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs'
-	pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-		'pdfjs-dist/build/pdf.worker.min.mjs',
-		import.meta.url
-	).toString()
-
-	function randomColor() {
-		return '#' + (0x1000000 + Math.random() * 0xffffff).toString(16).substr(1, 6)
-	}
-
-	const PREVIEW_HEIGHT = 150
+	import { getThumbnail, getInputAsUint8Array, randomColor } from '../../utils'
 
 	const _loadOptions = {
 		ignoreEncryption: true
@@ -162,7 +152,7 @@
 
 			// docs.push(new URL('https://pdf-lib.js.org/assets/with_update_sections.pdf'))
 			for (const file of $previews) {
-				let src = await _getInputAsUint8Array(file.file)
+				let src = await getInputAsUint8Array(file.file)
 				let pdfDoc = await PDFDocument.load(src)
 
 				let indices = pdfDoc.getPageIndices()
@@ -183,52 +173,11 @@
 		}
 	}
 
-	async function _getInputAsUint8Array(input: any) {
-		// see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array
-		if (input instanceof Uint8Array) {
-			return input
-		}
-
-		// see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer
-		if (
-			input instanceof ArrayBuffer ||
-			Object.prototype.toString.call(input) === '[object ArrayBuffer]'
-		) {
-			return new Uint8Array(input)
-		}
-
-		// see https://developer.mozilla.org/en-US/docs/Web/API/Blob
-		if (typeof Blob !== 'undefined' && input instanceof Blob) {
-			const aBuffer = await input.arrayBuffer()
-			return new Uint8Array(aBuffer)
-		}
-
-		// see https://developer.mozilla.org/en-US/docs/Web/API/URL
-		if (input instanceof URL) {
-			if (typeof fetch === 'undefined') {
-				throw new Error('fetch is not defined. You need to use a polyfill for this to work.')
-			}
-			const res = await fetch(input)
-			const aBuffer = await res.arrayBuffer()
-			return new Uint8Array(aBuffer)
-		}
-
-		// throw a meaningful error if input type is unknown or invalid
-		const allowedTypes = ['Uint8Array', 'ArrayBuffer', 'File', 'Blob', 'URL']
-		let errorMsg = `pdf-input must be of type ${allowedTypes.join(', ')}, a valid filename or url!`
-		if (typeof input === 'string' || input instanceof String) {
-			errorMsg += ` Input was "${input}" wich is not an existing file, nor a valid URL!`
-		} else {
-			errorMsg += ` Input was of type "${typeof input}" instead.`
-		}
-		throw new Error(errorMsg)
-	}
-
 	//to be enhanced
 	async function getNumOfPages(files: Preview[]) {
 		let pages: { [key: string]: number } = {}
 		for (let file of files) {
-			const src = await _getInputAsUint8Array(file.file)
+			const src = await getInputAsUint8Array(file.file)
 			const pdfDoc = await PDFDocument.load(src, _loadOptions)
 
 			pages[file.docId] = pdfDoc.getPages().length
@@ -240,7 +189,7 @@
 	async function split(fileId: string, pages = undefined) {
 		let inputIndex = $previews.findIndex((f) => f.docId === fileId)
 		let file = $previews[inputIndex].file
-		const src = await _getInputAsUint8Array(file)
+		const src = await getInputAsUint8Array(file)
 		const pdfDoc = await PDFDocument.load(src, _loadOptions)
 
 		const numberOfPages = pdfDoc.getPages().length
@@ -281,41 +230,6 @@
 	}
 	function handleDndFinalize(e: CustomEvent<DndEvent<Preview>>) {
 		previews.set(e.detail.items)
-	}
-
-	async function getThumbnail(file: Preview) {
-		let loadingTask = pdfjsLib.getDocument(URL.createObjectURL(file.file))
-		try {
-			let pdf = await loadingTask.promise
-			console.log('PDF loaded')
-
-			let pageNumber = 1
-			let page = await pdf.getPage(pageNumber)
-
-			const scale = PREVIEW_HEIGHT / page.getViewport({ scale: 1 }).height
-			const viewport = page.getViewport({ scale })
-
-			const canvas = document.createElement('canvas')
-			const context = canvas.getContext('2d')
-			if (!context) throw 'no context'
-
-			canvas.height = viewport.height
-			canvas.width = viewport.width
-
-			const renderContext = {
-				canvasContext: context,
-				viewport: viewport
-			}
-
-			let renderTask = page.render(renderContext)
-
-			await renderTask.promise
-			console.log('Page rendered')
-
-			return { id: [file.docId], src: canvas.toDataURL() }
-		} catch (error) {
-			console.log(error)
-		}
 	}
 
 	// let canvases: { [key: string]: HTMLCanvasElement } = {}
