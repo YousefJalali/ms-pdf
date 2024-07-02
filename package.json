@@ -35,6 +35,8 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@lottiefiles/lottie-interactivity": "^1.6.2",
+		"@lottiefiles/lottie-player": "^2.0.4",
 		"pdf-lib": "^1.17.1",
 		"pdf-merger-js": "^5.1.2",
 		"pdfjs-dist": "^4.3.136",
