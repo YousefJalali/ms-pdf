@@ -1,17 +1,13 @@
 <script lang="ts">
-	import { derived, writable, type Readable } from 'svelte/store'
 	import { PDFDocument } from 'pdf-lib'
 	import { v4 as uuidv4 } from 'uuid'
 	import FileInput from '../../components/FileInput.svelte'
 	import { dndzone } from 'svelte-dnd-action'
 	import { flip } from 'svelte/animate'
-	import { getThumbnail, getInputAsUint8Array, randomColor } from '../../utils'
+	import { getInputAsUint8Array } from '../../utils'
+	import { previews, colors } from '../../stores/'
+	import FileCard from './FileCard.svelte'
 
-	const _loadOptions = {
-		ignoreEncryption: true
-	}
-
-	let value: string
 	let files: FileList | null
 
 	type Preview = {
@@ -21,79 +17,6 @@
 		parentId: string
 		file: File
 	}
-	let previews = writable<Preview[]>([])
-
-	let pages: Readable<{ [ket: string]: number }> = derived(
-		previews,
-		($st, set) => {
-			Promise.resolve(getNumOfPages($st)).then((value) => {
-				set(value)
-			})
-		},
-		{}
-	)
-
-	type Thumbnail = {
-		[key: string]: {
-			status: 'loading' | 'loaded' | 'failed'
-			src: string | null
-		}
-	}
-	let thumbnails: Readable<Thumbnail> = derived(
-		previews,
-		($st, set, update) => {
-			let hasNewItem = false
-			let thumbnailsToBeRemoved = { ...$thumbnails }
-
-			Promise.allSettled(
-				$st.map((f) => {
-					//remove existing thumbnail from temp object
-					if (thumbnailsToBeRemoved[f.docId]) {
-						delete thumbnailsToBeRemoved[f.docId]
-					}
-
-					if (!$thumbnails[f.docId]) {
-						hasNewItem = true
-						let newThumbnail: Thumbnail = {
-							[f.docId]: { status: 'loading', src: null }
-						}
-						update((thumb) => ({
-							...thumb,
-							...newThumbnail
-						}))
-
-						return getThumbnail(f)
-					} else {
-						return []
-					}
-				})
-			).then((value) => {
-				if (hasNewItem) {
-					value.forEach((v) => {
-						if (v.status === 'fulfilled') {
-							update((thumb) => ({
-								...thumb,
-								//@ts-ignore
-								[v.value.id]: { status: 'loaded', src: v.value.src }
-							}))
-						}
-					})
-					hasNewItem = false
-				}
-
-				//remove thumbnails of removed pages
-				if (Object.keys(thumbnailsToBeRemoved).length) {
-					let temp = { ...$thumbnails }
-					for (let key in thumbnailsToBeRemoved) {
-						delete temp[key]
-					}
-					set(temp)
-					thumbnailsToBeRemoved = {}
-				}
-			})
-		},
-		{}
-	)
 
 	let mergedPdfUrl: string
 
@@ -104,47 +27,10 @@
 			// docs = [...docs, file]
 			let id = uuidv4()
 
-			previews.update((d) => [
-				...d,
-				{
-					id,
-					docId: id,
-					name: file.name,
-					parentId: id,
-					file
-				}
-			])
+			previews.add({ id, name: file.name, file })
 		}
 		files = null
 	}
-
-	let colors: Readable<{ [key: string]: { name: string; color: string } }> = derived(
-		previews,
-		($st, set, update) => {
-			let colorsToBeRemoved = { ...$colors }
-			for (let f of $st) {
-				delete colorsToBeRemoved[f.parentId]
-
-				if (!$colors[f.parentId]) {
-					let newColor = {
-						[f.parentId]: { name: f.name, color: randomColor() }
-					}
-					update((c) => ({ ...c, ...newColor }))
-				}
-			}
-
-			//clear colors of removed docs
-			if (Object.keys(colorsToBeRemoved).length) {
-				let temp = { ...$colors }
-				for (let key in colorsToBeRemoved) {
-					delete temp[key]
-				}
-				set(temp)
-				colorsToBeRemoved = {}
-			}
-		},
-		{}
-	)
 
 	async function merge() {
 		try {
@@ -173,57 +59,6 @@
 		}
 	}
 
-	//to be enhanced
-	async function getNumOfPages(files: Preview[]) {
-		let pages: { [key: string]: number } = {}
-		for (let file of files) {
-			const src = await getInputAsUint8Array(file.file)
-			const pdfDoc = await PDFDocument.load(src, _loadOptions)
-
-			pages[file.docId] = pdfDoc.getPages().length
-		}
-
-		return pages
-	}
-
-	async function split(fileId: string, pages = undefined) {
-		let inputIndex = $previews.findIndex((f) => f.docId === fileId)
-		let file = $previews[inputIndex].file
-		const src = await getInputAsUint8Array(file)
-		const pdfDoc = await PDFDocument.load(src, _loadOptions)
-
-		const numberOfPages = pdfDoc.getPages().length
-		let newDocs: Preview[] = []
-		for (let i = 0; i < numberOfPages; i++) {
-			// Create a new "sub" document
-			const subDocument = await PDFDocument.create()
-			// copy the page at current index
-			const [copiedPage] = await subDocument.copyPages(pdfDoc, [i])
-			subDocument.addPage(copiedPage)
-			const pdfBytes = await subDocument.save()
-			const blob = new Blob([pdfBytes], {
-				type: 'application/pdf'
-			})
-			let metadata = {
-				type: 'application/pdf'
-			}
-			let file = new File([blob], `file-${i + 1}.pdf`, metadata)
-
-			let id = uuidv4()
-			newDocs = [...newDocs, { ...$previews[inputIndex], id, docId: id, file }]
-		}
-		previews.update((d) => [...d.slice(0, inputIndex), ...newDocs, ...d.slice(inputIndex + 1)])
-	}
-
-	function remove(fileId: string) {
-		previews.update((d) => d.filter((f) => f.docId !== fileId))
-		// delete colors[fileId]
-	}
-
-	function addPdfFromUrl() {
-		if (!value) return
-	}
-
 	const flipDurationMs = 300
 	function handleDndConsider(e: CustomEvent<DndEvent<Preview>>) {
 		previews.set(e.detail.items)
@@ -231,8 +66,6 @@
 	function handleDndFinalize(e: CustomEvent<DndEvent<Preview>>) {
 		previews.set(e.detail.items)
 	}
-
-	// let canvases: { [key: string]: HTMLCanvasElement } = {}
 </script>
 
 {#if Object.values($colors).length > 1}
@@ -254,39 +87,8 @@
 		on:finalize={handleDndFinalize}
 	>
 		{#each $previews as file (file.id)}
-			<div
-				class="w-fit h-fit border-2 p-2"
-				style="border-color: {Object.keys($colors).length > 1
-					? $colors[file.parentId].color
-					: 'transparent'}"
-				animate:flip={{ duration: flipDurationMs }}
-			>
-				<div class="relative">
-					<!-- <div class="absolute top-0 left-0 h-full w-full z-10" /> -->
-
-					{#if $thumbnails[file.docId]}
-						{#if $thumbnails[file.docId].status === 'loading'}
-							<p>loading...</p>
-						{:else}
-							<img src={$thumbnails[file.docId].src} alt="ha" />
-						{/if}
-					{/if}
-					<!-- <canvas bind:this={canvases[file.docId]} id={file.docId} height="1" width="1"></canvas> -->
-					<div>
-						<p class="text-center">
-							{$pages[file.docId] || 0} page{$pages[file.docId] > 1 ? 's' : ''}
-						</p>
-						<div class="flex justify-between">
-							<button
-								disabled={$pages[file.docId] <= 1}
-								on:click={() => split(file.docId)}
-								class="disabled:bg-slate-600">split</button
-							>
-							<button class="text-red-600" on:click={() => remove(file.docId)}>remove</button>
-						</div>
-						<!-- <p>{file.id}</p> -->
-					</div>
-				</div>
+			<div animate:flip={{ duration: flipDurationMs }}>
+				<FileCard {file} />
 			</div>
 		{/each}
 	</div>
