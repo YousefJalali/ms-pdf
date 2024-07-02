@@ -26,12 +26,14 @@
 		{
 			name: 'Merge PDF',
 			link: '/merge',
+			imgSrc: '/merge-pdf.svg',
 			description:
 				'Combine multiple PDF files into a single, organized document with our Merge Tool. Perfect for consolidating reports, presentations, or any other documents, this tool allows you to seamlessly join files, ensuring a smooth and efficient workflow.'
 		},
 		{
 			name: 'Split PDF',
 			link: '/split',
+			imgSrc: '/split-pdf.svg',
 			description:
 				'Easily separate a large PDF into individual pages or custom segments. Whether you need to extract a single page or divide a document into multiple sections'
 		}
@@ -76,7 +78,8 @@
 	<div class="flex gap-8">
 		{#each tools as tool}
 			<a href={tool.link} class="flex-1 max-w-sm border rounded-2xl p-6 hover:bg-slate-100">
-				<h2 class="font-bold text-2xl mb-2">{tool.name}</h2>
+				<img src={tool.imgSrc} alt={tool.name} class="h-10" />
+				<h2 class="font-bold text-2xl my-3">{tool.name}</h2>
 				<p class="opacity-60 leading-relaxed">{tool.description}</p>
 			</a>
 		{/each}
