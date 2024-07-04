@@ -65,7 +65,8 @@ function handleFiles() {
 					file
 				}
 			]),
-		remove: (id: string) => update((d) => d.filter((f) => f.docId !== id)),
+		removePage: (id: string) => update((d) => d.filter((f) => f.docId !== id)),
+		removeDoc: (parentId: string) => update((d) => d.filter((f) => f.parentId !== parentId)),
 		split,
 		reset: () => set([])
 	}

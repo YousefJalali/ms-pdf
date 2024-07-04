@@ -75,7 +75,8 @@
 
 	<div class="text-center text-sm flex flex-col">
 		<span class="truncate">{file.name}</span>
-		<span class="opacity-40">{$pages[file.docId] || 0} page{$pages[file.docId] > 1 ? 's' : ''}</span
+		<span class="opacity-40"
+			>{$pages[file.docId] || 0} page{$pages[file.docId]?.pageCount > 1 ? 's' : ''}</span
 		>
 	</div>
 	<!-- <canvas bind:this={canvases[file.docId]} id={file.docId} height="1" width="1"></canvas> -->
@@ -83,13 +84,13 @@
 		class="absolute top-0 left-0 hidden group-hover:flex justify-around bg-gray-200 *:text-black w-full p-2 py-4"
 	>
 		<button
-			disabled={$pages[file.docId] <= 1}
+			disabled={$pages[file.docId]?.pageCount <= 1}
 			on:click={() => previews.split(file.docId)}
 			class="disabled:text-gray-400"
 			>{@html split}
 		</button>
 
-		<button class="text-red-600" on:click={() => previews.remove(file.docId)}
+		<button class="text-red-600" on:click={() => previews.removePage(file.docId)}
 			>{@html trash}
 		</button>
 
