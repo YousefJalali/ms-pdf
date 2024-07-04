@@ -7,6 +7,7 @@ type Preview = {
 	id: string
 	docId: string
 	name: string
+	size: number
 	parentId: string
 	file: File
 }
@@ -37,10 +38,13 @@ function handleFiles() {
 			}
 			const blob = new Blob([pdfBytes], metadata)
 
-			const file = new File([blob], `file-${i + 1}.pdf`, metadata)
+			const newFile = new File([blob], `${file.name.split('.')[0]} (${i + 1}).pdf`, metadata)
 
 			const id = uuidv4()
-			newDocs = [...newDocs, { ...get(previews)[inputIndex], id, docId: id, file }]
+			newDocs = [
+				...newDocs,
+				{ ...get(previews)[inputIndex], id, docId: id, file: newFile, name: newFile.name }
+			]
 		}
 		previews.update((d) => [...d.slice(0, inputIndex), ...newDocs, ...d.slice(inputIndex + 1)])
 	}
@@ -56,6 +60,7 @@ function handleFiles() {
 					id,
 					docId: id,
 					name,
+					size: file.size,
 					parentId: id,
 					file
 				}

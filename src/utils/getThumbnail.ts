@@ -4,7 +4,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
 	import.meta.url
 ).toString()
 
-const PREVIEW_HEIGHT = 150
+const PREVIEW_HEIGHT = 200
 
 type Preview = {
 	id: string
