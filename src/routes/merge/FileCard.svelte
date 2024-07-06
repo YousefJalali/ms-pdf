@@ -76,7 +76,7 @@
 	<div class="text-center text-sm flex flex-col">
 		<span class="truncate">{file.name}</span>
 		<span class="opacity-40"
-			>{$pages[file.docId] || 0} page{$pages[file.docId]?.pageCount > 1 ? 's' : ''}</span
+			>{$pages[file.docId]?.pageCount || 1} page{$pages[file.docId]?.pageCount > 1 ? 's' : ''}</span
 		>
 	</div>
 	<!-- <canvas bind:this={canvases[file.docId]} id={file.docId} height="1" width="1"></canvas> -->
