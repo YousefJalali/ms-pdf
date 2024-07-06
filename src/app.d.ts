@@ -7,7 +7,14 @@ declare global {
 		// interface PageData {}
 		// interface PageState {}
 		// interface Platform {}
+		interface HTMLAttributes<T> {
+			'on:consider'?: (event: CustomEvent<DndEvent<ItemType>> & { target: EventTarget & T }) => void
+			'on:finalize'?: (event: CustomEvent<DndEvent<ItemType>> & { target: EventTarget & T }) => void
+		}
 	}
+
+	declare type Item = import('svelte-dnd-action').Item
+	declare type DndEvent<ItemType = Item> = import('svelte-dnd-action').DndEvent<ItemType>
 }
 
-export {};
+export {}

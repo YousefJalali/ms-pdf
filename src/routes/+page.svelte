@@ -1,211 +1,87 @@
 <script lang="ts">
-	import PDFMerger from 'pdf-merger-js'
-	import { PDFDocument } from 'pdf-lib'
-	import { v4 as uuidv4 } from 'uuid'
+	import { onMount } from 'svelte'
 
-	let merger = new PDFMerger()
-
-	let files: FileList
-	let docs: File[] = []
-	type Preview = {
-		id: string
-		file: File
-		pages: number
-	}
-
-	let mergedPdfUrl: string
-
-	$: if (files) {
-		for (const file of files) {
-			console.log(`${file.name}: ${file.size} bytes`)
-			docs = [...docs, file]
-			// const pages = await getPages(file);
-			// console.log();
-		}
-		numOfPages = getPages(docs)
-	}
-
-	let previews: Preview[] = []
-	$: previews = docs.map((file) => ({
-		id: uuidv4(),
-		file,
-		pages: 0
-	}))
-
-	let numOfPages = getPages(docs)
-
-	// let pages = [];
-	// $: getPages(docs).then((d) => {
-	// 	console.log('run');
-	// 	let prev = [...previews];
-	// 	for (let i = 0; i < d.length; i++) {
-	// 		prev = prev.map((p, index) => (i === index ? { ...p, pages: d[i] } : p));
-	// 	}
-	// 	previews = prev;
-	// 	// pages.push(d);
-	// });
-
-	// function deleteFile(url: File) {
-	// 	docs = docs.filter((u) => u !== url);
+	onMount(async () => {
+		await import('@lottiefiles/lottie-player')
+		// @ts-ignore
+		// const { create } = await import('@lottiefiles/lottie-interactivity')
+		// handleLoad(create)
+	})
+	// @ts-ignore
+	// const handleLoad = (method) => {
+	// 	method({
+	// 		mode: 'normal',
+	// 		player: '#firstLottie',
+	// 		actions: [
+	// 			{
+	// 				visibility: [0, 1],
+	// 				type: 'seek',
+	// 				frames: [0, 500]
+	// 			}
+	// 		]
+	// 	})
 	// }
 
-	async function merge() {
-		for (const file of docs) {
-			await merger.add(file)
+	let tools = [
+		{
+			name: 'Merge PDF',
+			link: '/merge',
+			imgSrc: '/merge-pdf.svg',
+			description:
+				'Combine multiple PDF files into a single, organized document with our Merge Tool. Perfect for consolidating reports, presentations, or any other documents, this tool allows you to seamlessly join files, ensuring a smooth and efficient workflow.'
+		},
+		{
+			name: 'Split PDF',
+			link: '/split',
+			imgSrc: '/split-pdf.svg',
+			description:
+				'Easily separate a large PDF into individual pages or custom segments. Whether you need to extract a single page or divide a document into multiple sections'
 		}
-
-		await merger.setMetadata({
-			producer: 'pdf-merger-js based script'
-		})
-
-		//@ts-ignore
-		const mergedPdf = await merger.saveAsBlob()
-		mergedPdfUrl = URL.createObjectURL(mergedPdf)
-	}
-
-	async function _getInputAsUint8Array(input: any) {
-		// see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array
-		if (input instanceof Uint8Array) {
-			return input
-		}
-
-		// see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer
-		if (
-			input instanceof ArrayBuffer ||
-			Object.prototype.toString.call(input) === '[object ArrayBuffer]'
-		) {
-			return new Uint8Array(input)
-		}
-
-		// see https://developer.mozilla.org/en-US/docs/Web/API/Blob
-		if (typeof Blob !== 'undefined' && input instanceof Blob) {
-			const aBuffer = await input.arrayBuffer()
-			return new Uint8Array(aBuffer)
-		}
-
-		// see https://developer.mozilla.org/en-US/docs/Web/API/URL
-		if (input instanceof URL) {
-			if (typeof fetch === 'undefined') {
-				throw new Error('fetch is not defined. You need to use a polyfill for this to work.')
-			}
-			const res = await fetch(input)
-			const aBuffer = await res.arrayBuffer()
-			return new Uint8Array(aBuffer)
-		}
-
-		// throw a meaningful error if input type is unknown or invalid
-		const allowedTypes = ['Uint8Array', 'ArrayBuffer', 'File', 'Blob', 'URL']
-		let errorMsg = `pdf-input must be of type ${allowedTypes.join(', ')}, a valid filename or url!`
-		if (typeof input === 'string' || input instanceof String) {
-			errorMsg += ` Input was "${input}" wich is not an existing file, nor a valid URL!`
-		} else {
-			errorMsg += ` Input was of type "${typeof input}" instead.`
-		}
-		throw new Error(errorMsg)
-	}
-
-	async function getPage(file: any) {
-		const src = await _getInputAsUint8Array(file)
-		const pdfDoc = await PDFDocument.load(src, _loadOptions)
-
-		return pdfDoc.getPages().length
-	}
-
-	async function getPages(files: any) {
-		let pages: number[] = []
-		for (let file of files) {
-			const src = await _getInputAsUint8Array(file)
-			const pdfDoc = await PDFDocument.load(src, _loadOptions)
-
-			pages = [...pages, pdfDoc.getPages().length]
-		}
-
-		return pages
-	}
-
-	const _loadOptions = {
-		ignoreEncryption: true
-	}
-	async function getPagesFromDocument(input: any, pages = undefined) {
-		let file = input.file
-		const src = await _getInputAsUint8Array(file)
-		const pdfDoc = await PDFDocument.load(src, _loadOptions)
-
-		const numberOfPages = pdfDoc.getPages().length
-		let newDocs: Preview[] = []
-		for (let i = 0; i < numberOfPages; i++) {
-			// Create a new "sub" document
-			const subDocument = await PDFDocument.create()
-			// copy the page at current index
-			const [copiedPage] = await subDocument.copyPages(pdfDoc, [i])
-			subDocument.addPage(copiedPage)
-			const pdfBytes = await subDocument.save()
-			const blob = await new Blob([pdfBytes], {
-				type: 'application/pdf'
-			})
-			let metadata = {
-				type: 'application/pdf'
-			}
-			let file = new File([blob], `file-${i + 1}.pdf`, metadata)
-			// const pdfBytes = await subDocument.save();
-			newDocs = [...newDocs, { id: uuidv4(), file, pages: 1 }]
-		}
-		previews = previews.filter((f) => f.id !== input.id)
-		previews = [...previews, ...newDocs]
-		// let indices = []
-		// if (pages === undefined) {
-		//   // add the whole document
-		//   indices = srcDoc.getPageIndices()
-		// } else {
-		//   // add selected pages switching to a 0-based index
-		//   indices = pages.map(p => p - 1)
-		// }
-
-		// const copiedPages = await this._doc.copyPages(srcDoc, indices)
-		// copiedPages.forEach((page) => {
-		//   this._doc.addPage(page)
-		// }
-	}
+	]
 </script>
 
-<input bind:files type="file" accept="application/pdf" />
+<section class="flex items-center h-[60vh]">
+	<div>
+		<h1 class="text-5xl font-black mb-4">Transform PDFs Like a Pro</h1>
+		<p class="opacity-60 leading-relaxed">
+			Step into a world where managing PDFs is as thrilling as a magician's trick! With our
+			cutting-edge app, you can merge and split PDFs effortlessly. Fuse documents into a single
+			masterpiece or break them apart with pinpoint accuracy. Turn your PDF tasks into a breeze and
+			unleash your productivity!
+		</p>
+	</div>
 
-<div class="border-2 flex gap-8">
-	{#each previews as file, i}
-		<div class="border-2 w-fit">
-			{#if !file.pages}
-				{#await numOfPages}
-					<p>...waiting</p>
-				{:then number}
-					<div>
-						<p>The number is {number[i]}</p>
-						<button
-							disabled={number[i] <= 1}
-							on:click={() => getPagesFromDocument(file)}
-							class="disabled:bg-slate-600">split</button
-						>
-					</div>
-				{:catch error}
-					<p style="color: red">error</p>
-				{/await}
-			{:else}
-				<div>
-					<p>The number is {file.pages}</p>
-					<button
-						disabled={file.pages <= 1}
-						on:click={() => getPagesFromDocument(file)}
-						class="disabled:bg-slate-600">split</button
-					>
-				</div>
-			{/if}
-			<iframe height={250} width={150} src={URL.createObjectURL(file.file)} title="pdf-viewer"
-			></iframe>
-		</div>
-	{/each}
-</div>
+	<div class="w-2/3">
+		<!-- <lottie-player
+			id="firstLottie"
+			src="https://lottie.host/691a7996-25af-4446-9c6b-78d23cf930f1/uJjkoYOdpk.json"
+			style="width:400px; height: 400px;"
+			on:load={handleLoad}
+		>
+		</lottie-player> -->
+		<lottie-player
+			src="https://lottie.host/691a7996-25af-4446-9c6b-78d23cf930f1/uJjkoYOdpk.json"
+			background="#FFFFFF"
+			speed="1"
+			style="width: 400px; height: 400px"
+			loop
+			autoplay
+			direction="1"
+			mode="normal"
+		></lottie-player>
+	</div>
+</section>
 
-<button on:click={merge}>merge</button>
+<section class="my-24">
+	<h1 class="text-6xl font-black mb-8">Our Tools</h1>
 
-{#if mergedPdfUrl}
-	<iframe height={250} width={150} src={mergedPdfUrl} title="pdf-viewer"></iframe>
-{/if}
+	<div class="flex gap-8">
+		{#each tools as tool}
+			<a href={tool.link} class="flex-1 max-w-sm border rounded-2xl p-6 hover:bg-slate-100">
+				<img src={tool.imgSrc} alt={tool.name} class="h-10" />
+				<h2 class="font-bold text-2xl my-3">{tool.name}</h2>
+				<p class="opacity-60 leading-relaxed">{tool.description}</p>
+			</a>
+		{/each}
+	</div>
+</section>
