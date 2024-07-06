@@ -68,33 +68,45 @@
 	function handleDndFinalize(e: CustomEvent<DndEvent<Preview>>) {
 		previews.set(e.detail.items)
 	}
+
+	// let scrollY: number
+	// $: scrollY = scrollY
+	// function scaleValue(value: number, from: number[], to: number[]) {
+	// 	console.log(value, from, to)
+	// 	let scale = (to[1] - to[0]) / (from[1] - from[0])
+	// 	let capped = Math.min(from[1], Math.max(from[0], value)) - from[0]
+	// 	return capped * scale + to[0]
+	// }
+	// $: animateValue = function (
+	// 	targetElement: HTMLDivElement,
+	// 	scrollPercentage: number[],
+	// 	animateRange: number[]
+	// ) {
+	// 	if (targetElement) {
+	// 		return scaleValue(
+	// 			((scrollY - targetElement.offsetTop) / targetElement.clientHeight) * 100,
+	// 			scrollPercentage,
+	// 			animateRange
+	// 		)
+	// 	}
+	// 	return 0
+	// }
+
+	// let sections: { [key: string]: HTMLDivElement } = {}
 </script>
 
-<div class="flex gap-8 h-[calc(100vh-100px-100px)]">
+<!-- <svelte:window bind:scrollY /> -->
+
+<div class="flex gap-8 h-[calc(100vh-100px-32px)]">
+	<!-- drag and drop area -->
 	{#if $previews.length}
 		<div
-			class="w-full bg-gray-100 border-2 border-dashed border-gray-200 rounded-xl overflow-hidden"
+			class="w-full h-full overflow-y-scroll flex-auto bg-gray-100 border-2 border-dashed border-gray-200 rounded-xl"
 		>
-			<!-- <div class="w-full p-4">
-			<button class="flex gap-2 px-4 py-2 bg-gray-200 rounded-lg">
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke-width="1.5"
-					stroke="currentColor"
-					class="size-6"
-				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-					/>
-				</svg>
+			<div class="text-center opacity-40 text-sm mt-2">
+				<span>Drag and drop pdf docs here</span>
+			</div>
 
-				add</button
-			>
-		</div> -->
 			<div
 				class="flex flex-wrap gap-4 w-full p-4"
 				use:dndzone={{ items: $previews, flipDurationMs }}
@@ -110,10 +122,19 @@
 		</div>
 	{/if}
 
+	<!-- side menu -->
 	<div
-		class="flex-1 flex flex-col justify-between h-full max-h-full overflow-hidden min-w-80 border border-slate-200 p-4 rounded-2xl"
+		class={`relative flex flex-col justify-center flex-[2] min-w-80 border-slate-200 rounded-2xl ${$previews.length ? 'p-4 border justify-between [&>*:first-child]:hidden' : ''}`}
 	>
-		<div class="flex flex-col flex-1 h-full">
+		<div class="mb-8">
+			<h1 class="text-5xl font-black mb-4">Merge Your PDFs Seamlessly!</h1>
+			<p class="opacity-60 leading-relaxed">
+				Easily combine your PDF files into one cohesive document. Simply upload your files below.
+				You can select multiple files at once for a quick and efficient merge!
+			</p>
+		</div>
+
+		<div class="flex flex-col">
 			<!-- input -->
 			<div>
 				{#if $previews.length}
@@ -150,11 +171,12 @@
 			</div>
 
 			<!-- list of docs -->
-
 			{#if Object.values($colors).length}
-				<ul class="w-full h-0 flex-auto space-y-4 py-4 overflow-y-scroll">
+				<ul class="w-full h-0 flex-auto mt-3 space-y-4 py-4 overflow-y-scroll">
 					{#each Object.values($colors) as c}
-						<li class="flex flex-col">
+						<li
+							class="flex flex-col outline outline-offset-2 outline-transparent hover:outline-gray-200"
+						>
 							<div class="flex gap-2 text-sm">
 								<div class="h-5 w-fit flex items-center justify-center">
 									<span
@@ -166,9 +188,10 @@
 								<span class="line-clamp-2 leading-5">{c.name}</span>
 							</div>
 							<div class="text-xs opacity-60 ml-5">
-								<span>{$pages[c.id]} pages - </span>
-								<span>{formatBytes($previews.find((e) => e.id === c.id)?.size || 0)}</span>
+								<span>{$pages[c.id]?.pageCount} pages - </span>
+								<span>{formatBytes($pages[c.id]?.size)}</span>
 							</div>
+							<button on:click={() => previews.removeDoc(c.id)}>delete</button>
 						</li>
 					{/each}
 				</ul>
@@ -178,9 +201,10 @@
 		<!-- Merge button -->
 		{#if $previews.length}
 			<div class="w-full text-center">
-				{#if $previews.length < 2}
-					<span class="inline-block mt-2 text-sm opacity-60">Add more files</span>
-				{/if}
+				<span
+					class="inline-block mt-2 text-sm opacity-60"
+					style="opacity: {$previews.length < 2 ? 1 : 0}">Add more files</span
+				>
 
 				<button
 					on:click={merge}
