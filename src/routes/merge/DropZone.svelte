@@ -1,0 +1,44 @@
+<script lang="ts">
+	import { dndzone } from 'svelte-dnd-action'
+	import { flip } from 'svelte/animate'
+	import { previews } from '../../stores/'
+	import FileCard from './FileCard.svelte'
+
+	type Preview = {
+		id: string
+		docId: string
+		name: string
+		size: number
+		parentId: string
+		file: File
+	}
+
+	const flipDurationMs = 300
+	function handleDndConsider(e: CustomEvent<DndEvent<Preview>>) {
+		previews.set(e.detail.items)
+	}
+	function handleDndFinalize(e: CustomEvent<DndEvent<Preview>>) {
+		previews.set(e.detail.items)
+	}
+</script>
+
+<div
+	class="w-full h-full overflow-y-scroll flex-auto bg-gray-100 border-2 border-dashed border-gray-200 rounded-xl"
+>
+	<div class="text-center opacity-40 text-sm mt-2">
+		<span>Drag and drop pdf docs here</span>
+	</div>
+
+	<div
+		class="flex flex-wrap gap-4 w-full p-4"
+		use:dndzone={{ items: $previews, flipDurationMs }}
+		on:consider={handleDndConsider}
+		on:finalize={handleDndFinalize}
+	>
+		{#each $previews as file (file.id)}
+			<div class="h-fit" animate:flip={{ duration: flipDurationMs }}>
+				<FileCard {file} />
+			</div>
+		{/each}
+	</div>
+</div>
