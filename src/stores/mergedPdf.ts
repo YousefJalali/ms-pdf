@@ -30,7 +30,8 @@ function handleMergedPdf() {
 
 	return {
 		subscribe,
-		set: (url: string, items: Thumbnail) => set({ url, previews: getSrc(items) })
+		set: (url: string, items: Thumbnail) => set({ url, previews: getSrc(items) }),
+		reset: () => set(null)
 	}
 }
 
