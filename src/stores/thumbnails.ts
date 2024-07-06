@@ -3,11 +3,17 @@ import { getThumbnail } from '../utils'
 import { previews } from './docs'
 
 type Thumbnail = {
-	[key: string]: {
-		status: 'loading' | 'loaded' | 'failed'
-		src: string | null
-	}
+	[key: string]:
+		| {
+				status: 'loading' | 'failed'
+				src: null
+		  }
+		| {
+				status: 'loaded'
+				src: string
+		  }
 }
+
 export const thumbnails: Readable<Thumbnail> = derived(
 	previews,
 	($st, set, update) => {
