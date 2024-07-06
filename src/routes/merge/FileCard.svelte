@@ -84,9 +84,9 @@
 		class="absolute top-0 left-0 hidden group-hover:flex justify-around bg-gray-200 *:text-black w-full p-2 py-4"
 	>
 		<button
-			disabled={$pages[file.docId]?.pageCount <= 1}
+			disabled={!$pages[file.docId]?.pageCount || $pages[file.docId]?.pageCount <= 1}
 			on:click={() => previews.split(file.docId)}
-			class="disabled:text-gray-400"
+			class="disabled:text-gray-400 disabled:cursor-not-allowed"
 			>{@html split}
 		</button>
 
