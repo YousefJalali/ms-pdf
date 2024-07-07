@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { mergedPdf, previews } from '../../stores/'
+	import { mergedPdf, previews, thumbnails } from '../../stores/'
 	import SideBar from './SideBar.svelte'
 	import DropZone from './DropZone.svelte'
 
@@ -33,7 +33,7 @@
 
 		const link = document.createElement('a')
 
-		link.href = $mergedPdf.url
+		link.href = $mergedPdf
 		link.download = 'merged-pdf'
 		// some browser needs the anchor to be in the doc
 		document.body.append(link)
@@ -56,8 +56,8 @@
 				merged PDF below.
 			</p>
 			<div class="mx-auto flex flex-col w-[300px] h-[450px] overflow-y-scroll">
-				{#each $mergedPdf.previews as src}
-					<img class="h-full" {src} alt="merged" />
+				{#each Object.values($thumbnails) as thumb}
+					<img class="h-full object-contain" src={thumb.src} alt="merged" />
 				{/each}
 			</div>
 

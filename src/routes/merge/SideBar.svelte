@@ -49,7 +49,7 @@
 				type: 'application/pdf'
 			})
 
-			mergedPdf.set(URL.createObjectURL(blob), $thumbnails)
+			mergedPdf.set(URL.createObjectURL(blob))
 		} catch (error) {
 			console.log(error)
 		}
