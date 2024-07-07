@@ -1,18 +1,7 @@
 import { derived, get, type Readable } from 'svelte/store'
 import { getThumbnail } from '../utils'
 import { docs } from './docs'
-
-type Thumbnail = {
-	[key: string]:
-		| {
-				status: 'loading' | 'failed'
-				src: null
-		  }
-		| {
-				status: 'loaded'
-				src: string
-		  }
-}
+import type { Thumbnail } from '../types'
 
 export const thumbnails: Readable<Thumbnail> = derived(
 	docs,
@@ -37,7 +26,7 @@ export const thumbnails: Readable<Thumbnail> = derived(
 						...newThumbnail
 					}))
 
-					return getThumbnail(f)
+					return getThumbnail(f.file, f.docId)
 				} else {
 					return []
 				}

@@ -6,16 +6,8 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
 
 const PREVIEW_HEIGHT = 200
 
-type Preview = {
-	id: string
-	docId: string
-	name: string
-	parentId: string
-	file: File
-}
-
-export async function getThumbnail(file: Preview) {
-	let loadingTask = pdfjsLib.getDocument(URL.createObjectURL(file.file))
+export async function getThumbnail(file: File, id: string) {
+	let loadingTask = pdfjsLib.getDocument(URL.createObjectURL(file))
 	try {
 		let pdf = await loadingTask.promise
 		console.log('PDF loaded')
@@ -43,7 +35,7 @@ export async function getThumbnail(file: Preview) {
 		await renderTask.promise
 		console.log('Page rendered')
 
-		return { id: [file.docId], src: canvas.toDataURL() }
+		return { id, src: canvas.toDataURL() }
 	} catch (error) {
 		console.log(error)
 	}

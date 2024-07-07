@@ -3,21 +3,13 @@
 	import { flip } from 'svelte/animate'
 	import { docs } from '../../stores/'
 	import FileCard from './FileCard.svelte'
-
-	type Preview = {
-		id: string
-		docId: string
-		name: string
-		size: number
-		parentId: string
-		file: File
-	}
+	import type { Doc } from '../../types'
 
 	const flipDurationMs = 300
-	function handleDndConsider(e: CustomEvent<DndEvent<Preview>>) {
+	function handleDndConsider(e: CustomEvent<DndEvent<Doc>>) {
 		docs.set(e.detail.items)
 	}
-	function handleDndFinalize(e: CustomEvent<DndEvent<Preview>>) {
+	function handleDndFinalize(e: CustomEvent<DndEvent<Doc>>) {
 		docs.set(e.detail.items)
 	}
 </script>

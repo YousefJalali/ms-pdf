@@ -2,15 +2,7 @@ import { get, writable } from 'svelte/store'
 import { getInputAsUint8Array } from '../utils'
 import { PDFDocument } from 'pdf-lib'
 import { v4 as uuidv4 } from 'uuid'
-
-type Doc = {
-	id: string
-	docId: string
-	name: string
-	size: number
-	parentId: string
-	file: File
-}
+import type { Doc } from '../types'
 
 function handleFiles() {
 	const { subscribe, set, update } = writable<Doc[]>([])

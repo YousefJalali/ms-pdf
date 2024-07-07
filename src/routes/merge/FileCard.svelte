@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { colors, docsDetails, docs, thumbnails } from '../../stores/'
-	import { formatBytes } from '../../utils/formatBytes'
 
 	export let file
 
