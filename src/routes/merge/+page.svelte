@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { mergedPdf, previews, thumbnails } from '../../stores/'
+	import { mergedPdf, docs, thumbnails } from '../../stores/'
 	import SideBar from './SideBar.svelte'
 	import DropZone from './DropZone.svelte'
 
@@ -75,7 +75,7 @@
 			</div>
 		</div>
 	{:else}
-		{#if $previews.length}
+		{#if $docs.length}
 			<DropZone />
 		{/if}
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { colors, pages, previews, thumbnails } from '../../stores/'
+	import { colors, docsDetails, docs, thumbnails } from '../../stores/'
 	import { formatBytes } from '../../utils/formatBytes'
 
 	export let file
@@ -76,7 +76,9 @@
 	<div class="text-center text-sm flex flex-col">
 		<span class="truncate">{file.name}</span>
 		<span class="opacity-40"
-			>{$pages[file.docId]?.pageCount || 1} page{$pages[file.docId]?.pageCount > 1 ? 's' : ''}</span
+			>{$docsDetails[file.docId]?.pageCount || 1} page{$docsDetails[file.docId]?.pageCount > 1
+				? 's'
+				: ''}</span
 		>
 	</div>
 	<!-- <canvas bind:this={canvases[file.docId]} id={file.docId} height="1" width="1"></canvas> -->
@@ -84,13 +86,13 @@
 		class="absolute top-0 left-0 hidden group-hover:flex justify-around bg-gray-200 *:text-black w-full p-2 py-4"
 	>
 		<button
-			disabled={!$pages[file.docId]?.pageCount || $pages[file.docId]?.pageCount <= 1}
-			on:click={() => previews.split(file.docId)}
+			disabled={!$docsDetails[file.docId]?.pageCount || $docsDetails[file.docId]?.pageCount <= 1}
+			on:click={() => docs.split(file.docId)}
 			class="disabled:text-gray-400 disabled:cursor-not-allowed"
 			>{@html split}
 		</button>
 
-		<button class="text-red-600" on:click={() => previews.removePage(file.docId)}
+		<button class="text-red-600" on:click={() => docs.removePage(file.docId)}
 			>{@html trash}
 		</button>
 

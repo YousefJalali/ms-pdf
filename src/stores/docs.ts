@@ -3,7 +3,7 @@ import { getInputAsUint8Array } from '../utils'
 import { PDFDocument } from 'pdf-lib'
 import { v4 as uuidv4 } from 'uuid'
 
-type Preview = {
+type Doc = {
 	id: string
 	docId: string
 	name: string
@@ -13,18 +13,18 @@ type Preview = {
 }
 
 function handleFiles() {
-	const { subscribe, set, update } = writable<Preview[]>([])
+	const { subscribe, set, update } = writable<Doc[]>([])
 
 	async function split(fileId: string, pages = undefined) {
-		let inputIndex = get(previews).findIndex((f) => f.docId === fileId)
-		let file = get(previews)[inputIndex].file
+		let inputIndex = get(docs).findIndex((f) => f.docId === fileId)
+		let file = get(docs)[inputIndex].file
 		const src = await getInputAsUint8Array(file)
 		const pdfDoc = await PDFDocument.load(src, {
 			ignoreEncryption: true
 		})
 
 		const numberOfPages = pdfDoc.getPages().length
-		let newDocs: Preview[] = []
+		let newDocs: Doc[] = []
 		for (let i = 0; i < numberOfPages; i++) {
 			// Create a new "sub" document
 			const subDocument = await PDFDocument.create()
@@ -43,10 +43,10 @@ function handleFiles() {
 			const id = uuidv4()
 			newDocs = [
 				...newDocs,
-				{ ...get(previews)[inputIndex], id, docId: id, file: newFile, name: newFile.name }
+				{ ...get(docs)[inputIndex], id, docId: id, file: newFile, name: newFile.name }
 			]
 		}
-		previews.update((d) => [...d.slice(0, inputIndex), ...newDocs, ...d.slice(inputIndex + 1)])
+		docs.update((d) => [...d.slice(0, inputIndex), ...newDocs, ...d.slice(inputIndex + 1)])
 	}
 
 	return {
@@ -72,4 +72,4 @@ function handleFiles() {
 	}
 }
 
-export const previews = handleFiles()
+export const docs = handleFiles()

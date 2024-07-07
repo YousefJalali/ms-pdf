@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { dndzone } from 'svelte-dnd-action'
 	import { flip } from 'svelte/animate'
-	import { previews } from '../../stores/'
+	import { docs } from '../../stores/'
 	import FileCard from './FileCard.svelte'
 
 	type Preview = {
@@ -15,10 +15,10 @@
 
 	const flipDurationMs = 300
 	function handleDndConsider(e: CustomEvent<DndEvent<Preview>>) {
-		previews.set(e.detail.items)
+		docs.set(e.detail.items)
 	}
 	function handleDndFinalize(e: CustomEvent<DndEvent<Preview>>) {
-		previews.set(e.detail.items)
+		docs.set(e.detail.items)
 	}
 </script>
 
@@ -31,11 +31,11 @@
 
 	<div
 		class="flex flex-wrap gap-4 w-full p-4"
-		use:dndzone={{ items: $previews, flipDurationMs }}
+		use:dndzone={{ items: $docs, flipDurationMs }}
 		on:consider={handleDndConsider}
 		on:finalize={handleDndFinalize}
 	>
-		{#each $previews as file (file.id)}
+		{#each $docs as file (file.id)}
 			<div class="h-fit" animate:flip={{ duration: flipDurationMs }}>
 				<FileCard {file} />
 			</div>

@@ -1,10 +1,10 @@
 import { derived, get, type Readable } from 'svelte/store'
 import { randomColor } from '../utils'
-import { previews } from './docs'
+import { docs } from './docs'
 
 export const colors: Readable<{ [key: string]: { id: string; name: string; color: string } }> =
 	derived(
-		previews,
+		docs,
 		($st, set, update) => {
 			let colorsToBeRemoved = { ...get(colors) }
 			for (let f of $st) {

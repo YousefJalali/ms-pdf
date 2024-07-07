@@ -2,7 +2,7 @@
 	import { v4 as uuidv4 } from 'uuid'
 	import { PDFDocument } from 'pdf-lib'
 	import FileInput from '../../components/FileInput.svelte'
-	import { previews, colors, pages, mergedPdf, thumbnails } from '../../stores/'
+	import { docs, colors, docsDetails, mergedPdf, thumbnails } from '../../stores/'
 	import { getInputAsUint8Array } from '../../utils'
 	import { formatBytes } from '../../utils/formatBytes'
 
@@ -15,7 +15,7 @@
 			// docs = [...docs, file]
 			let id = uuidv4()
 
-			previews.add({ id, name: file.name, file })
+			docs.add({ id, name: file.name, file })
 		}
 		files = null
 	}
@@ -25,7 +25,7 @@
 			let merger = await PDFDocument.create()
 
 			// docs.push(new URL('https://pdf-lib.js.org/assets/with_update_sections.pdf'))
-			for (const file of $previews) {
+			for (const file of $docs) {
 				let src = await getInputAsUint8Array(file.file)
 				let pdfDoc = await PDFDocument.load(src)
 
@@ -72,7 +72,7 @@
 </script>
 
 <div
-	class={`relative flex flex-col justify-center flex-[2] min-w-80 border-slate-200 rounded-2xl ${$previews.length ? 'p-4 border justify-between [&>*:first-child]:hidden' : ''}`}
+	class={`relative flex flex-col justify-center flex-[2] min-w-80 border-slate-200 rounded-2xl ${$docs.length ? 'p-4 border justify-between [&>*:first-child]:hidden' : ''}`}
 >
 	<!-- description  -->
 	<div class="mb-8">
@@ -83,10 +83,10 @@
 		</p>
 	</div>
 
-	<div class={`flex flex-col ${$previews.length ? 'h-full' : ''}`}>
+	<div class={`flex flex-col ${$docs.length ? 'h-full' : ''}`}>
 		<!-- input -->
 		<div>
-			{#if $previews.length}
+			{#if $docs.length}
 				<label for="file-input-button">
 					<div
 						class="flex gap-2 justify-center items-center border-2 border-blue-700 text-blue-700 px-3 py-4 rounded-xl text-center cursor-pointer"
@@ -136,13 +136,13 @@
 								<span class="line-clamp-2 leading-5">{c.name}</span>
 							</div>
 							<div class="text-xs opacity-60 ml-5">
-								<span>{$pages[c.id]?.pageCount} pages - </span>
-								<span>{formatBytes($pages[c.id]?.size)}</span>
+								<span>{$docsDetails[c.id]?.pageCount} pages - </span>
+								<span>{formatBytes($docsDetails[c.id]?.size)}</span>
 							</div>
 						</div>
 						<button
 							class="opacity-60 hidden group-hover:block"
-							on:click={() => previews.removeDoc(c.id)}>{@html trash}</button
+							on:click={() => docs.removeDoc(c.id)}>{@html trash}</button
 						>
 					</li>
 				{/each}
@@ -151,17 +151,16 @@
 	</div>
 
 	<!-- Merge button -->
-	{#if $previews.length}
+	{#if $docs.length}
 		<div class="w-full text-center">
-			<span
-				class="inline-block mt-2 text-sm opacity-60"
-				style="opacity: {$previews.length < 2 ? 1 : 0}">Add more files to merge</span
+			<span class="inline-block mt-2 text-sm opacity-60" style="opacity: {$docs.length < 2 ? 1 : 0}"
+				>Add more files to merge</span
 			>
 
 			<button
 				on:click={merge}
 				class="bg-red-300 w-full p-4 rounded-xl disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
-				disabled={$previews.length < 2}>Merge</button
+				disabled={$docs.length < 2}>Merge</button
 			>
 		</div>
 	{/if}

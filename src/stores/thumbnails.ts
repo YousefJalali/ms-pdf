@@ -1,6 +1,6 @@
 import { derived, get, type Readable } from 'svelte/store'
 import { getThumbnail } from '../utils'
-import { previews } from './docs'
+import { docs } from './docs'
 
 type Thumbnail = {
 	[key: string]:
@@ -15,7 +15,7 @@ type Thumbnail = {
 }
 
 export const thumbnails: Readable<Thumbnail> = derived(
-	previews,
+	docs,
 	($st, set, update) => {
 		let hasNewItem = false
 		let thumbnailsToBeRemoved = { ...get(thumbnails) }

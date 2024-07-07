@@ -1,7 +1,7 @@
 import { derived, get, type Readable } from 'svelte/store'
 import { getInputAsUint8Array } from '../utils'
 import { PDFDocument } from 'pdf-lib'
-import { previews } from './docs'
+import { docs } from './docs'
 
 type Preview = {
 	id: string
@@ -12,15 +12,15 @@ type Preview = {
 	size: number
 }
 
-type Pages = {
+type DocsDetails = {
 	[key: string]: {
 		pageCount: number
 		size: number
 	}
 }
 
-export const pages: Readable<Pages> = derived(
-	previews,
+export const docsDetails: Readable<DocsDetails> = derived(
+	docs,
 	($st, set) => {
 		Promise.resolve(getNumOfPages($st)).then((value) => {
 			set(value)
@@ -30,7 +30,7 @@ export const pages: Readable<Pages> = derived(
 )
 
 async function getNumOfPages(files: Preview[]) {
-	let updatedPages: Pages = get(pages)
+	let updatedPages: DocsDetails = get(docsDetails)
 	for (let file of files) {
 		if (!updatedPages[file.parentId]) {
 			const src = await getInputAsUint8Array(file.file)
@@ -45,5 +45,5 @@ async function getNumOfPages(files: Preview[]) {
 		}
 	}
 
-	return pages
+	return docsDetails
 }
