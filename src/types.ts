@@ -1,9 +1,8 @@
 export type Doc = {
 	id: string
 	docId: string
-	name: string
-	size: number
 	parentId: string
+	name: string
 	file: File
 }
 

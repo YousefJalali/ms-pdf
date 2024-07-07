@@ -52,7 +52,6 @@ function handleFiles() {
 					id,
 					docId: id,
 					name,
-					size: file.size,
 					parentId: id,
 					file
 				}

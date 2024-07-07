@@ -27,9 +27,9 @@
 		on:consider={handleDndConsider}
 		on:finalize={handleDndFinalize}
 	>
-		{#each $docs as file (file.id)}
+		{#each $docs as doc (doc.id)}
 			<div class="h-fit" animate:flip={{ duration: flipDurationMs }}>
-				<FileCard {file} />
+				<FileCard {doc} />
 			</div>
 		{/each}
 	</div>

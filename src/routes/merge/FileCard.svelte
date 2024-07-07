@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { colors, docsDetails, docs, thumbnails } from '../../stores/'
 
-	export let file
+	export let doc
 
 	const zoom = `<svg
 				xmlns="http://www.w3.org/2000/svg"
@@ -56,44 +56,42 @@
 
 <div
 	class="relative group flex flex-col justify-between bg-gray-200 p-3 rounded-xl w-[180px] h-[280px] overflow-hidden"
-	style="border-color: {$colors[file.parentId].color};"
+	style="border-color: {$colors[doc.parentId].color};"
 >
 	<div
 		class="absolute top-0 left-1/2 -translate-x-1/2 h-1 w-1/2 rounded-b-xl"
-		style="background-color: {$colors[file.parentId].color};"
+		style="background-color: {$colors[doc.parentId].color};"
 	/>
-	{#if $thumbnails[file.docId]}
-		{#if $thumbnails[file.docId].status === 'loading'}
+	{#if $thumbnails[doc.docId]}
+		{#if $thumbnails[doc.docId].status === 'loading'}
 			<div class="w-full h-[200px]">
 				<p>loading...</p>
 			</div>
 		{:else}
-			<img class="shadow mx-auto" src={$thumbnails[file.docId].src} alt="ha" />
+			<img class="shadow mx-auto" src={$thumbnails[doc.docId].src} alt="ha" />
 		{/if}
 	{/if}
 
 	<div class="text-center text-sm flex flex-col">
-		<span class="truncate">{file.name}</span>
+		<span class="truncate">{doc.name}</span>
 		<span class="opacity-40"
-			>{$docsDetails[file.docId]?.pageCount || 1} page{$docsDetails[file.docId]?.pageCount > 1
+			>{$docsDetails[doc.docId]?.pageCount || 1} page{$docsDetails[doc.docId]?.pageCount > 1
 				? 's'
 				: ''}</span
 		>
 	</div>
-	<!-- <canvas bind:this={canvases[file.docId]} id={file.docId} height="1" width="1"></canvas> -->
+	<!-- <canvas bind:this={canvases[doc.docId]} id={doc.docId} height="1" width="1"></canvas> -->
 	<div
 		class="absolute top-0 left-0 hidden group-hover:flex justify-around bg-gray-200 *:text-black w-full p-2 py-4"
 	>
 		<button
-			disabled={!$docsDetails[file.docId]?.pageCount || $docsDetails[file.docId]?.pageCount <= 1}
-			on:click={() => docs.split(file.docId)}
+			disabled={!$docsDetails[doc.docId]?.pageCount || $docsDetails[doc.docId]?.pageCount <= 1}
+			on:click={() => docs.split(doc.docId)}
 			class="disabled:text-gray-400 disabled:cursor-not-allowed"
 			>{@html split}
 		</button>
 
-		<button class="text-red-600" on:click={() => docs.removePage(file.docId)}
-			>{@html trash}
-		</button>
+		<button class="text-red-600" on:click={() => docs.removePage(doc.docId)}>{@html trash} </button>
 
 		<button>{@html zoom}</button>
 

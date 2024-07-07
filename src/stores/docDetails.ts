@@ -14,16 +14,16 @@ export const docsDetails: Readable<DocsDetails> = derived(
 	{}
 )
 
-async function getNumOfPages(files: Doc[]) {
+async function getNumOfPages(docs: Doc[]) {
 	let updatedPages: DocsDetails = get(docsDetails)
-	for (let file of files) {
-		if (!updatedPages[file.parentId]) {
-			const src = await getInputAsUint8Array(file.file)
+	for (let { file, parentId } of docs) {
+		if (!updatedPages[parentId]) {
+			const src = await getInputAsUint8Array(file)
 			const pdfDoc = await PDFDocument.load(src, {
 				ignoreEncryption: true
 			})
 
-			updatedPages[file.parentId] = {
+			updatedPages[parentId] = {
 				pageCount: pdfDoc.getPageCount(),
 				size: file.size
 			}
