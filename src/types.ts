@@ -1,10 +1,18 @@
+export type Docs = { [docId: string]: Doc }
+
 export type Doc = {
 	id: string
 	docId: string
-	parentId: string
 	name: string
+	size: number
 	file: File
+	showPages: boolean
+	pageCount: number
+	color: string
+	pages: Page[]
 }
+
+export type Page = { id: string; docId: string; pageNum: number; hidden: boolean; file: File }
 
 export type Thumbnail = {
 	[key: string]:

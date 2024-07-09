@@ -1,16 +1,26 @@
 <script lang="ts">
 	import { dndzone } from 'svelte-dnd-action'
 	import { flip } from 'svelte/animate'
-	import { docs } from '../../stores/'
+	import { docs, pages } from '../../stores/'
 	import FileCard from './FileCard.svelte'
-	import type { Doc } from '../../types'
+	import type { Doc, Page } from '../../types'
+
+	let p: Page[] = []
+	$: {
+		p = []
+		for (let doc of Object.values($docs)) {
+			p.push(...doc.pages)
+		}
+		console.log(p)
+	}
 
 	const flipDurationMs = 300
-	function handleDndConsider(e: CustomEvent<DndEvent<Doc>>) {
-		docs.set(e.detail.items)
+	function handleDndConsider(e: CustomEvent<DndEvent<Page>>) {
+		// pages.set(e.detail.items)
+		p = e.detail.items
 	}
-	function handleDndFinalize(e: CustomEvent<DndEvent<Doc>>) {
-		docs.set(e.detail.items)
+	function handleDndFinalize(e: CustomEvent<DndEvent<Page>>) {
+		p = e.detail.items
 	}
 </script>
 
@@ -23,13 +33,13 @@
 
 	<div
 		class="flex flex-wrap gap-4 w-full p-4"
-		use:dndzone={{ items: $docs, flipDurationMs }}
+		use:dndzone={{ items: p, flipDurationMs }}
 		on:consider={handleDndConsider}
 		on:finalize={handleDndFinalize}
 	>
-		{#each $docs as doc (doc.id)}
+		{#each p as page (page.id)}
 			<div class="h-fit" animate:flip={{ duration: flipDurationMs }}>
-				<FileCard {doc} />
+				<FileCard {page} />
 			</div>
 		{/each}
 	</div>

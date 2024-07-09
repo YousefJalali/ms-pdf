@@ -1,5 +1,4 @@
-export { colors } from './colors'
 export { docs } from './docs'
-export { docsDetails } from './docDetails'
 export { thumbnails } from './thumbnails'
 export { mergedPdf } from './mergedPdf'
+export { pages } from './pages'

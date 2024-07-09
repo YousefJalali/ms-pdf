@@ -2,7 +2,7 @@
 	import { v4 as uuidv4 } from 'uuid'
 	import { PDFDocument } from 'pdf-lib'
 	import FileInput from '../../components/FileInput.svelte'
-	import { docs, colors, docsDetails, mergedPdf, thumbnails } from '../../stores/'
+	import { docs, mergedPdf, pages } from '../../stores/'
 	import { getInputAsUint8Array } from '../../utils'
 	import { formatBytes } from '../../utils/formatBytes'
 
@@ -15,7 +15,7 @@
 			// docs = [...docs, file]
 			let id = uuidv4()
 
-			docs.add({ id, name: file.name, file })
+			docs.addDoc(file)
 		}
 		files = null
 	}
@@ -25,8 +25,8 @@
 			let merger = await PDFDocument.create()
 
 			// docs.push(new URL('https://pdf-lib.js.org/assets/with_update_sections.pdf'))
-			for (const file of $docs) {
-				let src = await getInputAsUint8Array(file.file)
+			for (const page of $pages) {
+				let src = await getInputAsUint8Array(page.file)
 				let pdfDoc = await PDFDocument.load(src)
 
 				let indices = pdfDoc.getPageIndices()
@@ -36,13 +36,6 @@
 					merger.addPage(page)
 				}
 			}
-
-			//get merged pdf images
-			// for (let t in $thumbnails) {
-			// 	if ($thumbnails[t].status === 'loaded') {
-			// 		mergedPdfPreview.push($thumbnails[t].src)
-			// 	}
-			// }
 
 			const merged = await merger.save()
 			let blob = new Blob([merged], {
@@ -72,7 +65,7 @@
 </script>
 
 <div
-	class={`relative flex flex-col justify-center flex-[2] min-w-80 border-slate-200 rounded-2xl ${$docs.length ? 'p-4 border justify-between [&>*:first-child]:hidden' : ''}`}
+	class={`relative flex flex-col justify-center flex-[2] min-w-80 border-slate-200 rounded-2xl ${$pages.length ? 'p-4 border justify-between [&>*:first-child]:hidden' : ''}`}
 >
 	<!-- description  -->
 	<div class="mb-8">
@@ -83,10 +76,10 @@
 		</p>
 	</div>
 
-	<div class={`flex flex-col ${$docs.length ? 'h-full' : ''}`}>
+	<div class={`flex flex-col ${$pages.length ? 'h-full' : ''}`}>
 		<!-- input -->
 		<div>
-			{#if $docs.length}
+			{#if $pages.length}
 				<label for="file-input-button">
 					<div
 						class="flex gap-2 justify-center items-center border-2 border-blue-700 text-blue-700 px-3 py-4 rounded-xl text-center cursor-pointer"
@@ -120,29 +113,29 @@
 		</div>
 
 		<!-- list of docs -->
-		{#if Object.values($colors).length}
+		{#if Object.values($docs).length}
 			<ul class="w-full h-0 flex-auto mt-3 py-4 overflow-y-scroll divide-y">
-				{#each Object.values($colors) as c}
+				{#each Object.values($docs) as doc}
 					<li class="group flex justify-between gap-2 hover:bg-gray-100 py-3 px-1">
 						<div>
 							<div class="flex gap-2 text-sm">
 								<div class="h-5 w-fit flex items-center justify-center">
 									<span
 										class="h-3 w-3 shrink-0 grow-0 rounded-full"
-										style="background-color: {c.color};"
+										style="background-color: {doc.color};"
 									/>
 								</div>
 
-								<span class="line-clamp-2 leading-5">{c.name}</span>
+								<span class="line-clamp-2 leading-5">{doc.name}</span>
 							</div>
 							<div class="text-xs opacity-60 ml-5">
-								<span>{$docsDetails[c.id]?.pageCount} pages - </span>
-								<span>{formatBytes($docsDetails[c.id]?.size)}</span>
+								<span>{doc.pageCount} pages - </span>
+								<span>{formatBytes(doc.size)}</span>
 							</div>
 						</div>
 						<button
 							class="opacity-60 hidden group-hover:block"
-							on:click={() => docs.removeDoc(c.id)}>{@html trash}</button
+							on:click={() => docs.removeDoc(doc.docId)}>{@html trash}</button
 						>
 					</li>
 				{/each}
@@ -151,16 +144,17 @@
 	</div>
 
 	<!-- Merge button -->
-	{#if $docs.length}
+	{#if $pages.length}
 		<div class="w-full text-center">
-			<span class="inline-block mt-2 text-sm opacity-60" style="opacity: {$docs.length < 2 ? 1 : 0}"
-				>Add more files to merge</span
+			<span
+				class="inline-block mt-2 text-sm opacity-60"
+				style="opacity: {$pages.length < 2 ? 1 : 0}">Add more files to merge</span
 			>
 
 			<button
 				on:click={merge}
 				class="bg-red-300 w-full p-4 rounded-xl disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
-				disabled={$docs.length < 2}>Merge</button
+				disabled={$pages.length < 2}>Merge</button
 			>
 		</div>
 	{/if}
