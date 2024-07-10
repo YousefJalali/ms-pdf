@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { docs, thumbnails } from '../../stores/'
+	import { docs, pages, thumbnails } from '../../stores/'
 	import type { Page } from '../../types'
 
 	export let page: Page
 
-	let doc = $docs[page.docId]
+	$: doc = $docs[page.docId]
 
 	const zoom = `<svg
 				xmlns="http://www.w3.org/2000/svg"
@@ -57,46 +57,47 @@
 `
 </script>
 
-<div
-	class="relative group flex flex-col justify-between bg-gray-200 p-3 rounded-xl w-[180px] h-[280px] overflow-hidden"
->
+{#if doc && page}
 	<div
-		class="absolute top-0 left-1/2 -translate-x-1/2 h-1 w-1/2 rounded-b-xl"
-		style="background-color: {doc.color};"
-	/>
-	{#if $thumbnails[page.docId]}
-		{#if $thumbnails[page.docId].status === 'loading'}
-			<div class="w-full h-[200px]">
-				<p>loading...</p>
-			</div>
-		{:else}
-			<img class="shadow mx-auto" src={$thumbnails[page.docId].src} alt="ha" />
-		{/if}
-	{/if}
-
-	<div class="text-center text-sm flex flex-col">
-		<span class="truncate">{doc.name} {doc.showPages ? `(page ${page.pageNum})` : ''}</span>
-		<span class="opacity-40"
-			>{doc.showPages ? 1 : doc.pageCount} page{doc.pageCount > 1 ? 's' : ''}</span
-		>
-	</div>
-	<!-- <canvas bind:this={canvases[page.docId]} id={page.docId} height="1" width="1"></canvas> -->
-	<div
-		class="absolute top-0 left-0 hidden group-hover:flex justify-around bg-gray-200 *:text-black w-full p-2 py-4"
+		class="relative group flex flex-col justify-between bg-gray-200 p-3 rounded-xl w-[180px] h-[280px] overflow-hidden"
 	>
-		<button
-			disabled={!doc.pageCount || doc.pageCount <= 1}
-			on:click={() => docs.split(page.docId)}
-			class="disabled:text-gray-400 disabled:cursor-not-allowed"
-			>{@html split}
-		</button>
+		<div
+			class="absolute top-0 left-1/2 -translate-x-1/2 h-1 w-1/2 rounded-b-xl"
+			style="background-color: {doc.color};"
+		/>
+		{#if $thumbnails[page.pageId]}
+			{#if $thumbnails[page.pageId].status === 'loading'}
+				<div class="w-full h-[200px]">
+					<p>loading...</p>
+				</div>
+			{:else}
+				<img class="shadow mx-auto" src={$thumbnails[page.pageId].src} alt="ha" />
+			{/if}
+		{/if}
 
-		<button class="text-red-600" on:click={() => docs.removePage(page.docId)}
-			>{@html trash}
-		</button>
+		<div class="text-center text-sm flex flex-col">
+			<span class="truncate">{doc.name} {doc.showPages ? `(page ${page.pageNum})` : ''}</span>
+			<span class="opacity-40">{doc.showPages ? '1 page' : `${doc.pageCount} pages`} </span>
+			<!-- <span>{doc.showPages} / {page.pageVisible}</span> -->
+		</div>
+		<!-- <canvas bind:this={canvases[page.docId]} id={page.docId} height="1" width="1"></canvas> -->
+		<div
+			class="absolute top-0 left-0 hidden group-hover:flex justify-around bg-gray-200 *:text-black w-full p-2 py-4"
+		>
+			<button
+				disabled={!doc.pageCount || doc.pageCount <= 1}
+				on:click={() => docs.toggleShowPages(page.docId)}
+				class="disabled:text-gray-400 disabled:cursor-not-allowed"
+				>{@html split}
+			</button>
 
-		<button>{@html zoom}</button>
+			<button class="text-red-600" on:click={() => pages.removePage(page.pageId)}
+				>{@html trash}
+			</button>
 
-		<button>{@html rotate}</button>
+			<button>{@html zoom}</button>
+
+			<button>{@html rotate}</button>
+		</div>
 	</div>
-</div>
+{/if}

@@ -1,18 +1,28 @@
+import type { PDFDocument } from 'pdf-lib'
+
+export type PDF = PDFDocument
+
 export type Docs = { [docId: string]: Doc }
 
 export type Doc = {
-	id: string
 	docId: string
 	name: string
 	size: number
 	file: File
-	showPages: boolean
+	doc: PDF
 	pageCount: number
+	showPages: boolean
 	color: string
-	pages: Page[]
 }
 
-export type Page = { id: string; docId: string; pageNum: number; hidden: boolean; file: File }
+export type Page = {
+	id: string
+	pageId: string
+	docId: string
+	pageNum: number
+	pageVisible: boolean
+	file: File | null
+}
 
 export type Thumbnail = {
 	[key: string]:

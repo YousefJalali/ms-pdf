@@ -1,8 +1,8 @@
 import { get, writable } from 'svelte/store'
-import { getInputAsUint8Array, getPages, randomColor } from '../utils'
-import { PDFDocument } from 'pdf-lib'
+import { randomColor, getPdf } from '../utils'
 import { v4 as uuidv4 } from 'uuid'
-import type { Doc, Page } from '../types'
+import type { Doc } from '../types'
+import { pages } from './pages'
 
 function handleFiles() {
 	const { subscribe, set, update } = writable<{ [docId: string]: Doc }>({})
@@ -41,41 +41,77 @@ function handleFiles() {
 	// 	docs.update((d) => [...d.slice(0, inputIndex), ...newDocs, ...d.slice(inputIndex + 1)])
 	// }
 
-	async function addDoc(file: File) {
-		let [firstPage] = await getPages(file)
+	async function add(file: File) {
 		let docId = uuidv4()
+		let doc = await getPdf(file)
 
 		let newDoc: Doc = {
-			id: uuidv4(),
 			docId,
 			name: file.name,
 			size: file.size,
-			pageCount: firstPage.numberOfPages,
 			file,
+			doc,
 			showPages: false,
-			color: randomColor(),
-			pages: [
-				{
-					id: uuidv4(),
-					docId,
-					pageNum: 1,
-					hidden: false,
-					file: firstPage.file
-				}
-			]
+			pageCount: doc.getPageCount(),
+			color: randomColor()
 		}
 
 		update((docs) => ({ ...docs, [docId]: newDoc }))
-		console.log(get(docs))
+
+		for (let i = 0; i < newDoc.pageCount; i++) {
+			let pageId = uuidv4()
+
+			pages.add(pageId, docId, i, i === 0 ? true : false)
+
+			if (i === 0) {
+				pages.loadPage(doc, pageId, newDoc.name, i)
+			}
+		}
+	}
+
+	function toggleShowPages(docId: string) {
+		update((docs) => ({
+			...docs,
+			[docId]: {
+				...docs[docId],
+				showPages: !docs[docId].showPages
+			}
+		}))
+		if (get(docs)[docId].showPages) {
+			pages.showPages(docId)
+		} else {
+			pages.hidePages(docId)
+		}
+	}
+
+	function removeDoc(docId: string) {
+		let d = { ...get(docs) }
+		delete d[docId]
+		console.log(d, get(docs))
+		set(d)
+		pages.removeDocPages(docId)
+	}
+
+	function decreasePageCount(docId: string) {
+		let d = { ...get(docs) }
+
+		if (d[docId].pageCount <= 1) {
+			delete d[docId]
+		} else {
+			d[docId].pageCount--
+		}
+
+		set(d)
 	}
 
 	return {
 		subscribe,
 		set,
 		update,
-		addDoc,
-		removePage: (id: string) => {},
-		removeDoc: (docId: string) => {},
+		add,
+		toggleShowPages,
+		removeDoc,
+		decreasePageCount,
 		split: (docId: string) => {},
 		reset: () => set({})
 	}

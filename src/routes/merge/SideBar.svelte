@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { v4 as uuidv4 } from 'uuid'
 	import { PDFDocument } from 'pdf-lib'
 	import FileInput from '../../components/FileInput.svelte'
 	import { docs, mergedPdf, pages } from '../../stores/'
@@ -12,10 +11,8 @@
 		for (const file of files) {
 			console.log(file)
 			console.log(`${file.name}: ${file.size} bytes`)
-			// docs = [...docs, file]
-			let id = uuidv4()
 
-			docs.addDoc(file)
+			docs.add(file)
 		}
 		files = null
 	}
@@ -129,14 +126,23 @@
 								<span class="line-clamp-2 leading-5">{doc.name}</span>
 							</div>
 							<div class="text-xs opacity-60 ml-5">
-								<span>{doc.pageCount} pages - </span>
+								<span>{doc.pageCount} page{doc.pageCount > 1 ? 's' : ''} - </span>
 								<span>{formatBytes(doc.size)}</span>
 							</div>
 						</div>
-						<button
-							class="opacity-60 hidden group-hover:block"
-							on:click={() => docs.removeDoc(doc.docId)}>{@html trash}</button
-						>
+						<div class="hidden group-hover:block">
+							<button class="opacity-60" on:click={() => docs.removeDoc(doc.docId)}
+								>{@html trash}</button
+							>
+							<label>
+								show pages
+								<input
+									type="checkbox"
+									checked={doc.showPages}
+									on:change={() => docs.toggleShowPages(doc.docId)}
+								/>
+							</label>
+						</div>
 					</li>
 				{/each}
 			</ul>

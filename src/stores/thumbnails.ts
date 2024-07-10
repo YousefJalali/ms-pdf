@@ -10,23 +10,25 @@ export const thumbnails: Readable<Thumbnail> = derived(
 		let thumbnailsToBeRemoved = { ...get(thumbnails) }
 
 		Promise.allSettled(
-			$st.map((f) => {
+			$st.map((page) => {
+				if (!page.file) return []
+
 				//remove existing thumbnail from temp object
-				if (thumbnailsToBeRemoved[f.docId]) {
-					delete thumbnailsToBeRemoved[f.docId]
+				if (thumbnailsToBeRemoved[page.pageId]) {
+					delete thumbnailsToBeRemoved[page.pageId]
 				}
 
-				if (!get(thumbnails)[f.docId]) {
+				if (!get(thumbnails)[page.pageId]) {
 					hasNewItem = true
 					let newThumbnail: Thumbnail = {
-						[f.docId]: { status: 'loading', src: null }
+						[page.pageId]: { status: 'loading', src: null }
 					}
 					update((thumb) => ({
 						...thumb,
 						...newThumbnail
 					}))
 
-					return getThumbnail(f.file, f.docId)
+					return getThumbnail(page.file, page.pageId)
 				} else {
 					return []
 				}
