@@ -4,15 +4,6 @@
 	import { pages } from '../../stores/'
 	import PageCard from './(PageCard)/PageCard.svelte'
 	import type { Page } from '../../types'
-	import { derived, get, type Readable } from 'svelte/store'
-
-	const filteredPages = derived<Readable<Page[]>, Page[]>(
-		pages,
-		($st, set) => {
-			set($st.filter((p) => p.pageVisible))
-		},
-		[]
-	)
 
 	function moveItem(arr: Page[], fromIndex: number, toIndex: number) {
 		var element = arr[fromIndex]
@@ -25,7 +16,7 @@
 	function handleDndConsider(e: CustomEvent<DndEvent<Page>>) {
 		let {
 			items,
-			info: { trigger, source, id: pageId }
+			info: { trigger, id: pageId }
 		} = e.detail
 
 		if (trigger === TRIGGERS.DRAG_STARTED) {
@@ -37,7 +28,7 @@
 	function handleDndFinalize(e: CustomEvent<DndEvent<Page>>) {
 		let {
 			items,
-			info: { trigger, source, id: pageId }
+			info: { id: pageId }
 		} = e.detail
 
 		if (typeof oldIndex !== 'number') return pages.set(items)
@@ -46,18 +37,15 @@
 		const docId = items[newIndex].docId
 		let adjustedIndex = newIndex
 
-		console.log(oldIndex, newIndex)
 		//reposition the moved item
 		if (newIndex < items.length - 1) {
-			while (adjustedIndex < items.length) {
+			while (adjustedIndex < items.length - 1) {
 				if (!items[adjustedIndex + 1].pageVisible && items[adjustedIndex + 1].docId !== docId) {
 					adjustedIndex++
 				} else {
 					break
 				}
 			}
-
-			console.log({ adjustedIndex }, { newIndex })
 
 			//move item forward so it wont be in the middle of a doc
 			if (adjustedIndex !== newIndex) {
@@ -77,8 +65,6 @@
 			}
 		}
 
-		console.log({ numberOfItemsToBeMoved })
-
 		if (numberOfItemsToBeMoved) {
 			let itemsToBeMoved = [...items.splice(nextPageIndex, numberOfItemsToBeMoved)]
 
@@ -93,14 +79,14 @@
 </script>
 
 <div
-	class="w-full h-full overflow-y-scroll flex-auto bg-gray-100 border-2 border-dashed border-gray-200 rounded-xl"
+	class="w-full h-full overflow-y-scroll flex-auto bg-gray-100 border-4 border-dashed border-gray-200 rounded-xl"
 >
 	<div class="text-center opacity-40 text-sm mt-2">
 		<span>Drag and drop pdf docs here</span>
 	</div>
 
 	<div
-		class="flex flex-wrap gap-4 w-full p-4"
+		class="flex flex-wrap gap-8 w-full p-4"
 		use:dndzone={{ items: $pages, flipDurationMs }}
 		on:consider={handleDndConsider}
 		on:finalize={handleDndFinalize}

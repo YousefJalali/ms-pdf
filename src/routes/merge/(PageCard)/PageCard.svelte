@@ -8,11 +8,18 @@
 
 	$: doc = $docs[page.docId]
 	$: pageNumber = $pageNum[page.pageId]
+	$: multiPages = typeof pageNumber === 'number' ? false : true
 </script>
 
 {#if doc && page}
+	{#if multiPages}
+		<div
+			class="absolute -top-1.5 -left-1.5 h-full w-full bg-gray-200 rounded-xl border border-gray-300"
+		/>
+	{/if}
+
 	<div
-		class={`relative group flex flex-col justify-between bg-gray-200 p-3 rounded-xl w-[180px] h-[280px] overflow-hidden`}
+		class={`relative overflow-hidden z-10 group flex flex-col justify-between bg-gray-200 border border-gray-300 p-3 rounded-xl w-[180px] h-[280px] ${multiPages ? 'shadow-sm' : ''}`}
 	>
 		<div
 			class="absolute top-0 left-1/2 -translate-x-1/2 h-1 w-1/2 rounded-b-xl"
@@ -31,6 +38,6 @@
 		</div>
 		<!-- <canvas bind:this={canvases[page.docId]} id={page.docId} height="1" width="1"></canvas> -->
 
-		<PageCardActions {doc} {page} />
+		<!-- <PageCardActions {doc} {page} /> -->
 	</div>
 {/if}
