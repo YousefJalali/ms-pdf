@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { dndzone, TRIGGERS } from 'svelte-dnd-action'
 	import { flip } from 'svelte/animate'
-	import { pages } from '../../stores/'
+	import { mergedPdf, pages } from '../../stores/'
 	import PageCard from './(PageCard)/PageCard.svelte'
 	import type { Page } from '../../types'
 
@@ -79,8 +79,16 @@
 </script>
 
 <div
-	class="w-full h-full overflow-y-scroll flex-auto bg-base-100 border-2 border-dashed border-base-300 rounded-xl"
+	class="relative w-full h-full overflow-y-scroll flex-auto bg-base-100 border-2 border-dashed border-base-300 rounded-xl"
 >
+	<!-- {#if $mergedPdf.loading}
+		<div
+			class="absolute top-0 left-0 w-full h-full bg-base-300 z-20 flex items-center justify-center"
+		>
+			creating PDF...
+		</div>
+	{/if} -->
+
 	<!-- <div class="text-center opacity-40 text-sm mt-2">
 		<span>Drag and drop pdf docs here</span>
 	</div> -->

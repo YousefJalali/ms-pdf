@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { mergedPdf, thumbnails } from '../../stores/'
+	import { mergedPdf, pages, thumbnails } from '../../stores/'
 
 	function downloadPdf() {
-		if (!$mergedPdf) return
+		if (!$mergedPdf.src) return
 
 		const link = document.createElement('a')
 
-		link.href = $mergedPdf
+		link.href = $mergedPdf.src
 		link.download = 'merged-pdf'
 		// some browser needs the anchor to be in the doc
 		document.body.append(link)
@@ -36,8 +36,20 @@
 		merged PDF below.
 	</p>
 	<div class="mx-auto border broder-base-300 flex flex-col w-[300px] h-[450px] overflow-y-scroll">
-		{#each Object.values($thumbnails) as thumb}
-			<img class="h-full object-contain" src={thumb.src} alt="merged" />
+		{#each $pages as page}
+			{#if $thumbnails[page.pageId].preview.status === 'loading'}
+				<img
+					class="h-full object-contain"
+					src={$thumbnails[page.pageId].thumbnail.src}
+					alt="merged"
+				/>
+			{:else}
+				<img
+					class="h-full object-contain"
+					src={$thumbnails[page.pageId].preview.src}
+					alt="merged"
+				/>
+			{/if}
 		{/each}
 	</div>
 

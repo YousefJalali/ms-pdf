@@ -34,7 +34,7 @@
 
 <div class="flex gap-8 h-[calc(100vh-100px-32px-25px)]">
 	<!-- drag and drop area -->
-	{#if $mergedPdf}
+	{#if $mergedPdf.src}
 		<MergedDoc />
 	{:else}
 		{#if $pages.length}
