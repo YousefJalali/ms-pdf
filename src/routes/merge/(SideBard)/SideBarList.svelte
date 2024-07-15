@@ -57,22 +57,22 @@
 				>
 					<ul class="dropdown-content menu min-w-56 bg-base-100 rounded-box z-[1] w-fit p-2 shadow">
 						<li>
-							<a href={null} on:click={() => docs.removeDoc(doc.docId)}>
-								<!-- {@html trash}  -->
-								Delete Document
-							</a>
-						</li>
-						<li>
 							<label class="label cursor-pointer">
 								<span class="label-text">Show Pages</span>
 								<input
 									type="checkbox"
 									class="toggle toggle-primary toggle-sm"
-									checked={doc.showPages}
+									checked={doc.showPages || doc.pageCount <= 1}
 									on:change={() => docs.toggleShowPages(doc.docId)}
 									disabled={doc.pageCount <= 1}
 								/>
 							</label>
+						</li>
+						<li>
+							<a class="text-error" href={null} on:click={() => docs.removeDoc(doc.docId)}>
+								<!-- {@html trash}  -->
+								Delete Document
+							</a>
 						</li>
 					</ul>
 				</div>

@@ -69,8 +69,8 @@
 
 	<!-- Merge button -->
 	{#if $pages.length}
-		<div class="prose text-center">
-			<span class="text-sm" style="display: {$pages.length < 2 ? 'block' : 'hidden'}"
+		<div class="text-center">
+			<span class="block text-sm opacity-80 mb-2" style="opacity: {$pages.length < 2 ? '1' : '0'}"
 				>Add more documents to merge</span
 			>
 

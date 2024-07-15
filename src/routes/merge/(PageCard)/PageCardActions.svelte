@@ -58,14 +58,16 @@
 
 <!-- flex h-fit min-h-10 justify-around bg-base-200 *:text-neutral w-full [&>button]:btn [&>button]:btn-xs [&>button]:btn-circle -->
 
-<div class="absolute top-0 left-0 w-full">
+<div class="absolute top-0 left-0 w-full hidden group-hover:flex p-2 py-3">
 	<div
-		class="bg-base-200 w-full join join-vertical lg:join-horizontal [&>button]:btn [&>button]:btn-ghost [&>button]:join-item [&>button]:flex-1"
+		class="bg-neutral text-neutral-content shadow w-fit mx-auto join join-horizontal [&>button]:btn [&>button]:btn-sm [&>button]:btn-ghost [&>button]:join-item [&>button]:flex-1"
 	>
 		<button>{@html zoom}</button>
 
-		{#if !doc.showPages}
-			<button on:click={() => docs.toggleShowPages(page.docId)}>{@html split} </button>
+		{#if !doc.showPages && doc.pageCount > 1}
+			<button on:click={() => docs.toggleShowPages(page.docId)}
+				><div class="tooltip tooltip-bottom" data-tip="hello">{@html split}</div>
+			</button>
 		{/if}
 
 		<button class="!text-error" on:click={() => pages.removePage(page.pageId)}
