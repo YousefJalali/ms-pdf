@@ -79,11 +79,11 @@
 </script>
 
 <div
-	class="w-full h-full overflow-y-scroll flex-auto bg-gray-100 border-4 border-dashed border-gray-200 rounded-xl"
+	class="w-full h-full overflow-y-scroll flex-auto bg-base-100 border-2 border-dashed border-base-300 rounded-xl"
 >
-	<div class="text-center opacity-40 text-sm mt-2">
+	<!-- <div class="text-center opacity-40 text-sm mt-2">
 		<span>Drag and drop pdf docs here</span>
-	</div>
+	</div> -->
 
 	<div
 		class="flex flex-wrap gap-8 w-full p-4"

@@ -1,17 +1,23 @@
 <script>
 	import '../app.css'
 	import { page } from '$app/stores'
+
+	const newPage = `<svg width="12" height="12" class="opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 11H37V29" stroke="currentColor" stroke-width="4" stroke-linecap="butt" stroke-linejoin="bevel"></path><path d="M11.5439 36.4559L36.9997 11" stroke="currentColor" stroke-width="4" stroke-linecap="butt" stroke-linejoin="bevel"></path></svg>`
 </script>
 
 <main class="container mx-auto max-w-5xl flex flex-col min-h-screen">
-	<header class="flex items-center justify-between h-[100px]">
-		<h1 class="text-3xl font-bold"><a href="/">Logo</a></h1>
+	<header class="navbar p-0 bg-base-100 h-[100px]">
+		<div class="flex-1">
+			<a class="link link-hover text-4xl" href="/">Logo</a>
+		</div>
 
-		<nav>
-			<ul class="flex gap-8">
+		<nav class="flex-none">
+			<ul class="menu menu-horizontal px-1">
 				{#each ['merge', 'split'] as path}
-					<li style="border-bottom: {$page.url.pathname === '/' + path ? '3px solid black' : ''};">
-						<a href="/{path}" class="capitalize">{path}</a>
+					<li>
+						<a href="/{path}" class="capitalize {$page.url.pathname === '/' + path ? 'active' : ''}"
+							>{path}</a
+						>
 					</li>
 				{/each}
 			</ul>
@@ -20,28 +26,15 @@
 
 	<slot />
 
-	<!-- <footer class="bg-white rounded-lg py-6 mt-8">
-		<div class="w-full mx-auto max-w-screen-xl md:flex md:items-center md:justify-between">
-			<span class="text-sm text-gray-500 sm:text-center dark:text-gray-400"
-				>© 2023 <a href="https://flowbite.com/" class="hover:underline">Flowbite™</a>. All Rights
-				Reserved.
-			</span>
-			<ul
-				class="flex flex-wrap items-center mt-3 text-sm font-medium text-gray-500 dark:text-gray-400 sm:mt-0"
-			>
-				<li>
-					<a href="#" class="hover:underline me-4 md:me-6">About</a>
-				</li>
-				<li>
-					<a href="#" class="hover:underline me-4 md:me-6">Privacy Policy</a>
-				</li>
-				<li>
-					<a href="#" class="hover:underline me-4 md:me-6">Licensing</a>
-				</li>
-				<li>
-					<a href="#" class="hover:underline">Contact</a>
-				</li>
-			</ul>
-		</div>
-	</footer> -->
+	<footer class="footer footer-center text-base-content p-4 h-[50px]">
+		<aside>
+			<p>
+				Build by <a
+					class="link group inline-flex items-center gap-1"
+					href="https://github.com/YousefJalali"
+					target="_blank">Yousef Jalali {@html newPage}</a
+				>
+			</p>
+		</aside>
+	</footer>
 </main>

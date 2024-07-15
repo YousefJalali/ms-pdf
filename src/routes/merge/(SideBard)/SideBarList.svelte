@@ -44,13 +44,14 @@
 					<span>{formatBytes(doc.size)}</span>
 				</div>
 			</div>
-			<div>
-				<button on:click={() => (showList = doc.docId)}>{@html more}</button>
-			</div>
+
+			<button class="btn btn-circle btn-sm btn-ghost" on:click={() => (showList = doc.docId)}
+				>{@html more}</button
+			>
 
 			{#if showList === doc.docId}
 				<div
-					class="absolute top-1/2 right-6 z-20"
+					class="absolute top-1/2 right-4 z-20"
 					use:clickOutside
 					on:outclick={() => (showList = null)}
 				>
