@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { mergedPdf, thumbnails, pages } from '../../stores/'
-	import SideBar from './SideBar.svelte'
+	import SideBar from './(SideBard)/SideBar.svelte'
 	import DropZone from './DropZone.svelte'
 
 	// let scrollY: number
