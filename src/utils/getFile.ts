@@ -1,6 +1,6 @@
 import { PDFDocument } from 'pdf-lib'
 
-export async function getPage(pdfDoc: PDFDocument, docName: string, pageNum: number) {
+export async function getFile(pdfDoc: PDFDocument, docName: string, pageNum: number) {
 	let file = await getFile()
 	return { file, pageNum }
 

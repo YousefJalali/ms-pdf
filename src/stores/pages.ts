@@ -1,7 +1,9 @@
 import { get, writable } from 'svelte/store'
-import { getPage } from '../utils'
+import { getInputAsUint8Array, getFile } from '../utils'
 import type { PDF, Page } from '../types'
 import { docs } from './docs'
+import { PDFDocument } from 'pdf-lib'
+import { mergedPdf } from './mergedPdf'
 
 function handlePages() {
 	const { subscribe, set, update } = writable<Page[]>([])
@@ -13,15 +15,22 @@ function handlePages() {
 			docId,
 			pageNum,
 			pageVisible,
-			file: null
+			file: null,
+			loadPreview: false
 		}
 		update((pages) => [...pages, newPage])
 	}
 
 	async function loadPage(doc: PDF, pageId: string, docName: string, pageNum: number) {
-		let p = await getPage(doc, docName, pageNum)
+		let p = await getFile(doc, docName, pageNum)
 		update((pages) =>
 			pages.map((page) => (page.pageId === pageId ? { ...page, file: p.file } : page))
+		)
+	}
+
+	function loadPreview(pageId: string) {
+		update((pages) =>
+			pages.map((page) => (page.pageId === pageId ? { ...page, loadPreview: true } : page))
 		)
 	}
 
@@ -85,6 +94,46 @@ function handlePages() {
 		update((pages) => pages.filter((page) => page.docId !== docId))
 	}
 
+	async function merge() {
+		mergedPdf.setLoading(true)
+
+		try {
+			let merger = await PDFDocument.create()
+
+			//load pages
+			for (const page of get(pages)) {
+				if (!page.file) {
+					let { doc, name } = get(docs)[page.docId]
+					await loadPage(doc, page.pageId, name, page.pageNum)
+				}
+			}
+
+			for (const page of get(pages)) {
+				loadPreview(page.pageId)
+
+				let src = await getInputAsUint8Array(page.file)
+				let pdfDoc = await PDFDocument.load(src)
+
+				let indices = pdfDoc.getPageIndices()
+				const copiedPages = await merger.copyPages(pdfDoc, indices)
+
+				for (let page of copiedPages) {
+					merger.addPage(page)
+				}
+			}
+
+			const merged = await merger.save()
+			let blob = new Blob([merged], {
+				type: 'application/pdf'
+			})
+
+			mergedPdf.setSrc(URL.createObjectURL(blob))
+		} catch (error) {
+			mergedPdf.setLoading(false)
+			console.log(error)
+		}
+	}
+
 	return {
 		subscribe,
 		set,
@@ -94,7 +143,8 @@ function handlePages() {
 		showPages,
 		hidePages,
 		removePage,
-		removeDocPages
+		removeDocPages,
+		merge
 	}
 }
 

@@ -6,11 +6,15 @@
 </script>
 
 {#if $thumbnails[page.pageId]}
-	{#if $thumbnails[page.pageId].status === 'loading'}
+	{#if $thumbnails[page.pageId].thumbnail.status === 'loading'}
 		<div class="w-full h-full flex items-center justify-center">
 			<span class="loading loading-infinity loading-lg"></span>
 		</div>
 	{:else}
-		<img class="shadow mx-auto" src={$thumbnails[page.pageId].src} alt={$docs[page.docId].name} />
+		<img
+			class="shadow mx-auto"
+			src={$thumbnails[page.pageId].thumbnail.src}
+			alt={$docs[page.docId].name}
+		/>
 	{/if}
 {/if}

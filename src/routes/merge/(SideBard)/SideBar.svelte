@@ -1,48 +1,18 @@
 <script lang="ts">
-	import { PDFDocument } from 'pdf-lib'
 	import FileInput from '../../../components/FileInput.svelte'
 	import { docs, mergedPdf, pages } from '../../../stores'
-	import { getInputAsUint8Array } from '../../../utils'
 	import SideBarList from './SideBarList.svelte'
 
 	let files: FileList | null
 
 	$: if (files) {
 		for (const file of files) {
-			console.log(file)
-			console.log(`${file.name}: ${file.size} bytes`)
+			// console.log(file)
+			// console.log(`${file.name}: ${file.size} bytes`)
 
 			docs.add(file)
 		}
 		files = null
-	}
-
-	async function merge() {
-		try {
-			let merger = await PDFDocument.create()
-
-			// docs.push(new URL('https://pdf-lib.js.org/assets/with_update_sections.pdf'))
-			for (const page of $pages) {
-				let src = await getInputAsUint8Array(page.file)
-				let pdfDoc = await PDFDocument.load(src)
-
-				let indices = pdfDoc.getPageIndices()
-				const copiedPages = await merger.copyPages(pdfDoc, indices)
-
-				for (let page of copiedPages) {
-					merger.addPage(page)
-				}
-			}
-
-			const merged = await merger.save()
-			let blob = new Blob([merged], {
-				type: 'application/pdf'
-			})
-
-			mergedPdf.set(URL.createObjectURL(blob))
-		} catch (error) {
-			console.log(error)
-		}
 	}
 
 	const plusIcon = `<svg
@@ -104,10 +74,8 @@
 				>Add more documents to merge</span
 			>
 
-			<button
-				on:click={merge}
-				class="btn btn-primary w-full"
-				disabled={Object.keys($docs).length < 2}>Merge</button
+			<button on:click={pages.merge} class="btn btn-primary w-full" disabled={$pages.length < 2}
+				>Merge</button
 			>
 		</div>
 	{/if}

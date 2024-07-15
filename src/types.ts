@@ -22,18 +22,31 @@ export type Page = {
 	pageNum: number
 	pageVisible: boolean
 	file: File | null
+	loadPreview: boolean
 }
 
 export type Thumbnail = {
-	[key: string]:
-		| {
-				status: 'loading' | 'failed'
-				src: null
-		  }
-		| {
-				status: 'loaded'
-				src: string
-		  }
+	[key: string]: {
+		thumbnail:
+			| {
+					status: 'loading' | 'failed'
+					src: null
+			  }
+			| {
+					status: 'loaded'
+					src: string
+			  }
+
+		preview:
+			| {
+					status: 'loading' | 'failed'
+					src: null
+			  }
+			| {
+					status: 'loaded'
+					src: string
+			  }
+	}
 }
 
 export type DocsDetails = {
