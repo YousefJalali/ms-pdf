@@ -56,21 +56,22 @@
 `
 </script>
 
-<div
-	class="absolute top-0 left-0 hidden group-hover:flex justify-around bg-gray-200 *:text-black w-full p-2 py-4"
->
-	<button
-		disabled={!doc.pageCount || doc.pageCount <= 1}
-		on:click={() => docs.toggleShowPages(page.docId)}
-		class="disabled:text-gray-400 disabled:cursor-not-allowed"
-		>{@html split}
-	</button>
+<!-- flex h-fit min-h-10 justify-around bg-base-200 *:text-neutral w-full [&>button]:btn [&>button]:btn-xs [&>button]:btn-circle -->
 
-	<button class="text-red-600" on:click={() => pages.removePage(page.pageId)}
-		>{@html trash}
-	</button>
+<div class="absolute top-0 left-0 w-full">
+	<div
+		class="bg-base-200 w-full join join-vertical lg:join-horizontal [&>button]:btn [&>button]:btn-ghost [&>button]:join-item [&>button]:flex-1"
+	>
+		<button>{@html zoom}</button>
 
-	<button>{@html zoom}</button>
+		{#if !doc.showPages}
+			<button on:click={() => docs.toggleShowPages(page.docId)}>{@html split} </button>
+		{/if}
 
-	<button>{@html rotate}</button>
+		<button class="!text-error" on:click={() => pages.removePage(page.pageId)}
+			>{@html trash}
+		</button>
+	</div>
+
+	<!-- <button>{@html rotate}</button> -->
 </div>

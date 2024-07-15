@@ -79,15 +79,31 @@ function handlePages() {
 	}
 
 	function removePage(pageId: string) {
-		let docId = ''
-		update((pages) =>
-			pages.filter((page) => {
-				if (page.pageId === pageId) docId = page.docId
-				return page.pageId !== pageId
-			})
-		)
+		let curPages = [...get(pages)]
 
-		docs.decreasePageCount(docId)
+		let indexOfCurrentPage = curPages.findIndex((page) => page.pageId === pageId)
+
+		let docId = curPages[indexOfCurrentPage].docId
+
+		curPages.splice(indexOfCurrentPage, 1)
+
+		let count = 1
+
+		//not last page
+		if (indexOfCurrentPage !== curPages.length) {
+			while (curPages.length > 0) {
+				if (!curPages[indexOfCurrentPage].pageVisible) {
+					curPages.splice(indexOfCurrentPage, 1)
+					count++
+				} else {
+					break
+				}
+			}
+		}
+
+		set(curPages)
+
+		docs.decreasePageCount(docId, count)
 	}
 
 	function removeDocPages(docId: string) {
