@@ -70,6 +70,11 @@ function handleFiles() {
 		set(d)
 	}
 
+	function reset() {
+		set({})
+		pages.set([])
+	}
+
 	return {
 		subscribe,
 		set,
@@ -79,7 +84,7 @@ function handleFiles() {
 		removeDoc,
 		decreasePageCount,
 		split: (docId: string) => {},
-		reset: () => set({})
+		reset
 	}
 }
 
