@@ -4,6 +4,7 @@
 
 <div class="flex items-center justify-center w-full">
 	<label
+		data-testid="upload doc"
 		for="dropzone-file"
 		class="flex flex-col items-center justify-center w-full h-64 border-2 border-base-300 border-dashed rounded-lg cursor-pointer bg-base-200"
 	>

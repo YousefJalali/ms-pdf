@@ -63,7 +63,7 @@
 </section>
 
 <section class="my-24">
-	<h1 class="text-6xl font-black mb-8">Our Tools</h1>
+	<h2 class="text-6xl font-black mb-8">Our Tools</h2>
 
 	<div class="flex gap-8">
 		{#each tools as tool}
