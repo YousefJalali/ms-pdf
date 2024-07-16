@@ -59,20 +59,29 @@
 <!-- flex h-fit min-h-10 justify-around bg-base-200 *:text-neutral w-full [&>button]:btn [&>button]:btn-xs [&>button]:btn-circle -->
 
 <div class="absolute top-0 left-0 w-full hidden group-hover:flex p-2 py-3">
-	<div
-		class="bg-neutral text-neutral-content shadow w-fit mx-auto join join-horizontal [&>button]:btn [&>button]:btn-sm [&>button]:btn-ghost [&>button]:join-item [&>button]:flex-1"
-	>
-		<button>{@html zoom}</button>
+	<div class="bg-neutral text-neutral-content shadow w-fit mx-auto join join-horizontal">
+		<div class="tooltip tooltip-bottom join-item flex-1" data-tip="Zoom">
+			<button class="btn btn-sm btn-ghost">{@html zoom}</button>
+		</div>
 
 		{#if !doc.showPages && doc.pageCount > 1}
-			<button on:click={() => docs.toggleShowPages(page.docId)}
-				><div class="tooltip tooltip-bottom" data-tip="hello">{@html split}</div>
-			</button>
+			<div class="tooltip tooltip-bottom join-item flex-1" data-tip="Show Pages">
+				<button class="btn btn-sm btn-ghost" on:click={() => docs.toggleShowPages(page.docId)}
+					>{@html split}
+				</button>
+			</div>
 		{/if}
 
-		<button class="!text-error" on:click={() => pages.removePage(page.pageId)}
-			>{@html trash}
-		</button>
+		<div
+			class="tooltip tooltip-bottom join-item flex-1"
+			data-tip={doc.pageCount <= 1 || doc.showPages ? 'Delete Page' : 'Delete Document'}
+		>
+			<button
+				class="btn btn-sm btn-ghost !text-error"
+				on:click={() => pages.removePage(page.pageId)}
+				>{@html trash}
+			</button>
+		</div>
 	</div>
 
 	<!-- <button>{@html rotate}</button> -->
