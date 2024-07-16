@@ -156,6 +156,7 @@ function handlePages() {
 		update,
 		add,
 		loadPage,
+		loadPreview,
 		showPages,
 		hidePages,
 		removePage,

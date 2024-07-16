@@ -1,9 +1,19 @@
 <script lang="ts">
-	import { docs, pages } from '../../../stores'
+	import Modal from '../../../components/Modal.svelte'
+	import { docs, pages, thumbnails } from '../../../stores'
 	import type { Doc, Page } from '../../../types'
 
 	export let doc: Doc
 	export let page: Page
+
+	let showModal = false
+
+	function zoomHandler() {
+		if (!page.loadPreview) {
+			pages.loadPreview(page.pageId)
+		}
+		showModal = true
+	}
 
 	const zoom = `<svg
 				xmlns="http://www.w3.org/2000/svg"
@@ -61,7 +71,7 @@
 <div class="absolute top-0 left-0 w-full hidden group-hover:flex p-2 py-3">
 	<div class="bg-neutral text-neutral-content shadow w-fit mx-auto join join-horizontal">
 		<div class="tooltip tooltip-bottom join-item flex-1" data-tip="Zoom">
-			<button class="btn btn-sm btn-ghost">{@html zoom}</button>
+			<button class="btn btn-sm btn-ghost" on:click={zoomHandler}>{@html zoom}</button>
 		</div>
 
 		{#if !doc.showPages && doc.pageCount > 1}
@@ -86,3 +96,15 @@
 
 	<!-- <button>{@html rotate}</button> -->
 </div>
+
+<Modal bind:showModal>
+	{#if page.file}
+		<div class="border [&>img]:min-h-[600px]">
+			{#if $thumbnails[page.pageId].preview.status === 'loading'}
+				<img src={$thumbnails[page.pageId].thumbnail.src} alt={`${page.pageNum}`} />
+			{:else}
+				<img src={$thumbnails[page.pageId].preview.src} alt={`${page.pageNum}`} />
+			{/if}
+		</div>
+	{/if}
+</Modal>
