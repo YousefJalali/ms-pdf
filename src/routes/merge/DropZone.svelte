@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { dndzone, TRIGGERS } from 'svelte-dnd-action'
 	import { flip } from 'svelte/animate'
-	import { mergedPdf, pages } from '../../stores/'
+	import { pages } from '../../stores/'
 	import PageCard from './(PageCard)/PageCard.svelte'
 	import type { Page } from '../../types'
 
@@ -81,30 +81,18 @@
 <div
 	class="relative w-full h-full overflow-y-scroll flex-auto bg-base-100 border-2 border-dashed border-base-300 rounded-xl"
 >
-	<!-- {#if $mergedPdf.loading}
-		<div
-			class="absolute top-0 left-0 w-full h-full bg-base-300 z-20 flex items-center justify-center"
-		>
-			creating PDF...
-		</div>
-	{/if} -->
-
-	<!-- <div class="text-center opacity-40 text-sm mt-2">
-		<span>Drag and drop pdf docs here</span>
-	</div> -->
-
 	<div
 		class="flex flex-wrap gap-8 w-full p-4"
 		use:dndzone={{ items: $pages, flipDurationMs }}
 		on:consider={handleDndConsider}
 		on:finalize={handleDndFinalize}
 	>
-		{#each $pages as page (page.id)}
+		{#each $pages as page, pageIndex (page.id)}
 			<div
 				class={`h-fit relative ${page.pageVisible ? 'block' : 'hidden'}`}
 				animate:flip={{ duration: flipDurationMs }}
 			>
-				<PageCard {page} />
+				<PageCard {page} {pageIndex} />
 			</div>
 		{/each}
 	</div>

@@ -1,17 +1,39 @@
 <script lang="ts">
 	import Modal from '../../../components/Modal.svelte'
-	import { docs, pages, thumbnails } from '../../../stores'
+	import { docs, pages, thumbnails, preview } from '../../../stores'
 	import type { Doc, Page } from '../../../types'
 
 	export let doc: Doc
 	export let page: Page
+	export let pageIndex: number
 
 	let showModal = false
 
-	function zoomHandler() {
+	async function zoomHandler() {
+		preview.add(page.pageId)
 		if (!page.loadPreview) {
 			pages.loadPreview(page.pageId)
 		}
+
+		if (pageIndex !== $pages.length - 1) {
+			for (let i = pageIndex + 1; i < $pages.length; i++) {
+				let p = $pages[i]
+				if (!p.pageVisible) {
+					preview.add(p.pageId)
+
+					if (!p.file) {
+						await pages.loadPage(doc.doc, p.pageId, doc.name, p.pageNum)
+					}
+
+					if (!p.loadPreview) {
+						pages.loadPreview(p.pageId)
+					}
+				} else {
+					break
+				}
+			}
+		}
+
 		showModal = true
 	}
 
@@ -97,14 +119,20 @@
 	<!-- <button>{@html rotate}</button> -->
 </div>
 
-<Modal bind:showModal>
-	{#if page.file}
-		<div class="border [&>img]:min-h-[600px]">
-			{#if $thumbnails[page.pageId].preview.status === 'loading'}
-				<img src={$thumbnails[page.pageId].thumbnail.src} alt={`${page.pageNum}`} />
-			{:else}
-				<img src={$thumbnails[page.pageId].preview.src} alt={`${page.pageNum}`} />
-			{/if}
-		</div>
-	{/if}
+<Modal bind:showModal on:close={() => preview.clear()}>
+	{#each $preview as pageId}
+		{#if $thumbnails[pageId]}
+			<div class="border [&>img]:min-h-[600px] [&>img]:mx-auto">
+				{#if $thumbnails[pageId].thumbnail.status === 'loading'}
+					<div class="min-h-[600px] flex justify-center items-center">
+						<span class="loading loading-infinity loading-lg"></span>
+					</div>
+				{:else if $thumbnails[pageId].preview.status === 'loading'}
+					<img src={$thumbnails[pageId].thumbnail.src} alt={`${page.pageNum}`} />
+				{:else}
+					<img src={$thumbnails[pageId].preview.src} alt={`${page.pageNum}`} />
+				{/if}
+			</div>
+		{/if}
+	{/each}
 </Modal>

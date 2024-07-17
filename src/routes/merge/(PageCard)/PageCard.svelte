@@ -5,6 +5,7 @@
 	import PageCardThumbnail from './PageCardThumbnail.svelte'
 
 	export let page: Page
+	export let pageIndex: number
 
 	$: doc = $docs[page.docId]
 	$: pageNumber = $pageNum[page.pageId]
@@ -38,6 +39,6 @@
 		</div>
 		<!-- <canvas bind:this={canvases[page.docId]} id={page.docId} height="1" width="1"></canvas> -->
 
-		<PageCardActions {doc} {page} />
+		<PageCardActions {doc} {page} {pageIndex} />
 	</div>
 {/if}

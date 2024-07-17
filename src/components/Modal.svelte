@@ -1,4 +1,13 @@
 <script lang="ts">
+	import { createEventDispatcher } from 'svelte'
+
+	const dispatch = createEventDispatcher()
+
+	function closeHandler() {
+		dialog.close()
+		dispatch('close')
+	}
+
 	export let showModal: boolean
 
 	let dialog: HTMLDialogElement
@@ -11,16 +20,14 @@
 	class="modal"
 	bind:this={dialog}
 	on:close={() => (showModal = false)}
-	on:click|self={() => dialog.close()}
+	on:click|self={closeHandler}
 >
 	<!-- svelte-ignore a11y-no-static-element-interactions -->
-	<div on:click|stopPropagation class="modal-box">
+	<div on:click|stopPropagation class="modal-box overflow-y-scroll">
+		<div class="sticky right-0 top-0 flex justify-end h-0">
+			<button class="btn btn-sm btn-circle shadow" on:click={closeHandler}>✕</button>
+		</div>
 		<slot />
 		<!-- svelte-ignore a11y-autofocus -->
-		<button
-			class="btn btn-sm btn-circle absolute right-2 top-2"
-			autofocus
-			on:click={() => dialog.close()}>✕</button
-		>
 	</div>
 </dialog>
