@@ -86,13 +86,16 @@
 		use:dndzone={{ items: $pages, flipDurationMs }}
 		on:consider={handleDndConsider}
 		on:finalize={handleDndFinalize}
+		data-testid="drop zone"
 	>
 		{#each $pages as page, pageIndex (page.id)}
 			<div
-				class={`h-fit relative ${page.pageVisible ? 'block' : 'hidden'}`}
+				class={`group h-fit relative ${page.pageVisible ? 'block' : 'hidden'}`}
 				animate:flip={{ duration: flipDurationMs }}
 			>
-				<PageCard {page} {pageIndex} />
+				{#if page.pageVisible}
+					<PageCard {page} {pageIndex} />
+				{/if}
 			</div>
 		{/each}
 	</div>

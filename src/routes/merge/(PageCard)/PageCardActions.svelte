@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Modal from '../../../components/Modal.svelte'
-	import { docs, pages, thumbnails, preview } from '../../../stores'
+	import { docs, pages, thumbnails, preview, pageNum } from '../../../stores'
 	import type { Doc, Page } from '../../../types'
 
 	export let doc: Doc
@@ -44,6 +44,7 @@
 				stroke-width="1.5"
 				stroke="currentColor"
 				class="size-6"
+				name="zoom"
 			>
 				<path
 					stroke-linecap="round"
@@ -130,7 +131,10 @@
 				{:else if $thumbnails[pageId].preview.status === 'loading'}
 					<img src={$thumbnails[pageId].thumbnail.src} alt={`${page.pageNum}`} />
 				{:else}
-					<img src={$thumbnails[pageId].preview.src} alt={`${page.pageNum}`} />
+					<img
+						src={$thumbnails[pageId].preview.src}
+						alt={`preview page ${String($pageNum[pageId]).split(',')[0]} of ${doc.name}`}
+					/>
 				{/if}
 			</div>
 		{/if}

@@ -16,11 +16,12 @@
 	{#if multiPages}
 		<div
 			class="absolute -top-1.5 -left-1.5 h-full w-full bg-base-200 rounded-xl border border-base-300"
+			data-testid="page stack"
 		/>
 	{/if}
 
 	<div
-		class={`relative  z-10 group flex flex-col justify-between bg-base-200 border border-base-400 p-3 rounded-xl w-[180px] h-[280px] ${multiPages ? 'shadow-sm' : ''}`}
+		class={`relative z-10 flex flex-col justify-between bg-base-200 border border-base-400 p-3 rounded-xl w-[180px] h-[280px] ${multiPages ? 'shadow-sm' : ''}`}
 	>
 		<div
 			class="absolute top-0 left-1/2 -translate-x-1/2 h-1 w-1/2 rounded-b-xl"

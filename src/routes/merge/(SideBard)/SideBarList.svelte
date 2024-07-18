@@ -25,7 +25,7 @@
 `
 </script>
 
-<ul class="w-full h-0 flex-auto mt-3 py-4 overflow-y-scroll divide-y">
+<ul class="w-full h-0 flex-auto mt-3 py-4 overflow-y-scroll divide-y" data-testid="doc list">
 	{#each Object.values($docs) as doc}
 		<li class="relative group flex justify-between gap-2 py-3 px-1">
 			<div>
