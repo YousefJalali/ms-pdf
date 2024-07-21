@@ -7,7 +7,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
 const PREVIEW_HEIGHT = 600
 const THUMBNAIL_HEIGHT = 200
 
-export async function getCanvasDataURL(
+export async function getPageAsBlob(
 	file: File,
 	id: string,
 	pageNum = 1,
@@ -47,13 +47,10 @@ export async function getCanvasDataURL(
 
 		// console.log('Page rendered')
 
-		console.log(canvas.transferControlToOffscreen())
-
 		return {
 			id,
 			src,
 			pageNum: pageNum,
-			pageCount: pdf.numPages,
 			type
 		}
 	} catch (error) {

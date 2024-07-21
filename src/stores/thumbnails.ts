@@ -1,5 +1,5 @@
 import { derived, get, type Readable } from 'svelte/store'
-import { getCanvasDataURL } from '../utils'
+import { getPageAsBlob } from '../utils'
 import type { Thumbnail } from '../types'
 import { pages } from './pages'
 
@@ -31,7 +31,7 @@ export const thumbnails: Readable<Thumbnail> = derived(
 						...thumb,
 						...newThumbnail
 					}))
-					return getCanvasDataURL(page.file, page.pageId)
+					return getPageAsBlob(page.file, page.pageId)
 				}
 
 				return []
@@ -43,7 +43,7 @@ export const thumbnails: Readable<Thumbnail> = derived(
 
 				if (page.loadPreview && !get(thumbnails)[page.pageId].preview.src) {
 					hasNewItem = true
-					return getCanvasDataURL(page.file, page.pageId, 1, 'preview')
+					return getPageAsBlob(page.file, page.pageId, 1, 'preview')
 				}
 
 				return []

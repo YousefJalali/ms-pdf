@@ -1,5 +1,5 @@
 export { getInputAsUint8Array } from './getInputAsUint8Array'
-export * from './getCanvasDataURL'
+export * from './getPageAsBlob'
 export * from './randomColor'
 export { getFile } from './getFile'
 export { getPdf } from './getPdf'
