@@ -26,9 +26,10 @@ export async function getCanvasDataURL(
 			page.getViewport({ scale: 1 }).height
 		const viewport = page.getViewport({ scale })
 
+		// const canvas = document.getElementById(id) as HTMLCanvasElement
 		const canvas = document.createElement('canvas')
 		const context = canvas.getContext('2d')
-		if (!context) throw 'no context'
+		if (!context || !canvas) throw 'no context'
 
 		canvas.height = viewport.height
 		canvas.width = viewport.width
@@ -41,9 +42,20 @@ export async function getCanvasDataURL(
 		let renderTask = page.render(renderContext)
 
 		await renderTask.promise
+
+		const src = await new Promise((resolve) => canvas.toBlob(resolve, 'image/webp'))
+
 		// console.log('Page rendered')
 
-		return { id, src: canvas.toDataURL(), pageNum: pageNum, pageCount: pdf.numPages, type }
+		console.log(canvas.transferControlToOffscreen())
+
+		return {
+			id,
+			src,
+			pageNum: pageNum,
+			pageCount: pdf.numPages,
+			type
+		}
 	} catch (error) {
 		console.log(error)
 	}

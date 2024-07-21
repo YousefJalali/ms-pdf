@@ -124,18 +124,28 @@
 	{#each $preview as pageId}
 		{#if $thumbnails[pageId]}
 			<div class="border [&>img]:min-h-[600px] [&>img]:mx-auto">
-				{#if $thumbnails[pageId].thumbnail.status === 'loading'}
+				{#if $thumbnails[pageId].preview.status === 'loaded'}
+					<img
+						src={URL.createObjectURL($thumbnails[pageId].preview.src)}
+						alt={`preview page ${String($pageNum[pageId]).split(',')[0]} of ${doc.name}`}
+					/>
+				{:else}
+					<div class="min-h-[600px] flex justify-center items-center">
+						<span class="loading loading-infinity loading-lg"></span>
+					</div>
+				{/if}
+				<!-- {#if $thumbnails[pageId].thumbnail.status === 'loading'}
 					<div class="min-h-[600px] flex justify-center items-center">
 						<span class="loading loading-infinity loading-lg"></span>
 					</div>
 				{:else if $thumbnails[pageId].preview.status === 'loading'}
-					<img src={$thumbnails[pageId].thumbnail.src} alt={`${page.pageNum}`} />
+					<enhanced:img src={$thumbnails[pageId].thumbnail.src} alt={`${page.pageNum}`} />
 				{:else}
-					<img
+					<enhanced:img
 						src={$thumbnails[pageId].preview.src}
 						alt={`preview page ${String($pageNum[pageId]).split(',')[0]} of ${doc.name}`}
 					/>
-				{/if}
+				{/if} -->
 			</div>
 		{/if}
 	{/each}

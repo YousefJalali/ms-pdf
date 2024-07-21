@@ -34,7 +34,7 @@ export type Thumbnail = {
 			  }
 			| {
 					status: 'loaded'
-					src: string
+					src: Blob
 			  }
 
 		preview:
@@ -44,7 +44,7 @@ export type Thumbnail = {
 			  }
 			| {
 					status: 'loaded'
-					src: string
+					src: Blob
 			  }
 	}
 }
