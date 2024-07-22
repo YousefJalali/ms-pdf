@@ -1,40 +1,12 @@
 <script lang="ts">
-	import Modal from '../../../components/Modal.svelte'
-	import { docs, pages, thumbnails, preview, pageNum } from '../../../stores'
+	import { docs, pages, preview } from '../../../stores'
 	import type { Doc, Page } from '../../../types'
 
 	export let doc: Doc
 	export let page: Page
-	export let pageIndex: number
 
-	let showModal = false
-
-	async function zoomHandler() {
+	function showPreview() {
 		preview.add(page.pageId)
-		if (!page.loadPreview) {
-			pages.loadPreview(page.pageId)
-		}
-
-		if (pageIndex !== $pages.length - 1) {
-			for (let i = pageIndex + 1; i < $pages.length; i++) {
-				let p = $pages[i]
-				if (!p.pageVisible) {
-					preview.add(p.pageId)
-
-					if (!p.file) {
-						await pages.loadPage(doc.doc, p.pageId, doc.name, p.pageNum)
-					}
-
-					if (!p.loadPreview) {
-						pages.loadPreview(p.pageId)
-					}
-				} else {
-					break
-				}
-			}
-		}
-
-		showModal = true
 	}
 
 	const zoom = `<svg
@@ -94,7 +66,7 @@
 <div class="absolute top-0 left-0 w-full hidden group-hover:flex p-2 py-3">
 	<div class="bg-neutral text-neutral-content shadow w-fit mx-auto join join-horizontal">
 		<div class="tooltip tooltip-bottom join-item flex-1" data-tip="Zoom">
-			<button class="btn btn-sm btn-ghost" on:click={zoomHandler}>{@html zoom}</button>
+			<button class="btn btn-sm btn-ghost" on:click={showPreview}>{@html zoom}</button>
 		</div>
 
 		{#if !doc.showPages && doc.pageCount > 1}
@@ -119,34 +91,3 @@
 
 	<!-- <button>{@html rotate}</button> -->
 </div>
-
-<Modal bind:showModal on:close={() => preview.clear()}>
-	{#each $preview as pageId}
-		{#if $thumbnails[pageId]}
-			<div class="border [&>img]:min-h-[600px] [&>img]:mx-auto">
-				{#if $thumbnails[pageId].preview.status === 'loaded'}
-					<img
-						src={URL.createObjectURL($thumbnails[pageId].preview.src)}
-						alt={`preview page ${String($pageNum[pageId]).split(',')[0]} of ${doc.name}`}
-					/>
-				{:else}
-					<div class="min-h-[600px] flex justify-center items-center">
-						<span class="loading loading-infinity loading-lg"></span>
-					</div>
-				{/if}
-				<!-- {#if $thumbnails[pageId].thumbnail.status === 'loading'}
-					<div class="min-h-[600px] flex justify-center items-center">
-						<span class="loading loading-infinity loading-lg"></span>
-					</div>
-				{:else if $thumbnails[pageId].preview.status === 'loading'}
-					<enhanced:img src={$thumbnails[pageId].thumbnail.src} alt={`${page.pageNum}`} />
-				{:else}
-					<enhanced:img
-						src={$thumbnails[pageId].preview.src}
-						alt={`preview page ${String($pageNum[pageId]).split(',')[0]} of ${doc.name}`}
-					/>
-				{/if} -->
-			</div>
-		{/if}
-	{/each}
-</Modal>

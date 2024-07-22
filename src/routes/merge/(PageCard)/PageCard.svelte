@@ -40,6 +40,6 @@
 		</div>
 		<!-- <canvas bind:this={canvases[page.docId]} id={page.docId} height="1" width="1"></canvas> -->
 
-		<PageCardActions {doc} {page} {pageIndex} />
+		<PageCardActions {doc} {page} />
 	</div>
 {/if}

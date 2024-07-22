@@ -3,6 +3,7 @@
 	import SideBar from './(SideBard)/SideBar.svelte'
 	import DropZone from './DropZone.svelte'
 	import MergedDoc from './MergedDoc.svelte'
+	import Preview from './Preview.svelte'
 
 	// let scrollY: number
 	// $: scrollY = scrollY
@@ -39,6 +40,7 @@
 	{:else}
 		{#if $pages.length}
 			<DropZone />
+			<Preview />
 		{/if}
 
 		<SideBar />
