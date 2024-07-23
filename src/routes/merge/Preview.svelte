@@ -73,11 +73,11 @@
 				</div>
 			{/if}
 
-			{#if doc && currentPage}
+			<!-- {#if doc && currentPage}
 				<div class="absolute top-6 left-1/2 -translate-x-1/2">
 					<Actions {doc} page={currentPage} from="preview" on:delete={deleteHandler} />
 				</div>
-			{/if}
+			{/if} -->
 			<!-- {#if $images[pageId].thumbnail.status === 'loading'}
 					<div class="min-h-[600px] flex justify-center items-center">
 						<span class="loading loading-infinity loading-lg"></span>
