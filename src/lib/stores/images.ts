@@ -8,6 +8,7 @@ export const images: Readable<Image> = derived(
 	($st, set, update) => {
 		let hasNewItem = false
 		let removedPages = { ...get(images) }
+		let hasLoadPreview = false
 
 		Promise.allSettled([
 			//load thumbnail
@@ -19,6 +20,12 @@ export const images: Readable<Image> = derived(
 					delete removedPages[page.pageId]
 				}
 
+				//if one page has load preview, the block of loading previews will be run
+				if (page.loadPreview) {
+					hasLoadPreview = true
+				}
+
+				//add key to $images
 				if (!get(images)[page.pageId]) {
 					hasNewItem = true
 					let newImage: Image = {
@@ -27,44 +34,56 @@ export const images: Readable<Image> = derived(
 							large: null
 						}
 					}
-					update((thumb) => ({
-						...thumb,
+					update((images) => ({
+						...images,
 						...newImage
 					}))
+
 					return getPageAsBlob(page.file, page.pageId)
 				}
 
 				return []
+
+				//load file if there is
+				// if (page.file && !get(images)[page.pageId].small) {
+				// 	hasNewItem = true
+				// 	return getPageAsBlob(page.file, page.pageId)
+				// } else {
+				// 	return []
+				// }
 			}),
 
 			//load preview
-			...$st.map((page) => {
-				if (!page.file || !get(images)[page.pageId]) return []
+			...(hasLoadPreview
+				? $st.map((page) => {
+						if (!page.file || !get(images)[page.pageId]) return []
 
-				if (page.loadPreview && !get(images)[page.pageId].large) {
-					hasNewItem = true
-					return getPageAsBlob(page.file, page.pageId, 1, 'large')
-				}
+						if (page.loadPreview && !get(images)[page.pageId].large) {
+							hasNewItem = true
+							return getPageAsBlob(page.file, page.pageId, 1, 'large')
+						}
 
-				return []
-			})
+						return []
+					})
+				: [])
 		]).then((value) => {
-			if (hasNewItem) {
+			if (hasNewItem || hasLoadPreview) {
 				value.forEach((v) => {
 					if (v.status === 'fulfilled' && v.value && Object.keys(v.value).length) {
 						//@ts-ignore
 						const { id, src, type } = v.value
 
-						update((thumb) => ({
-							...thumb,
+						update((images: Image) => ({
+							...images,
 							[id]: {
-								...get(images)[id],
+								...images[id],
 								[type]: src
 							}
 						}))
 					}
 				})
 				hasNewItem = false
+				hasLoadPreview = false
 			}
 
 			//remove images of removed pages
