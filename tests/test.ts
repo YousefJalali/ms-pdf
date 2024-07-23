@@ -87,3 +87,34 @@ test(
 		await expect(page.getByAltText(`preview page 1 of ${twoPages}`)).toBeHidden()
 	}
 )
+
+test('show & hide pages', async ({ page }) => {
+	let twoPages = 'two_pages.pdf'
+	await page.goto('/merge')
+	//upload pdf
+	await page.getByTestId('upload doc').setInputFiles(`./tests/${twoPages}`)
+
+	//second page should be hidden
+	await expect(page.locator('[data-testid="drop zone"]>div').nth(1)).toBeHidden()
+
+	//click on more button
+	await page.getByTestId('doc list').first().getByRole('button').click()
+
+	//dropdown should be visible
+	await expect(page.locator('[data-testid="doc list"] .dropdown-content')).toBeVisible()
+
+	//show pages
+	await page.locator('[data-testid="doc list"] .dropdown-content').getByLabel('Show Pages').check()
+
+	//second page should be visible
+	await expect(page.locator('[data-testid="drop zone"]>div').nth(1)).toBeVisible()
+
+	//hide pages
+	await page
+		.locator('[data-testid="doc list"] .dropdown-content')
+		.getByLabel('Show Pages')
+		.uncheck()
+
+	//second page should be hidden
+	await expect(page.locator('[data-testid="drop zone"]>div').nth(1)).toBeHidden()
+})
