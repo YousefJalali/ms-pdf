@@ -62,23 +62,27 @@
 			Your PDF files have been successfully combined into a single document. You can preview the
 			merged PDF below.
 		</p>
-		<div class="mx-auto border broder-base-300 flex flex-col w-[300px] h-[450px] overflow-y-scroll">
+		<div
+			class="mx-auto border broder-base-300 w-[300px] h-[450px] overflow-y-scroll [&>img]:mx-auto [&>img]:m-0 divide-y-2"
+		>
 			{#each $pages as page}
-				{#if $images[page.pageId]?.large}
-					<img
-						class="h-full object-contain"
-						src={URL.createObjectURL($images[page.pageId].large)}
-						alt="merged"
-					/>
-				{:else if $images[page.pageId]?.small}
-					<img
-						class="h-full object-contain"
-						src={URL.createObjectURL($images[page.pageId].small)}
-						alt="merged"
-					/>
-				{:else}
-					<div>loading...</div>
-				{/if}
+				<div class="h-[450px] flex justify-center items-center">
+					{#if $images[page.pageId]?.large}
+						<img
+							class="h-full object-contain"
+							src={URL.createObjectURL($images[page.pageId].large)}
+							alt="merged"
+						/>
+					{:else if $images[page.pageId]?.small}
+						<img
+							class="h-full object-contain"
+							src={URL.createObjectURL($images[page.pageId].small)}
+							alt="merged"
+						/>
+					{:else}
+						loading...
+					{/if}
+				</div>
 			{/each}
 		</div>
 
