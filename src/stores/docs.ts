@@ -30,7 +30,7 @@ function handleFiles() {
 			pages.add(pageId, docId, i, i === 0 ? true : false)
 
 			if (i === 0) {
-				pages.loadPage(doc, pageId, newDoc.name, i)
+				pages.loadPage(pageId)
 			}
 		}
 	}

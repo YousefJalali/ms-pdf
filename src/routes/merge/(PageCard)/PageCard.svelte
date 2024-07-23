@@ -1,11 +1,10 @@
 <script lang="ts">
-	import { docs, pageNum } from '../../../stores'
+	import { docs, pageNum, pages } from '../../../stores'
 	import type { Page } from '../../../types'
-	import PageCardActions from './PageCardActions.svelte'
+	import Actions from '../Actions.svelte'
 	import PageCardThumbnail from './PageCardThumbnail.svelte'
 
 	export let page: Page
-	export let pageIndex: number
 
 	$: doc = $docs[page.docId]
 	$: pageNumber = $pageNum[page.pageId]
@@ -40,6 +39,8 @@
 		</div>
 		<!-- <canvas bind:this={canvases[page.docId]} id={page.docId} height="1" width="1"></canvas> -->
 
-		<PageCardActions {doc} {page} />
+		<div class="absolute top-0 left-0 w-full p-2 py-3 hidden group-hover:flex mx-auto">
+			<Actions {doc} {page} on:delete={() => pages.removePage(page.pageId)} />
+		</div>
 	</div>
 {/if}

@@ -94,7 +94,7 @@
 				animate:flip={{ duration: flipDurationMs }}
 			>
 				{#if page.pageVisible}
-					<PageCard {page} {pageIndex} />
+					<PageCard {page} />
 				{/if}
 			</div>
 		{/each}

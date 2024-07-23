@@ -1,12 +1,21 @@
 <script lang="ts">
-	import { docs, pages, preview } from '../../../stores'
-	import type { Doc, Page } from '../../../types'
+	import { createEventDispatcher } from 'svelte'
+	import { docs, pages, preview } from '../../stores'
+	import type { Doc, Page } from '../../types'
 
 	export let doc: Doc
 	export let page: Page
 
+	export let from: 'card' | 'preview' = 'card'
+
 	function showPreview() {
 		preview.add(page.pageId)
+	}
+
+	const dispatch = createEventDispatcher()
+
+	function onDelete() {
+		dispatch('delete')
 	}
 
 	const zoom = `<svg
@@ -63,31 +72,27 @@
 
 <!-- flex h-fit min-h-10 justify-around bg-base-200 *:text-neutral w-full [&>button]:btn [&>button]:btn-xs [&>button]:btn-circle -->
 
-<div class="absolute top-0 left-0 w-full hidden group-hover:flex p-2 py-3">
-	<div class="bg-neutral text-neutral-content shadow w-fit mx-auto join join-horizontal">
-		<div class="tooltip tooltip-bottom join-item flex-1" data-tip="Zoom">
+<div class="bg-neutral text-neutral-content shadow w-fit mx-auto join join-horizontal">
+	{#if from === 'card'}
+		<div class="tooltip tooltip-bottom join-item flex-1" data-tip="Preview">
 			<button class="btn btn-sm btn-ghost" on:click={showPreview}>{@html zoom}</button>
 		</div>
 
-		{#if !doc.showPages && doc.pageCount > 1}
+		<!-- {#if !doc.showPages && doc.pageCount > 1}
 			<div class="tooltip tooltip-bottom join-item flex-1" data-tip="Show Pages">
 				<button class="btn btn-sm btn-ghost" on:click={() => docs.toggleShowPages(page.docId)}
 					>{@html split}
 				</button>
 			</div>
-		{/if}
+		{/if} -->
+	{/if}
 
-		<div
-			class="tooltip tooltip-bottom join-item flex-1"
-			data-tip={doc.pageCount <= 1 || doc.showPages ? 'Delete Page' : 'Delete Document'}
-		>
-			<button
-				class="btn btn-sm btn-ghost !text-error"
-				on:click={() => pages.removePage(page.pageId)}
-				>{@html trash}
-			</button>
-		</div>
+	<div
+		class="tooltip tooltip-bottom join-item flex-1"
+		data-tip={doc.pageCount <= 1 || doc.showPages ? 'Delete Page' : 'Delete Document'}
+	>
+		<button class="btn btn-sm btn-ghost !text-error" on:click={onDelete}>{@html trash} </button>
 	</div>
-
-	<!-- <button>{@html rotate}</button> -->
 </div>
+
+<!-- <button>{@html rotate}</button> -->

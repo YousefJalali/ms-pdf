@@ -21,8 +21,13 @@ function handlePages() {
 		update((pages) => [...pages, newPage])
 	}
 
-	async function loadPage(doc: PDF, pageId: string, docName: string, pageNum: number) {
-		let p = await getFile(doc, docName, pageNum)
+	async function loadPage(pageId: string) {
+		let page = get(pages).find((page) => page.pageId === pageId)
+		if (!page) return
+
+		let { doc, name } = get(docs)[page.docId]
+
+		let p = await getFile(doc, name, page.pageNum)
 		update((pages) =>
 			pages.map((page) => (page.pageId === pageId ? { ...page, file: p.file } : page))
 		)
@@ -42,7 +47,7 @@ function handlePages() {
 		for (let page of get(pages)) {
 			if (page.docId === docId) {
 				if (!page.file) {
-					loadPage(doc.doc, page.pageId, doc.name, page.pageNum)
+					loadPage(page.pageId)
 				}
 				update((pages) =>
 					pages.map((p) => (p.pageId === page.pageId ? { ...p, pageVisible: true } : p))
@@ -78,28 +83,28 @@ function handlePages() {
 		pages.set(p)
 	}
 
-	function removePage(pageId: string) {
+	function removePage(pageId: string, onePageOnly = false) {
 		let curPages = [...get(pages)]
 
-		let indexOfCurrentPage = curPages.findIndex((page) => page.pageId === pageId)
+		let pageIndex = curPages.findIndex((page) => page.pageId === pageId)
 
-		let docId = curPages[indexOfCurrentPage].docId
-
-		curPages.splice(indexOfCurrentPage, 1)
+		let docId = curPages[pageIndex].docId
 
 		let count = 1
 
-		//not last page
-		if (indexOfCurrentPage !== curPages.length) {
-			while (curPages.length > 0) {
-				if (!curPages[indexOfCurrentPage].pageVisible) {
-					curPages.splice(indexOfCurrentPage, 1)
+		//include next invisible pages
+
+		if (!onePageOnly) {
+			for (let i = pageIndex + 1; i < curPages.length; i++) {
+				if (!curPages[i].pageVisible) {
 					count++
 				} else {
 					break
 				}
 			}
 		}
+
+		curPages.splice(pageIndex, count)
 
 		set(curPages)
 
@@ -120,7 +125,7 @@ function handlePages() {
 			for (const page of get(pages)) {
 				if (!page.file) {
 					let { doc, name } = get(docs)[page.docId]
-					await loadPage(doc, page.pageId, name, page.pageNum)
+					await loadPage(page.pageId)
 				}
 			}
 

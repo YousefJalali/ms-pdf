@@ -17,15 +17,13 @@ function handlePreview() {
 			pages.loadPreview(pageId)
 		}
 
-		if (pageIndex !== get(pages).length - 1) {
-			for (let i = pageIndex + 1; i < get(pages).length; i++) {
-				let p = get(pages)[i]
+		for (let i = pageIndex + 1; i < get(pages).length; i++) {
+			let p = get(pages)[i]
 
-				if (!p.pageVisible) {
-					preview.add(p.pageId)
-				} else {
-					break
-				}
+			if (!p.pageVisible) {
+				preview.add(p.pageId)
+			} else {
+				break
 			}
 		}
 	}
@@ -49,8 +47,7 @@ function handlePreview() {
 		if (!page) return
 
 		if (!page.file) {
-			let doc = get(docs)[page.docId]
-			await pages.loadPage(doc.doc, page.pageId, doc.name, page.pageNum)
+			await pages.loadPage(page.pageId)
 		}
 
 		if (!page.loadPreview) {
@@ -58,12 +55,29 @@ function handlePreview() {
 		}
 	}
 
+	function remove(pageId: string) {
+		update((ids) => ids.filter((id) => id !== pageId))
+	}
+
+	function clear() {
+		let previews = [...get(preview)]
+
+		if (previews.length > 1) {
+			for (let i = 1; i < previews.length; i++) {
+				// pages.setPageVisibility(previews[i], false)
+			}
+		}
+
+		set([])
+	}
+
 	return {
 		subscribe,
 		add,
 		next,
 		prev,
-		clear: () => set([])
+		remove,
+		clear
 	}
 }
 
