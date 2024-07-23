@@ -3,6 +3,8 @@ import { randomColor, getPdf } from '../utils'
 import { v4 as uuidv4 } from 'uuid'
 import type { Doc } from '../types'
 import { pages } from './pages'
+import { preview } from './preview'
+import { mergedPdf } from './mergedPdf'
 
 function handleFiles() {
 	const { subscribe, set, update } = writable<{ [docId: string]: Doc }>({})
@@ -73,6 +75,8 @@ function handleFiles() {
 	function reset() {
 		set({})
 		pages.set([])
+		preview.clear()
+		mergedPdf.reset()
 	}
 
 	return {

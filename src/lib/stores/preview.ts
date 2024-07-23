@@ -60,13 +60,13 @@ function handlePreview() {
 	}
 
 	function clear() {
-		let previews = [...get(preview)]
+		// let previews = [...get(preview)]
 
-		if (previews.length > 1) {
-			for (let i = 1; i < previews.length; i++) {
-				// pages.setPageVisibility(previews[i], false)
-			}
-		}
+		// if (previews.length > 1) {
+		// 	for (let i = 1; i < previews.length; i++) {
+		// 		// pages.setPageVisibility(previews[i], false)
+		// 	}
+		// }
 
 		set([])
 	}
