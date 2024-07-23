@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { FileInput } from '$lib/ui'
-	import { docs, pages } from '$lib/stores'
+	import { docs, mergedPdf, pages } from '$lib/stores'
 	import SideBarList from './SideBarList.svelte'
 
 	let files: FileList | null
@@ -41,7 +41,11 @@
 		</p>
 	</div>
 
-	<div class={`flex flex-col ${$pages.length ? 'h-full' : ''}`}>
+	<div class={`relative flex flex-col ${$pages.length ? 'h-full' : ''}`}>
+		{#if $pages.length && $mergedPdf.loading}
+			<div class="absolute top-0 left-0 w-full h-full z-20 cursor-not-allowed" />
+		{/if}
+
 		<!-- input -->
 		<div>
 			{#if $pages.length}
@@ -74,9 +78,17 @@
 				>Add more documents to merge</span
 			>
 
-			<button on:click={pages.merge} class="btn btn-primary w-full" disabled={$pages.length < 2}
-				>Merge</button
+			<button
+				on:click={pages.merge}
+				class="btn btn-primary w-full"
+				disabled={$pages.length < 2 || $mergedPdf.loading}
 			>
+				{#if $mergedPdf.loading}
+					<span class="loading loading-spinner"></span>Merging...
+				{:else}
+					Merge
+				{/if}
+			</button>
 		</div>
 	{/if}
 </div>

@@ -149,6 +149,7 @@ function handlePages() {
 			})
 
 			mergedPdf.setSrc(URL.createObjectURL(blob))
+			mergedPdf.setLoading(false)
 		} catch (error) {
 			mergedPdf.setLoading(false)
 			console.log(error)

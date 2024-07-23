@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { dndzone, TRIGGERS } from 'svelte-dnd-action'
 	import { flip } from 'svelte/animate'
-	import { pages } from '$lib/stores'
+	import { mergedPdf, pages } from '$lib/stores'
 	import PageCard from './(PageCard)/PageCard.svelte'
 	import type { Page } from '$lib/types'
 
@@ -81,6 +81,20 @@
 <div
 	class="relative w-full h-full overflow-y-scroll flex-auto bg-base-100 border-2 border-dashed border-base-300 rounded-xl"
 >
+	{#if $mergedPdf.loading}
+		<div class="absolute top-0 left-0 w-full h-full z-20">
+			<div class="absolute top-0 left-0 w-full h-full bg-base-300 opacity-50" />
+			<div class="prose relative h-full text-center flex flex-col justify-center items-center">
+				<span class="loading loading-infinity loading-lg"></span>
+				<h1>Merging Your PDFs...</h1>
+				<p>
+					Your PDF files are currently being combined into a single document. This may take a
+					moment. Please wait while the process completes.
+				</p>
+			</div>
+		</div>
+	{/if}
+
 	<div
 		class="flex flex-wrap gap-8 w-full p-4"
 		use:dndzone={{ items: $pages, flipDurationMs }}
