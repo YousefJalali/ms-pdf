@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Page } from '../../../types'
-	import { docs, images } from '../../../stores'
+	import type { Page } from '$lib/types'
+	import { docs, images } from '$lib/stores'
 
 	export let page: Page
 

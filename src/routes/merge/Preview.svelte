@@ -1,6 +1,6 @@
 <script>
-	import Modal from '../../components/Modal.svelte'
-	import { preview, images, pageNum, pages, docs } from '../../stores'
+	import { Modal } from '$lib/ui'
+	import { preview, images, pageNum, pages, docs } from '$lib/stores'
 	import Actions from './Actions.svelte'
 
 	let index = 0
@@ -58,6 +58,12 @@
 			{#if $images[currentPageId].large}
 				<img
 					src={URL.createObjectURL($images[currentPageId].large)}
+					alt={`preview page ${pageNumber} of ${doc?.name || ''}`}
+					class="border"
+				/>
+			{:else if $images[currentPageId].small}
+				<img
+					src={URL.createObjectURL($images[currentPageId].small)}
 					alt={`preview page ${pageNumber} of ${doc?.name || ''}`}
 					class="border"
 				/>

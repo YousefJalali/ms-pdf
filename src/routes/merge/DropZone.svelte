@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { dndzone, TRIGGERS } from 'svelte-dnd-action'
 	import { flip } from 'svelte/animate'
-	import { pages } from '../../stores/'
+	import { pages } from '$lib/stores'
 	import PageCard from './(PageCard)/PageCard.svelte'
-	import type { Page } from '../../types'
+	import type { Page } from '$lib/types'
 
 	function moveItem(arr: Page[], fromIndex: number, toIndex: number) {
 		var element = arr[fromIndex]

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { clickOutside, formatBytes } from '../../../utils'
-	import { docs } from '../../../stores'
+	import { clickOutside, formatBytes } from '$lib/utils'
+	import { docs } from '$lib/stores'
 
 	let showList: null | string = null
 

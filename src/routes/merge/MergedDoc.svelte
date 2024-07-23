@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { docs, mergedPdf, pages, images } from '../../stores/'
+	import { docs, mergedPdf, pages, images } from '$lib/stores'
 
 	let downloaded = false
 	let preparingLink = false

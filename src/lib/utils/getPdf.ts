@@ -1,4 +1,4 @@
-import { getInputAsUint8Array } from '../utils'
+import { getInputAsUint8Array } from '.'
 import { PDFDocument } from 'pdf-lib'
 
 export async function getPdf(file: File) {

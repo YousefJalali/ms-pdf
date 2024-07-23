@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { mergedPdf, pages } from '../../stores/'
+	import { mergedPdf, pages } from '$lib/stores'
 	import SideBar from './(SideBard)/SideBar.svelte'
 	import DropZone from './DropZone.svelte'
 	import MergedDoc from './MergedDoc.svelte'

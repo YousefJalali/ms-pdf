@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { docs, pageNum, pages } from '../../../stores'
-	import type { Page } from '../../../types'
+	import { docs, pageNum, pages } from '$lib/stores'
+	import type { Page } from '$lib/types'
 	import Actions from '../Actions.svelte'
 	import PageCardThumbnail from './PageCardThumbnail.svelte'
 
