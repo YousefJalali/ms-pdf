@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { docs, mergedPdf, pages, thumbnails } from '../../stores/'
+	import { docs, mergedPdf, pages, images } from '../../stores/'
 
 	let downloaded = false
 	let preparingLink = false
@@ -64,18 +64,20 @@
 		</p>
 		<div class="mx-auto border broder-base-300 flex flex-col w-[300px] h-[450px] overflow-y-scroll">
 			{#each $pages as page}
-				{#if $thumbnails[page.pageId].preview.status === 'loading'}
+				{#if $images[page.pageId]?.large}
 					<img
 						class="h-full object-contain"
-						src={$thumbnails[page.pageId].thumbnail.src}
+						src={URL.createObjectURL($images[page.pageId].large)}
+						alt="merged"
+					/>
+				{:else if $images[page.pageId]?.small}
+					<img
+						class="h-full object-contain"
+						src={URL.createObjectURL($images[page.pageId].small)}
 						alt="merged"
 					/>
 				{:else}
-					<img
-						class="h-full object-contain"
-						src={$thumbnails[page.pageId].preview.src}
-						alt="merged"
-					/>
+					<div>loading...</div>
 				{/if}
 			{/each}
 		</div>

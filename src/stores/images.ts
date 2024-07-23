@@ -1,35 +1,35 @@
 import { derived, get, type Readable } from 'svelte/store'
 import { getPageAsBlob } from '../utils'
-import type { Thumbnail } from '../types'
+import type { Image } from '../types'
 import { pages } from './pages'
 
-export const thumbnails: Readable<Thumbnail> = derived(
+export const images: Readable<Image> = derived(
 	pages,
 	($st, set, update) => {
 		let hasNewItem = false
-		let removedPages = { ...get(thumbnails) }
+		let removedPages = { ...get(images) }
 
 		Promise.allSettled([
 			//load thumbnail
 			...$st.map((page) => {
 				if (!page.file) return []
 
-				//remove thumbnails of removed pages
+				//remove images of removed pages
 				if (removedPages[page.pageId]) {
 					delete removedPages[page.pageId]
 				}
 
-				if (!get(thumbnails)[page.pageId]) {
+				if (!get(images)[page.pageId]) {
 					hasNewItem = true
-					let newThumbnail: Thumbnail = {
+					let newImage: Image = {
 						[page.pageId]: {
-							thumbnail: { status: 'loading', src: null },
-							preview: { status: 'loading', src: null }
+							small: null,
+							large: null
 						}
 					}
 					update((thumb) => ({
 						...thumb,
-						...newThumbnail
+						...newImage
 					}))
 					return getPageAsBlob(page.file, page.pageId)
 				}
@@ -39,11 +39,11 @@ export const thumbnails: Readable<Thumbnail> = derived(
 
 			//load preview
 			...$st.map((page) => {
-				if (!page.file || !get(thumbnails)[page.pageId]) return []
+				if (!page.file || !get(images)[page.pageId]) return []
 
-				if (page.loadPreview && !get(thumbnails)[page.pageId].preview.src) {
+				if (page.loadPreview && !get(images)[page.pageId].large) {
 					hasNewItem = true
-					return getPageAsBlob(page.file, page.pageId, 1, 'preview')
+					return getPageAsBlob(page.file, page.pageId, 1, 'large')
 				}
 
 				return []
@@ -58,8 +58,8 @@ export const thumbnails: Readable<Thumbnail> = derived(
 						update((thumb) => ({
 							...thumb,
 							[id]: {
-								...get(thumbnails)[id],
-								[type]: { status: 'loaded', src: src }
+								...get(images)[id],
+								[type]: src
 							}
 						}))
 					}
@@ -67,9 +67,9 @@ export const thumbnails: Readable<Thumbnail> = derived(
 				hasNewItem = false
 			}
 
-			//remove thumbnails of removed pages
+			//remove images of removed pages
 			if (Object.keys(removedPages).length) {
-				let temp = { ...get(thumbnails) }
+				let temp = { ...get(images) }
 				for (let key in removedPages) {
 					delete temp[key]
 				}

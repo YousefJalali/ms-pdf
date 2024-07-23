@@ -4,14 +4,14 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
 	import.meta.url
 ).toString()
 
-const PREVIEW_HEIGHT = 600
-const THUMBNAIL_HEIGHT = 200
+const LARGE = 600
+const SMALL = 200
 
 export async function getPageAsBlob(
 	file: File,
 	id: string,
 	pageNum = 1,
-	type: 'thumbnail' | 'preview' = 'thumbnail'
+	type: 'small' | 'large' = 'small'
 ) {
 	// let startTime = performance.now()
 	let loadingTask = pdfjsLib.getDocument(URL.createObjectURL(file))
@@ -21,9 +21,7 @@ export async function getPageAsBlob(
 
 		let page = await pdf.getPage(pageNum)
 
-		const scale =
-			(type === 'thumbnail' ? THUMBNAIL_HEIGHT : PREVIEW_HEIGHT) /
-			page.getViewport({ scale: 1 }).height
+		const scale = (type === 'small' ? SMALL : LARGE) / page.getViewport({ scale: 1 }).height
 		const viewport = page.getViewport({ scale })
 
 		// const canvas = document.getElementById(id) as HTMLCanvasElement

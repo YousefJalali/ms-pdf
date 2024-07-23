@@ -1,6 +1,6 @@
 <script>
 	import Modal from '../../components/Modal.svelte'
-	import { preview, thumbnails, pageNum, pages, docs } from '../../stores'
+	import { preview, images, pageNum, pages, docs } from '../../stores'
 	import Actions from './Actions.svelte'
 
 	let index = 0
@@ -53,11 +53,11 @@
 		</div>
 	</div>
 
-	{#if $thumbnails[currentPageId]}
+	{#if $images[currentPageId]}
 		<div class="border border-transparent w-fit [&>img]:min-h-[600px] mx-auto">
-			{#if $thumbnails[currentPageId].preview.status === 'loaded'}
+			{#if $images[currentPageId].large}
 				<img
-					src={URL.createObjectURL($thumbnails[currentPageId].preview.src)}
+					src={URL.createObjectURL($images[currentPageId].large)}
 					alt={`preview page ${pageNumber} of ${doc?.name || ''}`}
 					class="border"
 				/>
@@ -72,15 +72,15 @@
 					<Actions {doc} page={currentPage} from="preview" on:delete={deleteHandler} />
 				</div>
 			{/if}
-			<!-- {#if $thumbnails[pageId].thumbnail.status === 'loading'}
+			<!-- {#if $images[pageId].thumbnail.status === 'loading'}
 					<div class="min-h-[600px] flex justify-center items-center">
 						<span class="loading loading-infinity loading-lg"></span>
 					</div>
-				{:else if $thumbnails[pageId].preview.status === 'loading'}
-					<enhanced:img src={$thumbnails[pageId].thumbnail.src} alt={`${page.pageNum}`} />
+				{:else if $images[pageId].preview.status === 'loading'}
+					<enhanced:img src={$images[pageId].thumbnail.src} alt={`${page.pageNum}`} />
 				{:else}
 					<enhanced:img
-						src={$thumbnails[pageId].preview.src}
+						src={$images[pageId].preview.src}
 						alt={`preview page ${String($pageNum[pageId]).split(',')[0]} of ${doc.name}`}
 					/>
 				{/if} -->

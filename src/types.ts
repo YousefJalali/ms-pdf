@@ -25,27 +25,10 @@ export type Page = {
 	loadPreview: boolean
 }
 
-export type Thumbnail = {
+export type Image = {
 	[key: string]: {
-		thumbnail:
-			| {
-					status: 'loading' | 'failed'
-					src: null
-			  }
-			| {
-					status: 'loaded'
-					src: Blob
-			  }
-
-		preview:
-			| {
-					status: 'loading' | 'failed'
-					src: null
-			  }
-			| {
-					status: 'loaded'
-					src: Blob
-			  }
+		small: Blob | null
+		large: Blob | null
 	}
 }
 
