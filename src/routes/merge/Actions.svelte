@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte'
-	import { preview } from '$lib/stores'
+	import { pages, preview } from '$lib/stores'
 	import type { Doc, Page } from '$lib/types'
 
 	export let doc: Doc
@@ -89,10 +89,17 @@
 
 	<div
 		class="tooltip tooltip-bottom join-item flex-1"
+		data-tip={doc.pageCount <= 1 || doc.showPages ? 'Rotate Page' : 'Rotate Document'}
+	>
+		<button class="btn btn-sm btn-ghost" on:click={() => pages.rotate(page.pageId, 90)}
+			>{@html rotate}</button
+		>
+	</div>
+
+	<div
+		class="tooltip tooltip-bottom join-item flex-1"
 		data-tip={doc.pageCount <= 1 || doc.showPages ? 'Delete Page' : 'Delete Document'}
 	>
 		<button class="btn btn-sm btn-ghost !text-error" on:click={onDelete}>{@html trash} </button>
 	</div>
 </div>
-
-<!-- <button>{@html rotate}</button> -->

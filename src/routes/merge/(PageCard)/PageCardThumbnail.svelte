@@ -4,12 +4,15 @@
 
 	export let page: Page
 
+	console.log(page.rotationDegree)
+
 	$: thumbnail = $images[page.pageId]?.small
 </script>
 
 {#if thumbnail}
 	<img
-		class="shadow mx-auto"
+		class="border mx-auto"
+		style="transform: rotate({page.rotationDegree || 0}deg);"
 		src={URL.createObjectURL(thumbnail)}
 		alt={$docs[page.docId].name}
 		height={200}

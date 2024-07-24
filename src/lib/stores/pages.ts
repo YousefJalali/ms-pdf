@@ -5,14 +5,8 @@ import { docs } from './docs'
 function handlePages() {
 	const { subscribe, set, update } = writable<Page[]>([])
 
-	type NewPage = {
-		pageId: string
-		docId: string
-		pageNum: number
-		pageVisible: boolean
-		loadThumbnail: boolean
-	}
-	function add({ pageId, docId, pageNum, pageVisible, loadThumbnail }: NewPage) {
+	type NewPage = Omit<Page, 'id' | 'loadPreview' | 'rotationDegree'>
+	function add({ pageId, docId, pageNum, pageVisible, loadThumbnail, initialRotation }: NewPage) {
 		let newPage: Page = {
 			id: pageId,
 			pageId,
@@ -20,9 +14,34 @@ function handlePages() {
 			pageNum,
 			pageVisible,
 			loadPreview: false,
-			loadThumbnail
+			loadThumbnail,
+			initialRotation,
+			rotationDegree: undefined
 		}
 		update((pages) => [...pages, newPage])
+	}
+
+	function rotate(pageId: string, degree: number) {
+		const allPages = [...get(pages)]
+
+		let found = false
+		for (let page of allPages) {
+			if (found) {
+				if (!page.pageVisible) {
+					page.rotationDegree =
+						page.rotationDegree === 270 ? 0 : (page.rotationDegree || 0) + degree
+				} else {
+					break
+				}
+			}
+
+			if (page.pageId === pageId) {
+				page.rotationDegree = page.rotationDegree === 270 ? 0 : (page.rotationDegree || 0) + degree
+				found = true
+			}
+		}
+
+		set(allPages)
 	}
 
 	async function loadThumbnail(pageId: string) {
@@ -117,7 +136,8 @@ function handlePages() {
 		showPages,
 		hidePages,
 		removePage,
-		removeDocPages
+		removeDocPages,
+		rotate
 	}
 }
 

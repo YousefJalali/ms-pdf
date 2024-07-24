@@ -1,11 +1,11 @@
 import { get, writable } from 'svelte/store'
 import { randomColor, getPdfPage, getInputAsUint8Array } from '../utils'
 import { v4 as uuidv4 } from 'uuid'
-import type { Doc } from '../types'
+import type { Doc, PDFPage } from '../types'
 import { pages } from './pages'
 import { preview } from './preview'
 import { mergedPdf } from './mergedPdf'
-import { PDFDocument } from 'pdf-lib'
+import { PDFDocument, degrees } from 'pdf-lib'
 
 function handleFiles() {
 	const { subscribe, set, update } = writable<{ [docId: string]: Doc }>({})
@@ -23,7 +23,7 @@ function handleFiles() {
 
 		let pageIds = new Array(pageCount).fill(0).map((p) => uuidv4())
 
-		let pagesPdfProxy = {}
+		let pagesPdfProxy: { [pageId: string]: PDFPage } = {}
 
 		for (let i = 0; i < pageIds.length; i++) {
 			pagesPdfProxy = {
@@ -52,7 +52,8 @@ function handleFiles() {
 				docId,
 				pageNum: i,
 				pageVisible: i === 0 ? true : false,
-				loadThumbnail: i === 0 ? true : false
+				loadThumbnail: i === 0 ? true : false,
+				initialRotation: pagesPdfProxy[pageIds[i]].rotate
 			})
 		}
 	}
@@ -103,32 +104,37 @@ function handleFiles() {
 
 		const allPages = [...get(pages)]
 		const allDocs = { ...get(docs) }
-		let docPages: { [docId: string]: number[] } = {}
+		let docPages: {
+			[docId: string]: { pageNumber: number[]; pageRotation: (number | undefined)[] }
+		} = {}
 
 		try {
 			let merger = await PDFDocument.create()
 
 			for (let page of allPages) {
-				if (!page.loadThumbnail) {
-					pages.loadThumbnail(page.pageId)
-				}
-				if (!page.loadPreview) {
-					pages.loadPreview(page.pageId)
-				}
+				if (!page.loadThumbnail) pages.loadThumbnail(page.pageId)
+				if (!page.loadPreview) pages.loadPreview(page.pageId)
 
-				if (!docPages[page.docId]) {
-					docPages[page.docId] = []
-				}
-				docPages[page.docId].push(page.pageNum)
+				if (!docPages[page.docId]) docPages[page.docId] = { pageNumber: [], pageRotation: [] }
+				docPages[page.docId].pageNumber.push(page.pageNum)
+				docPages[page.docId].pageRotation.push(
+					page.rotationDegree ? page.rotationDegree + page.initialRotation : undefined
+				)
 			}
+
+			console.log(docPages)
 
 			for (let docId in docPages) {
 				let src = await getInputAsUint8Array(allDocs[docId].file)
 				let pdfDoc = await PDFDocument.load(src)
-				const copiedPages = await merger.copyPages(pdfDoc, docPages[docId])
+				const copiedPages = await merger.copyPages(pdfDoc, docPages[docId].pageNumber)
 
-				for (let page of copiedPages) {
-					merger.addPage(page)
+				for (let [index, copiedPage] of copiedPages.entries()) {
+					let rotation = docPages[docId].pageRotation[index]
+					if (rotation) {
+						copiedPage.setRotation(degrees(rotation))
+					}
+					merger.addPage(copiedPage)
 				}
 			}
 

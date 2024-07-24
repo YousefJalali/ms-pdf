@@ -70,6 +70,7 @@
 					{#if $images[page.pageId]?.large}
 						<img
 							class="h-full object-contain"
+							style="transform: rotate({page.rotationDegree}deg);"
 							src={URL.createObjectURL($images[page.pageId].large)}
 							alt="merged"
 						/>

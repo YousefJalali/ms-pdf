@@ -1,7 +1,7 @@
 <script>
 	import { Modal } from '$lib/ui'
 	import { preview, images, pageNum, pages, docs } from '$lib/stores'
-	import Actions from './Actions.svelte'
+	// import Actions from './Actions.svelte'
 
 	let index = 0
 	$: currentPageId = $preview[index]
@@ -53,16 +53,18 @@
 		</div>
 	</div>
 
-	{#if $images[currentPageId]}
+	{#if $images[currentPageId] && currentPage}
 		<div class="border border-transparent w-fit [&>img]:min-h-[600px] mx-auto">
 			{#if $images[currentPageId].large}
 				<img
+					style="transform: rotate({currentPage.rotationDegree}deg);"
 					src={URL.createObjectURL($images[currentPageId].large)}
 					alt={`preview page ${pageNumber} of ${doc?.name || ''}`}
 					class="border"
 				/>
 			{:else if $images[currentPageId].small}
 				<img
+					style="transform: rotate({currentPage.rotationDegree}deg);"
 					src={URL.createObjectURL($images[currentPageId].small)}
 					alt={`preview page ${pageNumber} of ${doc?.name || ''}`}
 					class="border"

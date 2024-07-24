@@ -28,6 +28,8 @@ export type Page = {
 	pageVisible: boolean
 	loadThumbnail: boolean
 	loadPreview: boolean
+	initialRotation: number
+	rotationDegree: number | undefined
 }
 
 export type Image = {
