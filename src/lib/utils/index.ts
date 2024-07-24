@@ -1,7 +1,6 @@
 export { getInputAsUint8Array } from './getInputAsUint8Array'
 export * from './getPageAsBlob'
 export * from './randomColor'
-export { getFile } from './getFile'
-export { getPdf } from './getPdf'
 export { formatBytes } from './formatBytes'
 export { clickOutside } from './clickOutside'
+export { getPdfPage } from './getPdfPage'

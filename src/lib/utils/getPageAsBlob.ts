@@ -1,26 +1,14 @@
-import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs'
-pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-	'pdfjs-dist/build/pdf.worker.min.mjs',
-	import.meta.url
-).toString()
+import type { PDFPageProxy } from 'pdfjs-dist'
 
 const LARGE = 600
 const SMALL = 200
 
 export async function getPageAsBlob(
-	file: File,
-	id: string,
-	pageNum = 1,
+	page: PDFPageProxy,
+	pageId: string,
 	type: 'small' | 'large' = 'small'
 ) {
-	// let startTime = performance.now()
-	let loadingTask = pdfjsLib.getDocument(URL.createObjectURL(file))
 	try {
-		let pdf = await loadingTask.promise
-		// console.log('PDF loaded')
-
-		let page = await pdf.getPage(pageNum)
-
 		const scale = (type === 'small' ? SMALL : LARGE) / page.getViewport({ scale: 1 }).height
 		const viewport = page.getViewport({ scale })
 
@@ -43,12 +31,9 @@ export async function getPageAsBlob(
 
 		const src = await new Promise((resolve) => canvas.toBlob(resolve, 'image/webp'))
 
-		// console.log('Page rendered')
-
 		return {
-			id,
+			pageId,
 			src,
-			pageNum: pageNum,
 			type
 		}
 	} catch (error) {

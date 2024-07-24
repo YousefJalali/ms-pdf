@@ -1,6 +1,5 @@
 import { get, writable } from 'svelte/store'
 import { pages } from './pages'
-import { docs } from './docs'
 
 function handlePreview() {
 	const { set, update, subscribe } = writable<string[]>([])
@@ -46,8 +45,8 @@ function handlePreview() {
 
 		if (!page) return
 
-		if (!page.file) {
-			await pages.loadPage(page.pageId)
+		if (!page.loadThumbnail) {
+			await pages.loadThumbnail(page.pageId)
 		}
 
 		if (!page.loadPreview) {

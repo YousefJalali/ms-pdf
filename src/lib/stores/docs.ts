@@ -1,5 +1,5 @@
 import { get, writable } from 'svelte/store'
-import { randomColor, getPdf } from '../utils'
+import { randomColor, getPdfPage } from '../utils'
 import { v4 as uuidv4 } from 'uuid'
 import type { Doc } from '../types'
 import { pages } from './pages'
@@ -11,16 +11,16 @@ function handleFiles() {
 
 	async function add(file: File) {
 		let docId = uuidv4()
-		let doc = await getPdf(file)
+		let pdfPages = await getPdfPage(file)
+
+		if (!pdfPages) throw 'Failed loading doc'
 
 		let newDoc: Doc = {
 			docId,
 			name: file.name,
 			size: file.size,
-			file,
-			doc,
 			showPages: false,
-			pageCount: doc.getPageCount(),
+			pageCount: pdfPages.length,
 			color: randomColor()
 		}
 
@@ -29,11 +29,14 @@ function handleFiles() {
 		for (let i = 0; i < newDoc.pageCount; i++) {
 			let pageId = uuidv4()
 
-			pages.add(pageId, docId, i, i === 0 ? true : false)
-
-			if (i === 0) {
-				pages.loadPage(pageId)
-			}
+			pages.add({
+				pageId,
+				docId,
+				pdfPage: pdfPages[i],
+				pageNum: 0,
+				pageVisible: i === 0 ? true : false,
+				loadThumbnail: i === 0 ? true : false
+			})
 		}
 	}
 

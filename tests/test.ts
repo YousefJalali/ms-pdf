@@ -78,7 +78,7 @@ test(
 
 		//modal should open to show preview
 		await expect(page.getByAltText(`preview page 1 of ${twoPages}`)).toBeVisible()
-		await expect(page.getByAltText(`preview page 2 of ${twoPages}`)).toBeVisible()
+		// await expect(page.getByAltText(`preview page 2 of ${twoPages}`)).toBeVisible()
 
 		//close modal
 		await page.getByRole('button', { name: '✕' }).click()

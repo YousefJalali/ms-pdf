@@ -1,6 +1,6 @@
 import { get, writable } from 'svelte/store'
-import { getInputAsUint8Array, getFile } from '../utils'
-import type { PDF, Page } from '../types'
+import { getInputAsUint8Array } from '../utils'
+import type { PDFPage, Page } from '../types'
 import { docs } from './docs'
 import { PDFDocument } from 'pdf-lib'
 import { mergedPdf } from './mergedPdf'
@@ -8,28 +8,31 @@ import { mergedPdf } from './mergedPdf'
 function handlePages() {
 	const { subscribe, set, update } = writable<Page[]>([])
 
-	function add(pageId: string, docId: string, pageNum: number, pageVisible: boolean) {
+	type NewPage = {
+		pageId: string
+		docId: string
+		pageNum: number
+		pageVisible: boolean
+		pdfPage: PDFPage
+		loadThumbnail: boolean
+	}
+	function add({ pageId, docId, pageNum, pdfPage, pageVisible, loadThumbnail }: NewPage) {
 		let newPage: Page = {
 			id: pageId,
 			pageId,
 			docId,
 			pageNum,
+			pdfPage,
 			pageVisible,
-			file: null,
-			loadPreview: false
+			loadPreview: false,
+			loadThumbnail
 		}
 		update((pages) => [...pages, newPage])
 	}
 
-	async function loadPage(pageId: string) {
-		let page = get(pages).find((page) => page.pageId === pageId)
-		if (!page) return
-
-		let { doc, name } = get(docs)[page.docId]
-
-		let p = await getFile(doc, name, page.pageNum)
+	async function loadThumbnail(pageId: string) {
 		update((pages) =>
-			pages.map((page) => (page.pageId === pageId ? { ...page, file: p.file } : page))
+			pages.map((page) => (page.pageId === pageId ? { ...page, loadThumbnail: true } : page))
 		)
 	}
 
@@ -44,16 +47,22 @@ function handlePages() {
 
 		if (doc.pageCount <= 1) return
 
-		for (let page of get(pages)) {
-			if (page.docId === docId) {
-				if (!page.file) {
-					loadPage(page.pageId)
-				}
-				update((pages) =>
-					pages.map((p) => (p.pageId === page.pageId ? { ...p, pageVisible: true } : p))
-				)
-			}
-		}
+		update((pages) =>
+			pages.map((page) =>
+				page.docId === docId ? { ...page, pageVisible: true, loadThumbnail: true } : page
+			)
+		)
+
+		// for (let page of get(pages)) {
+		// 	if (page.docId === docId) {
+		// 		if (!page.loadThumbnail) {
+		// 			loadThumbnail(page.pageId)
+		// 		}
+		// 		update((pages) =>
+		// 			pages.map((p) => (p.pageId === page.pageId ? { ...p, pageVisible: true } : p))
+		// 		)
+		// 	}
+		// }
 	}
 
 	async function hidePages(docId: string) {
@@ -122,17 +131,17 @@ function handlePages() {
 			let merger = await PDFDocument.create()
 
 			//load pages
-			for (const page of get(pages)) {
-				if (!page.file) {
-					let { doc, name } = get(docs)[page.docId]
-					await loadPage(page.pageId)
-				}
-			}
+			// for (const page of get(pages)) {
+			// 	if (!page.file) {
+			// 		let { doc, name } = get(docs)[page.docId]
+			// 		await loadPage(page.pageId)
+			// 	}
+			// }
 
 			for (const page of get(pages)) {
 				loadPreview(page.pageId)
 
-				let src = await getInputAsUint8Array(page.file)
+				let src = await getInputAsUint8Array(page.pdfPage)
 				let pdfDoc = await PDFDocument.load(src)
 
 				let indices = pdfDoc.getPageIndices()
@@ -161,7 +170,7 @@ function handlePages() {
 		set,
 		update,
 		add,
-		loadPage,
+		loadThumbnail,
 		loadPreview,
 		showPages,
 		hidePages,

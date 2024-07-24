@@ -13,7 +13,7 @@ export const images: Readable<Image> = derived(
 		Promise.allSettled([
 			//load thumbnail
 			...$st.map((page) => {
-				if (!page.file) return []
+				if (!page.loadThumbnail) return []
 
 				//remove images of removed pages
 				if (removedPages[page.pageId]) {
@@ -39,7 +39,7 @@ export const images: Readable<Image> = derived(
 						...newImage
 					}))
 
-					return getPageAsBlob(page.file, page.pageId)
+					return getPageAsBlob(page.pdfPage, page.pageId)
 				}
 
 				return []
@@ -56,27 +56,28 @@ export const images: Readable<Image> = derived(
 			//load preview
 			...(hasLoadPreview
 				? $st.map((page) => {
-						if (!page.file || !get(images)[page.pageId]) return []
+						if (!page.loadThumbnail || !get(images)[page.pageId]) return []
 
 						if (page.loadPreview && !get(images)[page.pageId].large) {
 							hasNewItem = true
-							return getPageAsBlob(page.file, page.pageId, 1, 'large')
+							return getPageAsBlob(page.pdfPage, page.pageId, 'large')
 						}
 
 						return []
 					})
 				: [])
 		]).then((value) => {
+			let img = { ...get(images) }
 			if (hasNewItem || hasLoadPreview) {
 				value.forEach((v) => {
 					if (v.status === 'fulfilled' && v.value && Object.keys(v.value).length) {
 						//@ts-ignore
-						const { id, src, type } = v.value
+						const { pageId, src, type } = v.value
 
 						update((images: Image) => ({
 							...images,
-							[id]: {
-								...images[id],
+							[pageId]: {
+								...images[pageId],
 								[type]: src
 							}
 						}))

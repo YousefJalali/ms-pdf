@@ -1,6 +1,8 @@
-import type { PDFDocument } from 'pdf-lib'
+// import type { PDFDocument } from 'pdf-lib'
+import type { PDFPageProxy } from 'pdfjs-dist'
 
-export type PDF = PDFDocument
+// export type PDF = PDFDocument
+export type PDFPage = PDFPageProxy
 
 export type Docs = { [docId: string]: Doc }
 
@@ -8,8 +10,6 @@ export type Doc = {
 	docId: string
 	name: string
 	size: number
-	file: File
-	doc: PDF
 	pageCount: number
 	showPages: boolean
 	color: string
@@ -20,8 +20,9 @@ export type Page = {
 	pageId: string
 	docId: string
 	pageNum: number
+	pdfPage: PDFPage
 	pageVisible: boolean
-	file: File | null
+	loadThumbnail: boolean
 	loadPreview: boolean
 }
 
