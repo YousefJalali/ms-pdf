@@ -103,22 +103,29 @@ function handleFiles() {
 
 		const allPages = [...get(pages)]
 		const allDocs = { ...get(docs) }
-		let temp: { [docId: string]: number[] } = {}
+		let docPages: { [docId: string]: number[] } = {}
 
 		try {
 			let merger = await PDFDocument.create()
 
 			for (let page of allPages) {
-				if (!temp[page.docId]) {
-					temp[page.docId] = []
+				if (!page.loadThumbnail) {
+					pages.loadThumbnail(page.pageId)
 				}
-				temp[page.docId].push(page.pageNum)
+				if (!page.loadPreview) {
+					pages.loadPreview(page.pageId)
+				}
+
+				if (!docPages[page.docId]) {
+					docPages[page.docId] = []
+				}
+				docPages[page.docId].push(page.pageNum)
 			}
 
-			for (let docId in temp) {
+			for (let docId in docPages) {
 				let src = await getInputAsUint8Array(allDocs[docId].file)
 				let pdfDoc = await PDFDocument.load(src)
-				const copiedPages = await merger.copyPages(pdfDoc, temp[docId])
+				const copiedPages = await merger.copyPages(pdfDoc, docPages[docId])
 
 				for (let page of copiedPages) {
 					merger.addPage(page)
