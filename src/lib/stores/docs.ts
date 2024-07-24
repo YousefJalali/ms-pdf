@@ -1,39 +1,56 @@
 import { get, writable } from 'svelte/store'
-import { randomColor, getPdfPage } from '../utils'
+import { randomColor, getPdfPage, getInputAsUint8Array } from '../utils'
 import { v4 as uuidv4 } from 'uuid'
 import type { Doc } from '../types'
 import { pages } from './pages'
 import { preview } from './preview'
 import { mergedPdf } from './mergedPdf'
+import { PDFDocument } from 'pdf-lib'
 
 function handleFiles() {
 	const { subscribe, set, update } = writable<{ [docId: string]: Doc }>({})
 
 	async function add(file: File) {
 		let docId = uuidv4()
-		let pdfPages = await getPdfPage(file)
 
-		if (!pdfPages) throw 'Failed loading doc'
+		let res = await getPdfPage(file)
+
+		if (!res) throw 'Failed loading doc'
+
+		let { pdfPages, destroy } = res
+
+		let pageCount = pdfPages.length
+
+		let pageIds = new Array(pageCount).fill(0).map((p) => uuidv4())
+
+		let pagesPdfProxy = {}
+
+		for (let i = 0; i < pageIds.length; i++) {
+			pagesPdfProxy = {
+				...pagesPdfProxy,
+				[pageIds[i]]: pdfPages[i]
+			}
+		}
 
 		let newDoc: Doc = {
 			docId,
+			file,
 			name: file.name,
 			size: file.size,
 			showPages: false,
-			pageCount: pdfPages.length,
-			color: randomColor()
+			pageCount,
+			color: randomColor(),
+			destroyDoc: destroy,
+			pagesPdfProxy
 		}
 
 		update((docs) => ({ ...docs, [docId]: newDoc }))
 
-		for (let i = 0; i < newDoc.pageCount; i++) {
-			let pageId = uuidv4()
-
+		for (let i = 0; i < pageIds.length; i++) {
 			pages.add({
-				pageId,
+				pageId: pageIds[i],
 				docId,
-				pdfPage: pdfPages[i],
-				pageNum: 0,
+				pageNum: i,
 				pageVisible: i === 0 ? true : false,
 				loadThumbnail: i === 0 ? true : false
 			})
@@ -55,12 +72,18 @@ function handleFiles() {
 		}
 	}
 
-	function removeDoc(docId: string) {
-		let d = { ...get(docs) }
-		delete d[docId]
+	async function removeDoc(docId: string) {
+		let destroyed = await get(docs)[docId].destroyDoc()
 
-		set(d)
-		pages.removeDocPages(docId)
+		let d = { ...get(docs) }
+
+		if (destroyed) {
+			delete d[docId]
+
+			set(d)
+
+			pages.removeDocPages(docId)
+		}
 	}
 
 	function decreasePageCount(docId: string, numOfPages: number) {
@@ -69,14 +92,64 @@ function handleFiles() {
 		d[docId].pageCount = d[docId].pageCount - numOfPages
 
 		if (d[docId].pageCount < 1) {
-			delete d[docId]
+			removeDoc(docId)
 		}
 
 		set(d)
 	}
 
+	async function merge() {
+		mergedPdf.setLoading(true)
+
+		const allPages = [...get(pages)]
+		const allDocs = { ...get(docs) }
+		let temp: { [docId: string]: number[] } = {}
+
+		try {
+			let merger = await PDFDocument.create()
+
+			for (let page of allPages) {
+				if (!temp[page.docId]) {
+					temp[page.docId] = []
+				}
+				temp[page.docId].push(page.pageNum)
+			}
+
+			for (let docId in temp) {
+				let src = await getInputAsUint8Array(allDocs[docId].file)
+				let pdfDoc = await PDFDocument.load(src)
+				const copiedPages = await merger.copyPages(pdfDoc, temp[docId])
+
+				for (let page of copiedPages) {
+					merger.addPage(page)
+				}
+			}
+
+			const merged = await merger.save()
+			let blob = new Blob([merged], {
+				type: 'application/pdf'
+			})
+
+			mergedPdf.setSrc(URL.createObjectURL(blob))
+
+			mergedPdf.setLoading(false)
+		} catch (error) {
+			mergedPdf.setLoading(false)
+			console.log(error)
+		}
+	}
+
+	async function destroyAllDocs() {
+		let removedDocs = []
+		for (let docId in get(docs)) {
+			removedDocs.push(await get(docs)[docId].destroyDoc())
+		}
+
+		await Promise.all(removedDocs)
+	}
+
 	function reset() {
-		set({})
+		docs.set({})
 		pages.set([])
 		preview.clear()
 		mergedPdf.reset()
@@ -91,6 +164,8 @@ function handleFiles() {
 		removeDoc,
 		decreasePageCount,
 		split: (docId: string) => {},
+		merge,
+		destroyAllDocs,
 		reset
 	}
 }

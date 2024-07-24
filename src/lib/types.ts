@@ -13,6 +13,11 @@ export type Doc = {
 	pageCount: number
 	showPages: boolean
 	color: string
+	file: File
+	destroyDoc: () => Promise<boolean>
+	pagesPdfProxy: {
+		[pageId: string]: PDFPage
+	}
 }
 
 export type Page = {
@@ -20,7 +25,6 @@ export type Page = {
 	pageId: string
 	docId: string
 	pageNum: number
-	pdfPage: PDFPage
 	pageVisible: boolean
 	loadThumbnail: boolean
 	loadPreview: boolean

@@ -6,6 +6,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
 
 export async function getPdfPage(file: File) {
 	let loadingTask = pdfjsLib.getDocument(URL.createObjectURL(file))
+
 	try {
 		let pdf = await loadingTask.promise
 
@@ -14,7 +15,19 @@ export async function getPdfPage(file: File) {
 			pages.push(pdf.getPage(i))
 		}
 
-		return Promise.all(pages)
+		let pdfPages = await Promise.all(pages)
+
+		return {
+			pdfPages,
+			destroy: async () => {
+				pdfPages.forEach((p) => {
+					p.cleanup()
+				})
+				await pdf.destroy()
+				// await loadingTask.destroy()
+				return loadingTask.destroyed
+			}
+		}
 	} catch (error) {
 		console.log(error)
 	}

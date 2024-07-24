@@ -2,6 +2,7 @@ import { derived, get, type Readable } from 'svelte/store'
 import { getPageAsBlob } from '../utils'
 import type { Image } from '../types'
 import { pages } from './pages'
+import { docs } from './docs'
 
 export const images: Readable<Image> = derived(
 	pages,
@@ -13,12 +14,14 @@ export const images: Readable<Image> = derived(
 		Promise.allSettled([
 			//load thumbnail
 			...$st.map((page) => {
-				if (!page.loadThumbnail) return []
-
 				//remove images of removed pages
 				if (removedPages[page.pageId]) {
 					delete removedPages[page.pageId]
 				}
+
+				if (!page.loadThumbnail || !get(docs)[page.docId]) return []
+
+				let pdfProxy = get(docs)[page.docId].pagesPdfProxy[page.pageId]
 
 				//if one page has load preview, the block of loading previews will be run
 				if (page.loadPreview) {
@@ -39,35 +42,29 @@ export const images: Readable<Image> = derived(
 						...newImage
 					}))
 
-					return getPageAsBlob(page.pdfPage, page.pageId)
+					return getPageAsBlob(pdfProxy, page.pageId)
 				}
 
 				return []
-
-				//load file if there is
-				// if (page.file && !get(images)[page.pageId].small) {
-				// 	hasNewItem = true
-				// 	return getPageAsBlob(page.file, page.pageId)
-				// } else {
-				// 	return []
-				// }
 			}),
 
 			//load preview
 			...(hasLoadPreview
 				? $st.map((page) => {
-						if (!page.loadThumbnail || !get(images)[page.pageId]) return []
+						if (!page.loadThumbnail || !get(images)[page.pageId] || !get(docs)[page.docId])
+							return []
+
+						let pdfProxy = get(docs)[page.docId].pagesPdfProxy[page.pageId]
 
 						if (page.loadPreview && !get(images)[page.pageId].large) {
 							hasNewItem = true
-							return getPageAsBlob(page.pdfPage, page.pageId, 'large')
+							return getPageAsBlob(pdfProxy, page.pageId, 'large')
 						}
 
 						return []
 					})
 				: [])
 		]).then((value) => {
-			let img = { ...get(images) }
 			if (hasNewItem || hasLoadPreview) {
 				value.forEach((v) => {
 					if (v.status === 'fulfilled' && v.value && Object.keys(v.value).length) {

@@ -79,7 +79,7 @@
 			>
 
 			<button
-				on:click={pages.merge}
+				on:click={docs.merge}
 				class="btn btn-primary w-full"
 				disabled={$pages.length < 2 || $mergedPdf.loading}
 			>

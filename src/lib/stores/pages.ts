@@ -1,9 +1,6 @@
 import { get, writable } from 'svelte/store'
-import { getInputAsUint8Array } from '../utils'
-import type { PDFPage, Page } from '../types'
+import type { Page } from '../types'
 import { docs } from './docs'
-import { PDFDocument } from 'pdf-lib'
-import { mergedPdf } from './mergedPdf'
 
 function handlePages() {
 	const { subscribe, set, update } = writable<Page[]>([])
@@ -13,16 +10,14 @@ function handlePages() {
 		docId: string
 		pageNum: number
 		pageVisible: boolean
-		pdfPage: PDFPage
 		loadThumbnail: boolean
 	}
-	function add({ pageId, docId, pageNum, pdfPage, pageVisible, loadThumbnail }: NewPage) {
+	function add({ pageId, docId, pageNum, pageVisible, loadThumbnail }: NewPage) {
 		let newPage: Page = {
 			id: pageId,
 			pageId,
 			docId,
 			pageNum,
-			pdfPage,
 			pageVisible,
 			loadPreview: false,
 			loadThumbnail
@@ -52,17 +47,6 @@ function handlePages() {
 				page.docId === docId ? { ...page, pageVisible: true, loadThumbnail: true } : page
 			)
 		)
-
-		// for (let page of get(pages)) {
-		// 	if (page.docId === docId) {
-		// 		if (!page.loadThumbnail) {
-		// 			loadThumbnail(page.pageId)
-		// 		}
-		// 		update((pages) =>
-		// 			pages.map((p) => (p.pageId === page.pageId ? { ...p, pageVisible: true } : p))
-		// 		)
-		// 	}
-		// }
 	}
 
 	async function hidePages(docId: string) {
@@ -102,7 +86,6 @@ function handlePages() {
 		let count = 1
 
 		//include next invisible pages
-
 		if (!onePageOnly) {
 			for (let i = pageIndex + 1; i < curPages.length; i++) {
 				if (!curPages[i].pageVisible) {
@@ -124,47 +107,6 @@ function handlePages() {
 		update((pages) => pages.filter((page) => page.docId !== docId))
 	}
 
-	async function merge() {
-		mergedPdf.setLoading(true)
-
-		try {
-			let merger = await PDFDocument.create()
-
-			//load pages
-			// for (const page of get(pages)) {
-			// 	if (!page.file) {
-			// 		let { doc, name } = get(docs)[page.docId]
-			// 		await loadPage(page.pageId)
-			// 	}
-			// }
-
-			for (const page of get(pages)) {
-				loadPreview(page.pageId)
-
-				let src = await getInputAsUint8Array(page.pdfPage)
-				let pdfDoc = await PDFDocument.load(src)
-
-				let indices = pdfDoc.getPageIndices()
-				const copiedPages = await merger.copyPages(pdfDoc, indices)
-
-				for (let page of copiedPages) {
-					merger.addPage(page)
-				}
-			}
-
-			const merged = await merger.save()
-			let blob = new Blob([merged], {
-				type: 'application/pdf'
-			})
-
-			mergedPdf.setSrc(URL.createObjectURL(blob))
-			mergedPdf.setLoading(false)
-		} catch (error) {
-			mergedPdf.setLoading(false)
-			console.log(error)
-		}
-	}
-
 	return {
 		subscribe,
 		set,
@@ -175,8 +117,7 @@ function handlePages() {
 		showPages,
 		hidePages,
 		removePage,
-		removeDocPages,
-		merge
+		removeDocPages
 	}
 }
 

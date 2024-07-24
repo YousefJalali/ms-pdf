@@ -4,7 +4,7 @@
 	let downloaded = false
 	let preparingLink = false
 
-	function downloadPdf() {
+	async function downloadPdf() {
 		if (!$mergedPdf.src) return
 		preparingLink = true
 
@@ -17,16 +17,16 @@
 		link.click()
 		link.remove()
 
-		setTimeout(() => {
-			preparingLink = false
-			downloaded = true
-		}, 2000)
+		await docs.destroyAllDocs()
+
+		preparingLink = false
+		downloaded = true
+
 		// in case the Blob uses a lot of memory
 		setTimeout(() => URL.revokeObjectURL(link.href), 7000)
 	}
 
 	function reset() {
-		mergedPdf.reset()
 		docs.reset()
 		downloaded = false
 	}
