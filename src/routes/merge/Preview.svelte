@@ -1,6 +1,7 @@
-<script>
+<script lang="ts">
 	import { Modal } from '$lib/ui'
 	import { preview, images, pageNum, pages, docs } from '$lib/stores'
+	import { rotationStyle } from '$lib/utils'
 	// import Actions from './Actions.svelte'
 
 	let index = 0
@@ -57,14 +58,14 @@
 		<div class="border border-transparent w-fit [&>img]:min-h-[600px] mx-auto">
 			{#if $images[currentPageId].large}
 				<img
-					style="transform: rotate({currentPage.rotationDegree}deg);"
+					style={rotationStyle(currentPage)}
 					src={URL.createObjectURL($images[currentPageId].large)}
 					alt={`preview page ${pageNumber} of ${doc?.name || ''}`}
 					class="border"
 				/>
 			{:else if $images[currentPageId].small}
 				<img
-					style="transform: rotate({currentPage.rotationDegree}deg);"
+					style={rotationStyle(currentPage)}
 					src={URL.createObjectURL($images[currentPageId].small)}
 					alt={`preview page ${pageNumber} of ${doc?.name || ''}`}
 					class="border"

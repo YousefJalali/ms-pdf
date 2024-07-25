@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Page } from '$lib/types'
 	import { docs, images } from '$lib/stores'
+	import { rotationStyle } from '$lib/utils'
 
 	export let page: Page
 
@@ -12,7 +13,7 @@
 {#if thumbnail}
 	<img
 		class="border mx-auto"
-		style="transform: rotate({page.rotationDegree || 0}deg);"
+		style={rotationStyle(page)}
 		src={URL.createObjectURL(thumbnail)}
 		alt={$docs[page.docId].name}
 		height={200}
