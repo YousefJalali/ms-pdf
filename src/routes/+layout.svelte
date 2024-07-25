@@ -41,10 +41,17 @@
 						<li>
 							<a
 								href="/{path}"
-								class="capitalize {$page.url.pathname === '/' + path ? 'active' : ''}">{path}</a
+								class="capitalize {$page.url.pathname === '/' + path ? 'active' : ''}">{path} PDF</a
 							>
 						</li>
 					{/each}
+					<li>
+						<a
+							href="/pdf-to-jpg"
+							class="capitalize {$page.url.pathname === '/' + 'pdf-to-jpg' ? 'active' : ''}"
+							>PDF to JPG</a
+						>
+					</li>
 				</ul>
 			</nav>
 		</header>
