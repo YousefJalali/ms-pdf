@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Page } from '$lib/types'
+	import type { Page } from '$lib/types/merge'
 	import { docs, images } from '$lib/stores/merge'
 	import { rotationStyle } from '$lib/utils'
 

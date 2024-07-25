@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte'
 	import { pages, preview } from '$lib/stores/merge'
-	import type { Doc, Page } from '$lib/types'
+	import type { Doc, Page } from '$lib/types/merge'
 
 	export let doc: Doc
 	export let page: Page
