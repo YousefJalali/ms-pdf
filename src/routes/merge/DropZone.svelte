@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { dndzone, TRIGGERS } from 'svelte-dnd-action'
 	import { flip } from 'svelte/animate'
-	import { mergedPdf, pages } from '$lib/stores'
+	import { mergedPdf, pages } from '$lib/stores/merge'
 	import PageCard from './(PageCard)/PageCard.svelte'
 	import type { Page } from '$lib/types'
 

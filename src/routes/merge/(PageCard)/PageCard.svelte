@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { docs, pageNum, pages } from '$lib/stores'
+	import { docs, pageNum, pages } from '$lib/stores/merge'
 	import type { Page } from '$lib/types'
 	import Actions from '../Actions.svelte'
 	import PageCardThumbnail from './PageCardThumbnail.svelte'

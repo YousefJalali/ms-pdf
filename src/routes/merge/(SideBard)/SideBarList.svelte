@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { clickOutside, formatBytes } from '$lib/utils'
-	import { docs } from '$lib/stores'
+	import { docs } from '$lib/stores/merge'
 
 	let showList: null | string = null
 

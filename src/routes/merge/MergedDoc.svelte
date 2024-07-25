@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { docs, mergedPdf, pages, images } from '$lib/stores'
+	import { docs, mergedPdf, pages, images } from '$lib/stores/merge'
 	import { rotationStyle } from '$lib/utils'
 
 	let downloaded = false

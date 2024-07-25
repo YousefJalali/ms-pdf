@@ -1,6 +1,6 @@
 import { derived, get, type Readable } from 'svelte/store'
-import { getPageAsBlob } from '../utils'
-import type { Image } from '../types'
+import { getPageAsBlob } from '$lib/utils'
+import type { Image } from '$lib/types'
 import { pages } from './pages'
 import { docs } from './docs'
 

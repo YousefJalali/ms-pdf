@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Modal } from '$lib/ui'
-	import { preview, images, pageNum, pages, docs } from '$lib/stores'
+	import { preview, images, pageNum, pages, docs } from '$lib/stores/merge'
 	import { rotationStyle } from '$lib/utils'
 	// import Actions from './Actions.svelte'
 

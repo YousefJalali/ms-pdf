@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Page } from '$lib/types'
-	import { docs, images } from '$lib/stores'
+	import { docs, images } from '$lib/stores/merge'
 	import { rotationStyle } from '$lib/utils'
 
 	export let page: Page

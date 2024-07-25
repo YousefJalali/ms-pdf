@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { FileInput } from '$lib/ui'
-	import { docs, mergedPdf, pages } from '$lib/stores'
+	import { docs, mergedPdf, pages } from '$lib/stores/merge'
 	import SideBarList from './SideBarList.svelte'
 
 	let files: FileList | null
