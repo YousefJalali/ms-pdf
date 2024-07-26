@@ -7,9 +7,6 @@
 
 	$: if (files) {
 		for (const file of files) {
-			// console.log(file)
-			// console.log(`${file.name}: ${file.size} bytes`)
-
 			docs.add(file)
 		}
 		files = null

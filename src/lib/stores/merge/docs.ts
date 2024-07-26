@@ -122,8 +122,6 @@ function handleFiles() {
 				)
 			}
 
-			console.log(docPages)
-
 			for (let docId in docPages) {
 				let src = await getInputAsUint8Array(allDocs[docId].file)
 				let pdfDoc = await PDFDocument.load(src)

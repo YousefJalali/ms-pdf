@@ -5,8 +5,6 @@
 
 	export let page: Page
 
-	console.log(page.rotationDegree)
-
 	$: thumbnail = $images[page.pageId]?.small
 </script>
 
