@@ -3,6 +3,21 @@
 	import { DocItem, FileInput } from '$lib/ui'
 	import UploadButton from '$lib/ui/UploadButton.svelte'
 	import { getPageAsBlob } from '$lib/utils'
+	import { writable } from 'svelte/store'
+
+	let selected = writable<{ [pageId: string]: boolean }>({})
+
+	function handleSelected(pageId: string) {
+		let selectedPages = { ...$selected }
+
+		if (selectedPages[pageId]) {
+			delete selectedPages[pageId]
+		} else {
+			selectedPages[pageId] = true
+		}
+
+		selected.set(selectedPages)
+	}
 
 	let files: FileList | null
 
@@ -26,6 +41,8 @@
 
 		for (let doc of Object.values($docs)) {
 			for (let pageId in doc.pagesPdfProxy) {
+				if (Object.keys($selected).length && !$selected[pageId]) continue
+
 				let pagePdf = doc.pagesPdfProxy[pageId]
 				docNames.push(doc.name)
 				blobsPromise.push(getPageAsBlob(pagePdf, pageId, (quality * 4) / 100, true, imageFormat))
@@ -63,6 +80,7 @@
 		downloading = false
 		quality = 75
 		imageFormat = IMAGE_FORMATS[0]
+		selected.set({})
 	}
 </script>
 
@@ -80,34 +98,41 @@
 		</div>
 	{:else if Object.keys($thumbnails).length}
 		<div class="flex gap-8">
-			<div class="grid grid-cols-3 gap-4 bg-base-200 rounded-xl p-4 overflow-y-scroll">
+			<div class="grid grid-cols-3 gap-4 bg-base-200 rounded-2xl p-4 overflow-y-scroll">
 				{#each Object.keys($thumbnails) as pageId}
-					<div>
+					<div class="relative h-fit bg-white rounded-xl">
+						<div class="absolute top-2 right-2">
+							<input
+								type="checkbox"
+								checked={$selected[pageId]}
+								class="checkbox checkbox-secondary"
+								on:change={() => handleSelected(pageId)}
+							/>
+						</div>
+
 						<img
-							class="border rounded-lg w-[200px] h-[200px] object-scale-down"
-							src={URL.createObjectURL($thumbnails[pageId])}
+							class="border rounded-xl w-[200px] h-[200px] object-scale-down"
+							src={URL.createObjectURL($thumbnails[pageId].src)}
 							alt={pageId}
 						/>
+
+						<div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex py-0.5 px-2">
+							<div
+								class="absolute top-0 left-0 h-full w-full rounded-lg"
+								style="background-color: {$docs[$thumbnails[pageId].docId].color};"
+							/>
+							<span class="text-white relative text-xs">Page {$thumbnails[pageId].pageNumber}</span>
+						</div>
 					</div>
-					<!-- <div class="indicator h-fit">
-						<span class="indicator-item indicator-center indicator-middle badge badge-secondary">
-							JPG
-						</span>
-						<img
-							class="border rounded-lg w-[200px] h-[200px] object-scale-down"
-							src={URL.createObjectURL($thumbnails[pageId])}
-							alt={pageId}
-						/>
-					</div> -->
 				{/each}
 			</div>
-			<div class="min-w-80 border flex flex-col rounded-xl p-4">
+			<div class="min-w-80 border flex flex-col rounded-2xl p-4">
 				<div class="mb-4">
 					<UploadButton bind:files />
 				</div>
 
 				<div class="divider divider-center opacity-80 text-sm">Uploaded Docs</div>
-				<ul class="w-full h-0 flex-auto p-0 overflow-y-scroll divide-y" data-testid="doc list">
+				<ul class="w-full h-0 flex-auto p-0 overflow-y-scroll" data-testid="doc list">
 					{#each Object.values($docs) as doc}
 						<DocItem {doc} />
 					{/each}
@@ -159,8 +184,9 @@
 					{#if downloading}
 						<span class="loading loading-spinner"></span>
 					{/if}
-					Download All</button
-				>
+					Download
+					{Object.keys($selected).length ? `Selected (${Object.keys($selected).length})` : 'All'}
+				</button>
 			</div>
 		</div>
 	{:else}

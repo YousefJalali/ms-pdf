@@ -54,7 +54,7 @@ function handleDocs() {
 
 		update((docs) => ({ ...docs, [docId]: newDoc }))
 
-		await thumbnails.add(newDoc.pagesPdfProxy)
+		await thumbnails.add(newDoc.pagesPdfProxy, docId)
 
 		uploadingDocs.set(false)
 	}

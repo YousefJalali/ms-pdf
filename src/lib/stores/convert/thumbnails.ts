@@ -3,9 +3,11 @@ import { getPageAsBlob } from '$lib/utils'
 import { get, writable } from 'svelte/store'
 
 function handleThumbnails() {
-	const { subscribe, set, update } = writable<{ [pageId: string]: Blob }>({})
+	const { subscribe, set, update } = writable<{
+		[pageId: string]: { src: Blob; docId: string; pageNumber: number }
+	}>({})
 
-	async function add(pagesPdfProxy: { [pageId: string]: PDFPage }) {
+	async function add(pagesPdfProxy: { [pageId: string]: PDFPage }, docId: string) {
 		let blobsPromise = []
 
 		for (let pageId in pagesPdfProxy) {
@@ -17,12 +19,19 @@ function handleThumbnails() {
 		let newThumbs = {}
 		if (blobsPromise.length) {
 			let blobs = await Promise.all(blobsPromise)
+			let pageNumber = 1
 			for (let blob of blobs) {
 				if (!(blob instanceof Blob) && blob?.src) {
 					newThumbs = {
 						...newThumbs,
-						[blob.pageId]: blob.src
+						[blob.pageId]: {
+							src: blob.src,
+							docId,
+							pageNumber
+						}
 					}
+
+					pageNumber++
 				}
 			}
 
