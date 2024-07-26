@@ -1,4 +1,5 @@
 <script lang="ts">
+	import chroma from 'chroma-js'
 	import { docs, thumbnails, uploadingDocs } from '$lib/stores/convert'
 	import { DocItem, FileInput } from '$lib/ui'
 	import UploadButton from '$lib/ui/UploadButton.svelte'
@@ -116,12 +117,16 @@
 							alt={pageId}
 						/>
 
-						<div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex py-0.5 px-2">
-							<div
-								class="absolute top-0 left-0 h-full w-full rounded-lg"
-								style="background-color: {$docs[$thumbnails[pageId].docId].color};"
-							/>
-							<span class="text-white relative text-xs">Page {$thumbnails[pageId].pageNumber}</span>
+						<div
+							class="absolute bottom-3 left-1/2 -translate-x-1/2 flex py-0.5 px-2 rounded-xl"
+							style="background-color: {$docs[$thumbnails[pageId].docId].color};"
+						>
+							<span
+								class="text-white relative text-xs"
+								style="color: {chroma.contrast($docs[$thumbnails[pageId].docId].color, '#000') < 6
+									? '#fff'
+									: '#000'};">Page {$thumbnails[pageId].pageNumber}</span
+							>
 						</div>
 					</div>
 				{/each}
@@ -193,10 +198,10 @@
 		<div class="flex flex-col items-center justify-center">
 			<!-- description  -->
 			<div class="mb-8 prose max-w-none">
-				<h1>Convert Your PDFs to JPGs Effortlessly!</h1>
+				<h1>Convert Your PDFs to Images Effortlessly!</h1>
 				<p>
-					Quickly transform your PDF files into high-quality JPG images. Simply upload your
-					documents below, and easily convert single pages or entire PDFs in just a few clicks!
+					Quickly transform your PDF files into high-quality images. Simply upload your documents
+					below, and easily convert single pages or entire PDFs in just a few clicks!
 				</p>
 			</div>
 

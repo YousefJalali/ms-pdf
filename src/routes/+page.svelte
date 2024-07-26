@@ -35,8 +35,8 @@
 				'Easily separate a large PDF into individual pages or custom segments. Whether you need to extract a single page or divide a document into multiple sections.'
 		},
 		{
-			name: 'PDF to JPG',
-			link: '/pdf-to-jpg',
+			name: 'PDF to Image',
+			link: '/pdf-to-image',
 			icon: `<svg xmlns="http://www.w3.org/2000/svg" class="size-10" viewBox="0 0 24 24">
   <g fill="none" fill-rule="evenodd">
     <path fill="#CE2783" d="M17.4364146 11.7314854C16.7464146 11.7314854 16.1864146 11.1714854 16.1864146 10.4814854 16.1864146 9.79148537 16.7464146 9.23148537 17.4364146 9.23148537 18.1264146 9.23148537 18.6864146 9.79148537 18.6864146 10.4814854 18.6864146 11.1714854 18.1264146 11.7314854 17.4364146 11.7314854zM18.0000398 2C18.5452911 2 18.9975289 2.44874022 18.9944807 3.00228933L18.9930547 2.977 18.9873098 3.07225063C18.931014 3.52891738 18.5615969 3.89780435 18.0982622 3.95185402L17.9805987 3.95867592 3.97236763 3.95867592 3.99107817 11.4449328C3.28231562 11.555384 2.61146872 11.7803539 1.99805395 12.100326L2 2.99850233C2 2.44748943 2.44769743 2 2.9999602 2L2.9999602 2z"/>
@@ -47,7 +47,7 @@
 </svg>
 `,
 			description:
-				'Easily convert a large PDF into individual JPG images or custom segments. Whether you need to extract a single page or convert an entire document into multiple high-quality images, our tool makes it simple and efficient.'
+				'Easily convert a large PDF into individual images (JPEG, PNG, WEBP...). Whether you need to extract a single page or convert an entire document into multiple high-quality images, our tool makes it simple and efficient.'
 		},
 		{
 			name: 'Compress PDF',

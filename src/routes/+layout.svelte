@@ -37,7 +37,7 @@
 
 			<nav class="flex-none">
 				<ul class="menu menu-horizontal px-1">
-					{#each ['merge', 'split'] as path}
+					{#each ['merge', 'split', 'compress'] as path}
 						<li>
 							<a
 								href="/{path}"
@@ -47,9 +47,9 @@
 					{/each}
 					<li>
 						<a
-							href="/pdf-to-jpg"
-							class="capitalize {$page.url.pathname === '/' + 'pdf-to-jpg' ? 'active' : ''}"
-							>PDF to JPG</a
+							href="/pdf-to-image"
+							class="capitalize {$page.url.pathname === '/' + 'pdf-to-image' ? 'active' : ''}"
+							>PDF to Image</a
 						>
 					</li>
 				</ul>
