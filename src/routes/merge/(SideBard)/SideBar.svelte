@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { FileInput } from '$lib/ui'
+	import { FileInput, UploadButton } from '$lib/ui'
 	import { docs, mergedPdf, pages } from '$lib/stores/merge'
 	import SideBarList from './SideBarList.svelte'
 
@@ -14,19 +14,6 @@
 		}
 		files = null
 	}
-
-	const plusIcon = `<svg
-							xmlns="http://www.w3.org/2000/svg"
-							viewBox="0 0 24 24"
-							fill="currentColor"
-							class="size-6"
-						>
-							<path
-								fill-rule="evenodd"
-								d="M12 3.75a.75.75 0 0 1 .75.75v6.75h6.75a.75.75 0 0 1 0 1.5h-6.75v6.75a.75.75 0 0 1-1.5 0v-6.75H4.5a.75.75 0 0 1 0-1.5h6.75V4.5a.75.75 0 0 1 .75-.75Z"
-								clip-rule="evenodd"
-							/>
-						</svg>`
 </script>
 
 <div
@@ -49,17 +36,7 @@
 		<!-- input -->
 		<div>
 			{#if $pages.length}
-				<label for="file-input-button">
-					<div class="btn btn-outline btn-primary w-full">{@html plusIcon}Add More Docs</div>
-					<input
-						bind:files
-						type="file"
-						multiple
-						accept="application/pdf"
-						id="file-input-button"
-						class="hidden"
-					/>
-				</label>
+				<UploadButton bind:files />
 			{:else}
 				<FileInput bind:files />
 			{/if}

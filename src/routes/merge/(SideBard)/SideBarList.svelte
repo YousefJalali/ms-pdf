@@ -1,6 +1,7 @@
 <script lang="ts">
-	import { clickOutside, formatBytes } from '$lib/utils'
+	import { clickOutside } from '$lib/utils'
 	import { docs } from '$lib/stores/merge'
+	import DocItem from '$lib/ui/DocItem.svelte'
 
 	let showList: null | string = null
 
@@ -27,24 +28,7 @@
 
 <ul class="w-full h-0 flex-auto mt-3 py-4 overflow-y-scroll divide-y" data-testid="doc list">
 	{#each Object.values($docs) as doc}
-		<li class="relative group flex justify-between gap-2 py-3 px-1">
-			<div>
-				<div class="flex gap-2 text-sm">
-					<div class="h-5 w-fit flex items-center justify-center">
-						<span
-							class="h-3 w-3 shrink-0 grow-0 rounded-full"
-							style="background-color: {doc.color};"
-						/>
-					</div>
-
-					<span class="line-clamp-2 leading-5">{doc.name}</span>
-				</div>
-				<div class="text-xs opacity-60 ml-5">
-					<span>{doc.pageCount} page{doc.pageCount > 1 ? 's' : ''} - </span>
-					<span>{formatBytes(doc.size)}</span>
-				</div>
-			</div>
-
+		<DocItem {doc}>
 			<button class="btn btn-circle btn-sm btn-ghost" on:click={() => (showList = doc.docId)}
 				>{@html more}</button
 			>
@@ -77,6 +61,6 @@
 					</ul>
 				</div>
 			{/if}
-		</li>
+		</DocItem>
 	{/each}
 </ul>
