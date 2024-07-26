@@ -27,7 +27,9 @@
 			style="background-color: {doc.color};"
 		/>
 
-		<PageCardThumbnail {page} />
+		<div class="h-full flex items-center">
+			<PageCardThumbnail {page} />
+		</div>
 
 		<div class="text-center text-sm flex flex-col">
 			<span class="truncate">{doc.name} </span>
