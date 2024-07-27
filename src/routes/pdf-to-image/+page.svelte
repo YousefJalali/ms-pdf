@@ -6,6 +6,7 @@
 	import UploadButton from '$lib/ui/UploadButton.svelte'
 	import { getPageAsBlob } from '$lib/utils'
 	import { writable } from 'svelte/store'
+	import { beforeNavigate } from '$app/navigation'
 
 	let selected = writable<{ [pageId: string]: boolean }>({})
 
@@ -26,6 +27,11 @@
 	let IMAGE_FORMATS: ('jpeg' | 'webp' | 'png')[] = ['jpeg', 'png', 'webp']
 	let quality = 75
 	let imageFormat = IMAGE_FORMATS[0]
+
+	let fileName = `Converted-PDF-${new Date()
+		.toLocaleString()
+		.split(',')[0]
+		.replaceAll('/', '')}-${new Date().toLocaleTimeString().split(' ')[0].replaceAll(':', '')}`
 
 	$: if (files) {
 		for (const file of files) {
@@ -82,7 +88,7 @@
 
 		const link = document.createElement('a')
 		link.href = URL.createObjectURL(blob)
-		link.download = 'pdf images'
+		link.download = fileName
 		document.body.append(link)
 		link.click()
 		link.remove()
@@ -98,7 +104,26 @@
 		quality = 75
 		imageFormat = IMAGE_FORMATS[0]
 		selected.set({})
+		fileName = `Converted-PDF-${new Date()
+			.toLocaleString()
+			.split(',')[0]
+			.replaceAll('/', '')}-${new Date().toLocaleTimeString().split(' ')[0].replaceAll(':', '')}`
 	}
+
+	beforeNavigate(({ cancel }) => {
+		if (Object.keys($docs).length) {
+			if (
+				!confirm(
+					'Are you sure you want to leave this page? You have unsaved changes that will be lost.'
+				)
+			) {
+				cancel()
+			} else {
+				docs.destroyAll()
+				reset()
+			}
+		}
+	})
 </script>
 
 <!-- <div class="flex gap-8 h-[calc(100vh-100px-32px-25px)]"></div> -->
@@ -117,7 +142,7 @@
 		<div class="flex gap-8">
 			<div class="grid grid-cols-3 gap-4 bg-base-200 rounded-2xl p-4 overflow-y-scroll">
 				{#each Object.keys($thumbnails) as pageId}
-					<div class="relative h-fit bg-white rounded-xl">
+					<div class="relative h-fit bg-white rounded-xl py-3 border">
 						<div class="absolute top-2 right-2">
 							<input
 								type="checkbox"
@@ -128,7 +153,7 @@
 						</div>
 
 						<img
-							class="border rounded-xl w-[200px] h-[200px] object-scale-down"
+							class="rounded-xl w-[200px] h-[200px] object-scale-down"
 							src={URL.createObjectURL($thumbnails[pageId].src)}
 							alt={pageId}
 						/>
@@ -199,6 +224,16 @@
 							</div>
 						{/each}
 					</div>
+
+					<div>
+						<span class="font-semibold text-xs mb-1 inline-block opacity-60 uppercase"
+							>File Name</span
+						>
+						<div class="w-full text-sm flex items-center gap-2">
+							<input class="input input-bordered input-sm w-full" bind:value={fileName} />
+							.{Object.keys($selected).length === 1 ? imageFormat : 'zip'}
+						</div>
+					</div>
 				</div>
 
 				<button class="btn btn-primary mt-2" on:click={download}>
@@ -206,7 +241,7 @@
 						<span class="loading loading-spinner"></span>
 					{/if}
 					Download
-					{Object.keys($selected).length ? `Selected (${Object.keys($selected).length})` : 'All'}
+					{Object.keys($selected).length ? `Selected (${Object.keys($selected).length})` : ''}
 				</button>
 			</div>
 		</div>
