@@ -8,7 +8,37 @@
 	import { writable } from 'svelte/store'
 	import { beforeNavigate } from '$app/navigation'
 
+	const generateFileName = () =>
+		`Converted-PDF-${new Date()
+			.toLocaleString()
+			.split(',')[0]
+			.replaceAll('/', '')}-${new Date().toLocaleTimeString().split(' ')[0].replaceAll(':', '')}`
+
+	const defaultFileName = generateFileName()
+	const QUALITY_LABEL: { [ket: number]: string } = {
+		25: 'Low Quality',
+		50: 'Medium Quality',
+		75: 'High Quality',
+		100: 'Maximum Quality'
+	}
+
+	let maxReached = false
+	let files: FileList | null
+
+	let IMAGE_FORMATS: ('jpeg' | 'webp' | 'png')[] = ['jpeg', 'png', 'webp']
+	let quality = 75
+	let imageFormat = IMAGE_FORMATS[0]
+	let fileName = defaultFileName
+
 	let selected = writable<{ [pageId: string]: boolean }>({})
+
+	$: if (files) {
+		console.log(files)
+		for (const file of files) {
+			docs.add(file)
+		}
+		files = null
+	}
 
 	function handleSelected(pageId: string) {
 		let selectedPages = { ...$selected }
@@ -20,24 +50,6 @@
 		}
 
 		selected.set(selectedPages)
-	}
-
-	let files: FileList | null
-
-	let IMAGE_FORMATS: ('jpeg' | 'webp' | 'png')[] = ['jpeg', 'png', 'webp']
-	let quality = 75
-	let imageFormat = IMAGE_FORMATS[0]
-
-	let fileName = `Converted-PDF-${new Date()
-		.toLocaleString()
-		.split(',')[0]
-		.replaceAll('/', '')}-${new Date().toLocaleTimeString().split(' ')[0].replaceAll(':', '')}`
-
-	$: if (files) {
-		for (const file of files) {
-			docs.add(file)
-		}
-		files = null
 	}
 
 	let downloading = false
@@ -104,10 +116,7 @@
 		quality = 75
 		imageFormat = IMAGE_FORMATS[0]
 		selected.set({})
-		fileName = `Converted-PDF-${new Date()
-			.toLocaleString()
-			.split(',')[0]
-			.replaceAll('/', '')}-${new Date().toLocaleTimeString().split(' ')[0].replaceAll(':', '')}`
+		fileName = generateFileName()
 	}
 
 	beforeNavigate(({ cancel }) => {
@@ -142,12 +151,15 @@
 		<div class="flex gap-8">
 			<div class="grid grid-cols-3 gap-4 bg-base-200 rounded-2xl p-4 overflow-y-scroll">
 				{#each Object.keys($thumbnails) as pageId}
-					<div class="relative h-fit bg-white rounded-xl py-3 border">
+					<div
+						class="relative h-fit bg-white rounded-xl py-3 border"
+						style="opacity: {Object.keys($selected).length && !$selected[pageId] ? 0.5 : 1};"
+					>
 						<div class="absolute top-2 right-2">
 							<input
 								type="checkbox"
 								checked={$selected[pageId]}
-								class="checkbox checkbox-secondary"
+								class="checkbox checkbox-primary"
 								on:change={() => handleSelected(pageId)}
 							/>
 						</div>
@@ -186,6 +198,7 @@
 
 				<div class="divider divider-center opacity-80 text-sm">Download Options</div>
 
+				<!-- Quality -->
 				<div class="pb-4 space-y-4">
 					<div>
 						<span class="font-semibold text-xs mb-1 inline-block opacity-60 uppercase">Quality</span
@@ -203,16 +216,17 @@
 							<span></span>
 							<span></span>
 							<span></span>
-							<span>{quality}%</span>
+							<span>{QUALITY_LABEL[quality]}</span>
 						</div>
 					</div>
 
+					<!-- Format -->
 					<div>
-						<span class="font-semibold text-xs mb-1 inline-block opacity-60 uppercase">Format</span>
+						<span class="font-semibold text-xs mb-1 inline-block opacity-60 uppercase">type</span>
 						{#each IMAGE_FORMATS as format}
 							<div class="form-control">
 								<label class="label cursor-pointer checked:bg-base-300">
-									<span class="label-text">{format}</span>
+									<span class="label-text uppercase">{format}</span>
 									<input
 										type="radio"
 										name="image format"
@@ -225,13 +239,24 @@
 						{/each}
 					</div>
 
+					<!-- File Name -->
 					<div>
 						<span class="font-semibold text-xs mb-1 inline-block opacity-60 uppercase"
 							>File Name</span
 						>
 						<div class="w-full text-sm flex items-center gap-2">
-							<input class="input input-bordered input-sm w-full" bind:value={fileName} />
+							<input
+								class="input input-bordered input-sm w-full"
+								bind:value={fileName}
+								on:blur={() => !fileName.length && (fileName = defaultFileName)}
+								maxlength="100"
+								type="url"
+							/>
 							.{Object.keys($selected).length === 1 ? imageFormat : 'zip'}
+						</div>
+						<div class="label">
+							<span class="label-text-alt">{`Avoid using: < > : " / \ | ? *`}</span>
+							<!-- <span class="label-text-alt">{fileName.length}/100</span> -->
 						</div>
 					</div>
 				</div>
