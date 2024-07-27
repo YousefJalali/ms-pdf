@@ -1,5 +1,6 @@
 <script lang="ts">
 	import chroma from 'chroma-js'
+	import JSZip from 'jszip'
 	import { docs, thumbnails, uploadingDocs } from '$lib/stores/convert'
 	import { DocItem, FileInput } from '$lib/ui'
 	import UploadButton from '$lib/ui/UploadButton.svelte'
@@ -36,8 +37,8 @@
 	let downloading = false
 	async function download() {
 		downloading = true
+
 		let blobsPromise = []
-		let res: Blob[] = []
 		let docNames = []
 
 		for (let doc of Object.values($docs)) {
@@ -45,33 +46,48 @@
 				if (Object.keys($selected).length && !$selected[pageId]) continue
 
 				let pagePdf = doc.pagesPdfProxy[pageId]
-				docNames.push(doc.name)
+				docNames.push(doc.name.split('.')[0])
 				blobsPromise.push(getPageAsBlob(pagePdf, pageId, (quality * 4) / 100, true, imageFormat))
 			}
 		}
 
-		if (blobsPromise.length) {
-			let blobs = await Promise.all(blobsPromise)
+		if (!blobsPromise.length) return
+
+		let blob: Blob | null = null
+
+		let blobs = await Promise.all(blobsPromise)
+
+		if (blobs.length === 1) {
+			if (blobs[0] instanceof Blob) {
+				blob = blobs[0]
+			}
+		} else {
+			const zip = new JSZip()
+
+			let i = 0
 			for (let blob of blobs) {
 				if (blob instanceof Blob) {
-					res.push(blob)
+					zip.file(`${docNames[i]} (${i + 1}).${imageFormat}`, blob, {
+						base64: true
+					})
+
+					i++
 				}
 			}
+
+			blob = await zip.generateAsync({ type: 'blob' })
 		}
 
-		res.forEach((r, i) => {
-			const link = document.createElement('a')
-			link.href = URL.createObjectURL(r)
-			link.download = docNames[i].split('.')[0]
-			// some browser needs the anchor to be in the doc
-			document.body.append(link)
-			link.click()
-			link.remove()
-		})
+		if (!blob) return
+
+		const link = document.createElement('a')
+		link.href = URL.createObjectURL(blob)
+		link.download = 'pdf images'
+		document.body.append(link)
+		link.click()
+		link.remove()
 
 		await docs.destroyAll()
-
-		// downloadFiles(res)
 
 		reset()
 	}
