@@ -3,7 +3,7 @@
 	import { flip } from 'svelte/animate'
 	import { mergedPdf, pages } from '$lib/stores/merge'
 	import PageCard from './(PageCard)/PageCard.svelte'
-	import type { Page } from '$lib/types/merge'
+	import type { Page } from '$lib/types'
 
 	function moveItem(arr: Page[], fromIndex: number, toIndex: number) {
 		var element = arr[fromIndex]

@@ -1,4 +1,4 @@
-import type { Page } from '$lib/types/merge'
+import type { Page } from '$lib/types'
 
 export function rotationStyle(page: Page) {
 	return page.rotationDegree

@@ -1,8 +1,4 @@
-// import type { PDFDocument } from 'pdf-lib'
-import type { PDFPageProxy } from 'pdfjs-dist'
-
-// export type PDF = PDFDocument
-export type PDFPage = PDFPageProxy
+import type { PDFPage } from './common'
 
 export type Docs = { [docId: string]: Doc }
 

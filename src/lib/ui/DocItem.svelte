@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Doc } from '$lib/types/merge'
+	import type { Doc } from '$lib/types'
 	import { formatBytes } from '$lib/utils'
 
 	export let doc: Doc | Omit<Doc, 'showPages'>

@@ -1,5 +1,5 @@
 import { get, writable } from 'svelte/store'
-import type { Page } from '$lib/types/merge'
+import type { Page } from '$lib/types'
 import { docs } from './docs'
 
 function handlePages() {

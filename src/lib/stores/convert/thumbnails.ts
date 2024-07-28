@@ -1,4 +1,4 @@
-import type { PDFPage } from '$lib/types/convert'
+import type { PDFPage } from '$lib/types'
 import { getPageAsBlob } from '$lib/utils'
 import { get, writable } from 'svelte/store'
 

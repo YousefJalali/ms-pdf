@@ -1,8 +1,6 @@
-import type { PDFPageProxy } from 'pdfjs-dist'
+import type { Color, PDFPage } from './common'
 
-export type PDFPage = PDFPageProxy
-
-export type Doc = {
+export type DocConvert = {
 	docId: string
 	name: string
 	size: number
