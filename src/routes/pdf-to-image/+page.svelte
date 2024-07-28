@@ -1,12 +1,13 @@
 <script lang="ts">
 	import JSZip from 'jszip'
+	import { page } from '$app/stores'
 	import { docs, thumbnails, uploadingDocs } from '$lib/stores/convert'
 	import { DocItem, FileInput } from '$lib/ui'
 	import UploadButton from '$lib/ui/UploadButton.svelte'
 	import { getPageAsBlob } from '$lib/utils'
 	import { writable } from 'svelte/store'
 	import { beforeNavigate } from '$app/navigation'
-	import { MAX_FILE_UPLOAD } from '$lib/constants'
+	import { MAX_FILE_UPLOAD, TOOLS } from '$lib/constants'
 	import { alerts } from '$lib/stores/alerts'
 
 	const generateFileName = () =>
@@ -29,6 +30,7 @@
 	let quality = 75
 	let imageFormat = IMAGE_FORMATS[0]
 	let fileName = defaultFileName
+	let downloaded = false
 
 	let selected = writable<{ [pageId: string]: boolean }>({})
 
@@ -121,7 +123,9 @@
 
 		await docs.destroyAll()
 
-		reset()
+		downloading = false
+		downloaded = true
+		// reset()
 	}
 
 	function reset() {
@@ -131,6 +135,7 @@
 		imageFormat = IMAGE_FORMATS[0]
 		selected.set({})
 		fileName = generateFileName()
+		downloaded = false
 	}
 
 	beforeNavigate(({ cancel }) => {
@@ -151,7 +156,28 @@
 
 <!-- <div class="flex gap-8 h-[calc(100vh-100px-32px-25px)]"></div> -->
 <div class="flex gap-8 h-[calc(100vh-100px-32px-25px)]">
-	{#if !Object.keys($thumbnails).length && $uploadingDocs}
+	{#if downloading}
+		<div class="prose flex flex-col items-center justify-center mx-auto text-center">
+			<span class="loading loading-ring loading-lg mb-4"></span>
+			<h1>Preparing Your Download Link</h1>
+			<p>Please wait a moment while we convert your PDF to images...</p>
+		</div>
+	{:else if downloaded}
+		<div class="prose flex flex-col items-center justify-center mx-auto text-center">
+			<h1>Woohoo! Download Successful! 🎉</h1>
+			<p>Congratulations! Your download is complete. You can</p>
+
+			<button class="btn btn-outline btn-wide" on:click={reset}>Start Over</button>
+
+			<p>or explore other amazing tools we offer!</p>
+
+			<div class="flex gap-4 mt-6">
+				{#each TOOLS.filter((tool) => tool.link !== $page.url.pathname) as tool}
+					<a href={tool.link} class="btn [&>svg]:size-6">{@html tool.icon} {tool.name}</a>
+				{/each}
+			</div>
+		</div>
+	{:else if !Object.keys($thumbnails).length && $uploadingDocs}
 		<div class="prose flex flex-col items-center justify-center mx-auto text-center">
 			<span class="loading loading-ring loading-lg mb-4"></span>
 			<h1>Uploading Your PDFs...</h1>
