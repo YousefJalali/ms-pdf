@@ -44,13 +44,15 @@
 </script>
 
 <Modal bind:showModal on:close={closeModal}>
-	<div class="absolute bottom-6 left-1/2 -translate-x-1/2 cursor-default">
+	<div class="absolute bottom-6 left-1/2 -translate-x-1/2 cursor-default z-10">
 		<div class="join shadow">
-			<button class="join-item btn" on:click={prev}>«</button>
+			<button class="join-item btn" on:click={prev} disabled={index === 0}>«</button>
 			<div class="join-item btn pointer-events-none">
 				Page {pageNumber}
 			</div>
-			<button class="join-item btn" on:click={next}>»</button>
+			<button class="join-item btn" on:click={next} disabled={index === $preview.length - 1}
+				>»</button
+			>
 		</div>
 	</div>
 
@@ -61,14 +63,14 @@
 					style={rotationStyle(currentPage)}
 					src={URL.createObjectURL($images[currentPageId].large)}
 					alt={`preview page ${pageNumber} of ${doc?.name || ''}`}
-					class="border"
+					class="border object-contain select-none"
 				/>
 			{:else if $images[currentPageId].small}
 				<img
 					style={rotationStyle(currentPage)}
 					src={URL.createObjectURL($images[currentPageId].small)}
 					alt={`preview page ${pageNumber} of ${doc?.name || ''}`}
-					class="border"
+					class="border object-contain w-full"
 				/>
 			{:else}
 				<div class="min-h-[600px] flex justify-center items-center">
