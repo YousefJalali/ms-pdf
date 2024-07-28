@@ -1,6 +1,7 @@
 <script>
 	import '../app.css'
 	import { page } from '$app/stores'
+	import Alert from '$lib/ui/Alert.svelte'
 
 	const newPage = `<svg width="12" height="12" class="opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 11H37V29" stroke="currentColor" stroke-width="4" stroke-linecap="butt" stroke-linejoin="bevel"></path><path d="M11.5439 36.4559L36.9997 11" stroke="currentColor" stroke-width="4" stroke-linecap="butt" stroke-linejoin="bevel"></path></svg>`
 
@@ -29,7 +30,7 @@
 		</p>
 	</div>
 {:else}
-	<main class="container mx-auto max-w-5xl flex flex-col min-h-screen">
+	<main class="relative container mx-auto max-w-5xl flex flex-col min-h-screen">
 		<header class="navbar p-0 bg-base-100 h-[100px]">
 			<div class="flex-1">
 				<a class="link link-hover text-4xl" href="/">Logo</a>
@@ -57,6 +58,7 @@
 		</header>
 
 		<slot />
+		<Alert />
 
 		<footer class="footer footer-center text-base-content p-4 h-[50px]">
 			<aside>

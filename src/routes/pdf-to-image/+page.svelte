@@ -1,5 +1,4 @@
 <script lang="ts">
-	import chroma from 'chroma-js'
 	import JSZip from 'jszip'
 	import { docs, thumbnails, uploadingDocs } from '$lib/stores/convert'
 	import { DocItem, FileInput } from '$lib/ui'
@@ -7,6 +6,8 @@
 	import { getPageAsBlob } from '$lib/utils'
 	import { writable } from 'svelte/store'
 	import { beforeNavigate } from '$app/navigation'
+	import { MAX_FILE_UPLOAD } from '$lib/constants'
+	import { alerts } from '$lib/stores/alerts'
 
 	const generateFileName = () =>
 		`Converted-PDF-${new Date()
@@ -22,7 +23,7 @@
 		100: 'Maximum Quality'
 	}
 
-	let maxReached = false
+	let fileCount = 0
 	let files: FileList | null
 
 	let IMAGE_FORMATS: ('jpeg' | 'webp' | 'png')[] = ['jpeg', 'png', 'webp']
@@ -33,11 +34,17 @@
 	let selected = writable<{ [pageId: string]: boolean }>({})
 
 	$: if (files) {
-		console.log(files)
 		for (const file of files) {
-			docs.add(file)
+			if (fileCount < MAX_FILE_UPLOAD) {
+				docs.add(file)
+			}
+			fileCount++
 		}
 		files = null
+	}
+
+	$: if (fileCount > MAX_FILE_UPLOAD) {
+		alerts.add('error', `The maximum number of files you can upload is ${MAX_FILE_UPLOAD}`)
 	}
 
 	function handleSelected(pageId: string) {
@@ -117,6 +124,7 @@
 		imageFormat = IMAGE_FORMATS[0]
 		selected.set({})
 		fileName = generateFileName()
+		fileCount = 0
 	}
 
 	beforeNavigate(({ cancel }) => {
@@ -174,12 +182,7 @@
 							class="absolute bottom-3 left-1/2 -translate-x-1/2 flex py-0.5 px-2 rounded-xl"
 							style="background-color: {$docs[$thumbnails[pageId].docId].color};"
 						>
-							<span
-								class="text-white relative text-xs"
-								style="color: {chroma.contrast($docs[$thumbnails[pageId].docId].color, '#000') < 6
-									? '#fff'
-									: '#000'};">Page {$thumbnails[pageId].pageNumber}</span
-							>
+							<span class="text-white relative text-xs">Page {$thumbnails[pageId].pageNumber}</span>
 						</div>
 					</div>
 				{/each}
@@ -266,7 +269,7 @@
 						<span class="loading loading-spinner"></span>
 					{/if}
 					Download
-					{Object.keys($selected).length ? `Selected (${Object.keys($selected).length})` : ''}
+					{Object.keys($selected).length ? `Selected (${Object.keys($selected).length})` : 'All'}
 				</button>
 			</div>
 		</div>
