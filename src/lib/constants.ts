@@ -1,1 +1,1 @@
-export const MAX_FILE_UPLOAD = 3
+export const MAX_FILE_UPLOAD = 10

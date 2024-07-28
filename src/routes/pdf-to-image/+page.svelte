@@ -23,7 +23,6 @@
 		100: 'Maximum Quality'
 	}
 
-	let fileCount = 0
 	let files: FileList | null
 
 	let IMAGE_FORMATS: ('jpeg' | 'webp' | 'png')[] = ['jpeg', 'png', 'webp']
@@ -33,18 +32,24 @@
 
 	let selected = writable<{ [pageId: string]: boolean }>({})
 
-	$: if (files) {
-		for (const file of files) {
-			if (fileCount < MAX_FILE_UPLOAD) {
-				docs.add(file)
-			}
-			fileCount++
-		}
-		files = null
-	}
-
-	$: if (fileCount > MAX_FILE_UPLOAD) {
+	const maxFileReached = () =>
 		alerts.add('error', `The maximum number of files you can upload is ${MAX_FILE_UPLOAD}`)
+
+	$: if (files) {
+		let count = 0
+		if (Object.keys($docs).length < MAX_FILE_UPLOAD) {
+			for (const file of files) {
+				count++
+				if (count > MAX_FILE_UPLOAD) {
+					maxFileReached()
+				} else {
+					docs.add(file)
+				}
+			}
+			files = null
+		} else {
+			maxFileReached()
+		}
 	}
 
 	function handleSelected(pageId: string) {
@@ -124,7 +129,6 @@
 		imageFormat = IMAGE_FORMATS[0]
 		selected.set({})
 		fileName = generateFileName()
-		fileCount = 0
 	}
 
 	beforeNavigate(({ cancel }) => {
