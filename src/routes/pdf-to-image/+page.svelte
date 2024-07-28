@@ -36,12 +36,14 @@
 		alerts.add('error', `The maximum number of files you can upload is ${MAX_FILE_UPLOAD}`)
 
 	$: if (files) {
-		let count = 0
-		if (Object.keys($docs).length < MAX_FILE_UPLOAD) {
+		let count = Object.keys($docs).length
+
+		if (count < MAX_FILE_UPLOAD) {
 			for (const file of files) {
 				count++
 				if (count > MAX_FILE_UPLOAD) {
 					maxFileReached()
+					break
 				} else {
 					docs.add(file)
 				}
@@ -191,12 +193,14 @@
 					</div>
 				{/each}
 			</div>
-			<div class="min-w-80 border flex flex-col rounded-2xl p-4">
+			<div class="w-80 border flex flex-col rounded-2xl p-4">
 				<div class="mb-4">
 					<UploadButton bind:files />
 				</div>
 
-				<div class="divider divider-center opacity-80 text-sm">Uploaded Docs</div>
+				<div class="divider divider-center opacity-80 text-sm">
+					Uploaded Docs ({Object.keys($docs).length})
+				</div>
 				<ul class="w-full h-0 flex-auto p-0 overflow-y-scroll" data-testid="doc list">
 					{#each Object.values($docs) as doc}
 						<DocItem {doc} />
