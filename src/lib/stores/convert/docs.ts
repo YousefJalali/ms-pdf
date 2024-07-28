@@ -69,6 +69,7 @@ function handleDocs() {
 		await Promise.all(removedDocs)
 
 		thumbnails.removeAll()
+		colors.reset()
 		docs.set({})
 	}
 

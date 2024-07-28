@@ -1,16 +1,16 @@
 import { get, writable } from 'svelte/store'
 
 const COLORS = [
-	'oklch(0.3 0.2 200)',
-	'oklch(0.25 0.3 270)',
-	'oklch(0.35 0.25 320)',
-	'oklch(0.4 0.2 30)',
-	'oklch(0.45 0.25 90)',
-	'oklch(0.3 0.3 150)',
-	'oklch(0.35 0.2 180)',
-	'oklch(0.25 0.25 210)',
-	'oklch(0.4 0.3 60)',
-	'oklch(0.3 0.35 300)'
+	'#1A1A1A', // Very Dark Gray
+	'#003366', // Dark Blue
+	'#4B0082', // Indigo
+	'#800000', // Maroon
+	'#006400', // Dark Green
+	'#8B4513', // Saddle Brown
+	'#2F4F4F', // Dark Slate Gray
+	'#8B0000', // Dark Red
+	'#483D8B', // Dark Slate Blue
+	'#2E8B57' // Sea Green
 ]
 function handleColors() {
 	const { subscribe, set, update } = writable(COLORS)
@@ -20,7 +20,7 @@ function handleColors() {
 
 		let color = allColors.pop()
 
-		if (!color) return 'red'
+		if (!color) return COLORS[0]
 
 		set(allColors)
 
