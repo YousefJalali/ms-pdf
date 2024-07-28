@@ -1,8 +1,9 @@
-import type { Doc, PDFPage } from '$lib/types/convert'
-import { getPdfPage, randomColor } from '$lib/utils'
+import type { DocConvert, PDFPage } from '$lib/types'
+import { getPdfPage } from '$lib/utils'
 import { get, writable } from 'svelte/store'
 import { v4 as uuidv4 } from 'uuid'
 import { thumbnails } from './thumbnails'
+import { colors } from '../colors'
 
 function uploading() {
 	const { subscribe, set, update } = writable<boolean>(false)
@@ -15,7 +16,7 @@ function uploading() {
 export const uploadingDocs = uploading()
 
 function handleDocs() {
-	const { subscribe, set, update } = writable<{ [docId: string]: Doc }>({})
+	const { subscribe, set, update } = writable<{ [docId: string]: DocConvert }>({})
 
 	async function add(file: File) {
 		uploadingDocs.set(true)
@@ -41,13 +42,13 @@ function handleDocs() {
 			}
 		}
 
-		let newDoc: Doc = {
+		let newDoc: DocConvert = {
 			docId,
 			file,
 			name: file.name,
 			size: file.size,
 			pageCount: pdfPages.length,
-			color: randomColor(),
+			color: colors.pick(),
 			destroyDoc: destroy,
 			pagesPdfProxy
 		}
