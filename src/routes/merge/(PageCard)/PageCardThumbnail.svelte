@@ -13,7 +13,7 @@
 		class="border mx-auto"
 		style={rotationStyle(page)}
 		src={URL.createObjectURL(thumbnail)}
-		alt={$docs[page.docId].name}
+		alt={`${$docs[page.docId].name} ${page.pageNum}`}
 		height={200}
 	/>
 {:else}
