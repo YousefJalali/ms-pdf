@@ -64,6 +64,7 @@
 			merged PDF below.
 		</p>
 		<div
+			data-testid="preview merged"
 			class="mx-auto border broder-base-300 w-[380px] h-[480px] overflow-y-scroll [&>img]:mx-auto [&>img]:m-0 divide-y-2"
 		>
 			{#each $pages as page}
@@ -73,14 +74,14 @@
 							class="h-full object-contain m-0"
 							style={rotationStyle(page)}
 							src={URL.createObjectURL($images[page.pageId].large)}
-							alt="merged"
+							alt={`${$docs[page.docId].name} ${page.pageNum}`}
 						/>
 					{:else if $images[page.pageId]?.small}
 						<img
 							style={rotationStyle(page)}
 							class="h-full object-contain m-0"
 							src={URL.createObjectURL($images[page.pageId].small)}
-							alt="merged"
+							alt={`${$docs[page.docId].name} ${page.pageNum}`}
 						/>
 					{:else}
 						loading...

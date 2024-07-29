@@ -265,3 +265,30 @@ test('drag and drop', async ({ page }) => {
 		page.locator('[data-testid="drop zone"]>div').getByRole('img').nth(1)
 	).toHaveAttribute('alt', `${twoPages} 0`)
 })
+
+test('Merge two docs', async ({ page }) => {
+	const onePage = 'one_page.pdf'
+	const twoPages = 'two_pages.pdf'
+
+	await page.goto('/merge')
+	//upload pdf
+	await page.getByTestId('upload doc').setInputFiles(`./tests/${onePage}`)
+	await page.getByTestId('upload doc').setInputFiles(`./tests/${twoPages}`)
+
+	//click on merge button
+	await page.getByRole('button', { name: 'merge' }).click()
+
+	//preview box should be visible
+	await expect(page.getByTestId('preview merged')).toBeVisible()
+
+	//doc pages should be displayed in order
+	await expect(
+		page.getByTestId('preview merged').locator('div').first().getByRole('img')
+	).toHaveAttribute('alt', `${onePage} 0`)
+	await expect(
+		page.getByTestId('preview merged').locator('div').nth(1).getByRole('img')
+	).toHaveAttribute('alt', `${twoPages} 0`)
+	await expect(
+		page.getByTestId('preview merged').locator('div').nth(2).getByRole('img')
+	).toHaveAttribute('alt', `${twoPages} 1`)
+})
