@@ -1,10 +1,5 @@
 <script lang="ts">
 	import { TOOLS } from '$lib/constants'
-	// import { onMount } from 'svelte'
-
-	// onMount(async () => {
-	// 	await import('@lottiefiles/lottie-player')
-	// })
 
 	function scrollToBottom() {
 		if (!window) return
@@ -13,7 +8,7 @@
 </script>
 
 <section class="flex items-center justify-center min-h-[calc(100vh-100px)]">
-	<div class="text-center prose prose-xl">
+	<div class="text-center prose px-6 lg:p-0 lg:prose-xl">
 		<h1>Transform PDFs Like a Pro</h1>
 		<p>
 			Step into a world where managing PDFs is as thrilling as a magician's trick! With our
@@ -23,30 +18,19 @@
 		</p>
 		<button class="btn btn-primary" on:click={scrollToBottom}>Get Started</button>
 	</div>
-
-	<!-- <div class="w-2/3 min-w-[400px]">
-		<lottie-player
-			src="https://lottie.host/691a7996-25af-4446-9c6b-78d23cf930f1/uJjkoYOdpk.json"
-			background="#FFFFFF"
-			speed="1"
-			style="width: 400px; height: 400px"
-			loop
-			autoplay
-			direction="1"
-			mode="normal"
-		></lottie-player>
-	</div> -->
 </section>
 
-<section class="mb-24">
-	<h2 class="text-4xl font-black mb-8">Our Tools</h2>
+<section class="lg:mb-24 p-6 lg:p-0">
+	<h2 class="text-2xl lg:text-4xl font-black mb-8">Our Tools</h2>
 
-	<div class="grid grid-cols-4 gap-8">
+	<div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
 		{#each TOOLS as tool}
-			<a href={tool.link} class="prose flex-1 max-w-sm border rounded-2xl p-6 hover:bg-base-200">
-				<span>{@html tool.icon}</span>
-				<h3>{tool.name}</h3>
-				<p>{tool.description}</p>
+			<a href={tool.link} class="flex-1 max-w-sm border rounded-2xl p-4 lg:p-6 hover:bg-base-200">
+				<div class="flex lg:flex-col lg:items-start items-center gap-4 mb-3">
+					<span>{@html tool.icon}</span>
+					<h3 class="font-bold text-lg">{tool.name}</h3>
+				</div>
+				<p class="opacity-80">{tool.description}</p>
 			</a>
 		{/each}
 	</div>
