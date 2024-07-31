@@ -7,7 +7,7 @@
 	import { getPageAsBlob } from '$lib/utils'
 	import { writable } from 'svelte/store'
 	import { beforeNavigate } from '$app/navigation'
-	import { MAX_FILE_UPLOAD, TOOLS } from '$lib/constants'
+	import { convertStates, MAX_FILE_UPLOAD, TOOLS } from '$lib/constants/'
 	import { alerts } from '$lib/stores/alerts'
 
 	const generateFileName = () =>
@@ -159,13 +159,13 @@
 {#if downloading}
 	<div class="prose flex flex-col items-center justify-center mx-auto text-center">
 		<span class="loading loading-ring loading-lg mb-4"></span>
-		<h1>Preparing Your Download Link</h1>
-		<p>Please wait a moment while we convert your PDF to images...</p>
+		<h1>{convertStates.downloading.title}</h1>
+		<p>{convertStates.downloading.description}</p>
 	</div>
 {:else if downloaded}
 	<div class="prose flex flex-col items-center justify-center mx-auto text-center">
-		<h1>Woohoo! Download Successful! 🎉</h1>
-		<p>Your download is complete. You can</p>
+		<h1>{convertStates.downloaded.title}</h1>
+		<p>{convertStates.downloaded.description}</p>
 
 		<button class="btn btn-primary btn-outline btn-wide" on:click={reset}>Start Over</button>
 
@@ -180,11 +180,8 @@
 {:else if !Object.keys($thumbnails).length && $uploadingDocs}
 	<div class="prose flex flex-col items-center justify-center mx-auto text-center">
 		<span class="loading loading-ring loading-lg mb-4"></span>
-		<h1>Uploading Your PDFs...</h1>
-		<p>
-			Your PDFs are being uploaded. Please wait a moment while we securely transfer your documents.
-			Once the upload is complete, you'll be able to convert them into high-quality JPG images.
-		</p>
+		<h1>{convertStates.uploading.title}</h1>
+		<p>{convertStates.uploading.description}</p>
 	</div>
 {:else if Object.keys($thumbnails).length}
 	<div class="flex gap-8 pb-8">
@@ -350,11 +347,8 @@
 	<div class="flex flex-col items-center justify-center">
 		<!-- description  -->
 		<div class="mb-8 prose prose-sm lg:prose-lg max-w-none text-center">
-			<h1>Convert Your PDFs to Images Effortlessly!</h1>
-			<p>
-				Quickly transform your PDF files into high-quality images. Simply upload your documents
-				below, and easily convert single pages or entire PDFs in just a few clicks!
-			</p>
+			<h1>{convertStates.upload.title}</h1>
+			<p>{convertStates.upload.description}</p>
 		</div>
 
 		<FileInput bind:files />
