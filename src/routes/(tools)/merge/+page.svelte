@@ -21,16 +21,16 @@
 	})
 </script>
 
-<div class="flex gap-8 h-[calc(100vh-100px-32px-25px)]">
-	{#if $mergedPdf.src}
-		<MergedDoc />
-	{:else}
-		{#if $pages.length}
-			<!-- drag and drop area -->
-			<DropZone />
-			<Preview />
-		{/if}
-
-		<SideBar />
+<!-- <div class="flex gap-8 h-[calc(100vh-100px-32px-25px)]"> -->
+{#if $mergedPdf.src}
+	<MergedDoc />
+{:else}
+	{#if $pages.length}
+		<!-- drag and drop area -->
+		<DropZone />
+		<Preview />
 	{/if}
-</div>
+
+	<SideBar />
+{/if}
+<!-- </div> -->

@@ -155,7 +155,7 @@
 </script>
 
 <!-- <div class="flex gap-8 h-[calc(100vh-100px-32px-25px)]"></div> -->
-
+<!-- <div class="flex gap-8 lg:h-[calc(100vh-100px-32px-25px)] lg:overflow-hidden p-6 lg:p-0"> -->
 {#if downloading}
 	<div class="prose flex flex-col items-center justify-center mx-auto text-center">
 		<span class="loading loading-ring loading-lg mb-4"></span>
@@ -230,7 +230,7 @@
 				for="download-options"
 				class="hidden z-0 h-screen w-screen fixed top-0 left-0 bg-black opacity-40 peer-checked:block"
 			></label> -->
-			<div class="flex-1 hidden lg:block peer-checked:block">
+			<div class="flex-1 hidden lg:flex lg:flex-col peer-checked:block">
 				<label for="download-options" class="btn btn-xs ml-auto flex w-fit lg:hidden">✕ </label>
 				<div class="mb-4 hidden lg:block">
 					<UploadButton bind:files />
@@ -360,3 +360,4 @@
 		<FileInput bind:files />
 	</div>
 {/if}
+<!-- </div> -->

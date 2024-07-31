@@ -7,7 +7,7 @@
 	}
 </script>
 
-<div>
+<div class="px-6 lg:p-0">
 	<section class="flex items-center justify-center min-h-[calc(100vh-100px)]">
 		<div class="text-center prose lg:prose-xl">
 			<h1>Transform PDFs Like a Pro</h1>
@@ -21,7 +21,7 @@
 		</div>
 	</section>
 
-	<section class="lg:mb-24">
+	<section class="mb-6 lg:mb-24">
 		<h2 class="text-2xl lg:text-4xl font-black mb-8">Our Tools</h2>
 
 		<div class="grid grid-cols-1 lg:grid-cols-4 gap-8">

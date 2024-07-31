@@ -26,18 +26,6 @@
 		index = 0
 	}
 
-	function deleteHandler() {
-		// if ($preview.length <= 1) {
-		// 	closeModal()
-		// } else if (index >= $preview.length - 1) {
-		// 	prev()
-		// } else {
-		// 	next()
-		// }
-		// preview.remove(currentPageId)
-		// pages.removePage(currentPageId, true)
-	}
-
 	$: showModal = !!$preview.length
 
 	$: pageNumber = String($pageNum[currentPageId]).split(',')[0]
@@ -77,24 +65,6 @@
 					<span class="loading loading-infinity loading-lg"></span>
 				</div>
 			{/if}
-
-			<!-- {#if doc && currentPage}
-				<div class="absolute top-6 left-1/2 -translate-x-1/2">
-					<Actions {doc} page={currentPage} from="preview" on:delete={deleteHandler} />
-				</div>
-			{/if} -->
-			<!-- {#if $images[pageId].thumbnail.status === 'loading'}
-					<div class="min-h-[600px] flex justify-center items-center">
-						<span class="loading loading-infinity loading-lg"></span>
-					</div>
-				{:else if $images[pageId].preview.status === 'loading'}
-					<enhanced:img src={$images[pageId].thumbnail.src} alt={`${page.pageNum}`} />
-				{:else}
-					<enhanced:img
-						src={$images[pageId].preview.src}
-						alt={`preview page ${String($pageNum[pageId]).split(',')[0]} of ${doc.name}`}
-					/>
-				{/if} -->
 		</div>
 	{/if}
 </Modal>
