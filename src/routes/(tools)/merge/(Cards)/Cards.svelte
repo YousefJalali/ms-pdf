@@ -4,6 +4,7 @@
 	import { mergedPdf, pages } from '$lib/stores/merge'
 	import PageCard from './(PageCard)/PageCard.svelte'
 	import type { Page } from '$lib/types'
+	import { mergeStates } from '$lib/constants'
 
 	function moveItem(arr: Page[], fromIndex: number, toIndex: number) {
 		var element = arr[fromIndex]
@@ -86,11 +87,8 @@
 			<div class="absolute top-0 left-0 w-full h-full bg-base-300 opacity-50" />
 			<div class="prose relative h-full text-center flex flex-col justify-center items-center">
 				<span class="loading loading-infinity loading-lg"></span>
-				<h1>Merging Your PDFs...</h1>
-				<p>
-					Your PDF files are currently being combined into a single document. This may take a
-					moment. Please wait while the process completes.
-				</p>
+				<h1>{mergeStates.merging.title}</h1>
+				<p>{mergeStates.merging.description}</p>
 			</div>
 		</div>
 	{/if}

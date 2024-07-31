@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { docs, mergedPdf, pages } from '$lib/stores/merge'
 	import SideBar from './(SideBard)/SideBar.svelte'
-	import DropZone from './DropZone.svelte'
-	import MergedDoc from './MergedDoc.svelte'
-	import Preview from './Preview.svelte'
+	import Cards from './(Cards)/Cards.svelte'
+	import MergedDoc from './(MergedDoc)/MergedDoc.svelte'
+	import Preview from './(Cards)/Preview.svelte'
 	import { beforeNavigate } from '$app/navigation'
 
 	beforeNavigate(({ cancel }) => {
@@ -21,16 +21,14 @@
 	})
 </script>
 
-<!-- <div class="flex gap-8 h-[calc(100vh-100px-32px-25px)]"> -->
 {#if $mergedPdf.src}
 	<MergedDoc />
 {:else}
 	{#if $pages.length}
 		<!-- drag and drop area -->
-		<DropZone />
+		<Cards />
 		<Preview />
 	{/if}
 
 	<SideBar />
 {/if}
-<!-- </div> -->

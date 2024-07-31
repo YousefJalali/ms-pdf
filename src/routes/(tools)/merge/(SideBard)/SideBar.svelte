@@ -2,6 +2,7 @@
 	import { FileInput, UploadButton } from '$lib/ui'
 	import { docs, mergedPdf, pages } from '$lib/stores/merge'
 	import SideBarList from './SideBarList.svelte'
+	import { mergeStates } from '$lib/constants'
 
 	let files: FileList | null
 
@@ -17,12 +18,9 @@
 	class={`relative flex flex-col justify-center flex-[2] min-w-80 border-base-300 rounded-2xl ${$pages.length ? 'p-4 border justify-between [&>*:first-child]:hidden' : ''}`}
 >
 	<!-- description  -->
-	<div class="mb-8 prose">
-		<h1>Merge Your PDFs Seamlessly!</h1>
-		<p>
-			Easily combine your PDF files into one cohesive document. Simply upload your files below. You
-			can select multiple files at once for a quick and efficient merge!
-		</p>
+	<div class="mb-8 prose prose-sm lg:prose-lg max-w-none text-center">
+		<h1>{mergeStates.upload.title}</h1>
+		<p>{mergeStates.upload.description}</p>
 	</div>
 
 	<div class={`relative flex flex-col ${$pages.length ? 'h-full' : ''}`}>
