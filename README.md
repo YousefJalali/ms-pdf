@@ -1,38 +1,59 @@
-# create-svelte
+# 🌟 MS-PDF 🌟
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+Welcome to **MS-PDF**, your ultimate PDF toolkit! MS-PDF allows you to split, merge, compress, and convert your PDF files to images effortlessly.
 
-## Creating a project
+## 🚀 Features
 
-If you're seeing this, you've probably already done this step. Congrats!
+- 🔗 **Merge PDF Files**: Combine multiple PDF documents into one.
+- ✂️ **Split PDF Files**: Separate a single PDF into multiple files.
+- 📉 **Compress PDF Files**: Reduce the file size of your PDFs.
+- 🖼️ **Convert PDF to Images**: Transform PDF pages into high-quality images.
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+## 🌐 Getting Started
 
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+Visit our app at [ms-pdf.vercel.app](https://ms-pdf.vercel.app) to start using our tools.
 
-## Developing
+## 📖 How to Use
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+### 🔗 Merge PDF Files
 
-```bash
-npm run dev
+1. Navigate to the "Merge" section.
+2. Upload the PDF files you want to combine.
+3. Click the "Merge" button and download your merged PDF.
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
+### ✂️ Split PDF Files
 
-## Building
+1. Navigate to the "Split" section.
+2. Upload the PDF file you want to split.
+3. Select the pages you want to extract.
+4. Click the "Split" button and download your new PDFs.
 
-To create a production version of your app:
+### 📉 Compress PDF Files
 
-```bash
-npm run build
-```
+1. Navigate to the "Compress" section.
+2. Upload the PDF file you want to compress.
+3. Choose your compression settings.
+4. Click the "Compress" button and download your compressed PDF.
 
-You can preview the production build with `npm run preview`.
+### 🖼️ Convert PDF to Images
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+1. Navigate to the "Convert" section.
+2. Upload the PDF file you want to convert.
+3. Select the image format (JPEG, PNG, etc.).
+4. Click the "Convert" button and download your images.
+
+## 🤝 Contributing
+
+We welcome contributions! If you have any ideas or suggestions, please open an issue or submit a pull request.
+
+## 📄 License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## 📬 Contact
+
+For any questions or support, please contact us at support@ms-pdf.vercel.app.
+
+---
+
+Thank you for using **MS-PDF**! 🎉
