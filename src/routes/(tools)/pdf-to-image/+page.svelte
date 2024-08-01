@@ -184,7 +184,7 @@
 		<p>{convertStates.uploading.description}</p>
 	</div>
 {:else if Object.keys($thumbnails).length}
-	<div class="flex gap-8 pb-8">
+	<div class="flex gap-8 pb-8 lg:pb-0">
 		<div
 			class="grid grid-cols-2 lg:grid-cols-3 gap-2 lg:gap-4 bg-base-200 rounded-2xl p-2 lg:p-4 overflow-y-scroll"
 		>
