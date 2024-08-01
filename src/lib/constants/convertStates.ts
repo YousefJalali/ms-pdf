@@ -22,6 +22,6 @@ export const convertStates = {
 	downloaded: {
 		title: 'Woohoo! Download Successful! 🎉',
 		description:
-			'Your converted PDF has been successfully downloaded. Thank you for using our service! If you have any other documents to combine, feel free to'
+			'Your images has been successfully downloaded. Thank you for using our service! If you have any other documents to convert, feel free to'
 	}
 }

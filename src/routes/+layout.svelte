@@ -2,8 +2,8 @@
 	import '../app.css'
 	import { page } from '$app/stores'
 	import Alert from '$lib/ui/Alert.svelte'
-
-	const newPage = `<svg width="12" height="12" class="opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 11H37V29" stroke="currentColor" stroke-width="4" stroke-linecap="butt" stroke-linejoin="bevel"></path><path d="M11.5439 36.4559L36.9997 11" stroke="currentColor" stroke-width="4" stroke-linecap="butt" stroke-linejoin="bevel"></path></svg>`
+	import { TOOLS } from '$lib/constants/'
+	import { blankPage } from '$lib/ui'
 </script>
 
 <div class="drawer container mx-auto max-w-5xl">
@@ -30,18 +30,21 @@
 			</div>
 			<div class="mx-2 flex-1 px-2"><a href="/">LOGO</a></div>
 			<div class="hidden flex-none lg:block">
+				<!-- Navbar menu content here -->
 				<ul class="menu menu-horizontal">
-					<!-- Navbar menu content here -->
-					<li><a href="/merge">Merge PDF</a></li>
-					<li><a href="/split">Split PDF</a></li>
-					<li><a href="/compress">Compress PDF</a></li>
-					<li><a href="/pdf-to-image">PDF to Image</a></li>
+					{#each TOOLS as tool}
+						<li>
+							<a href={tool.link} class={$page.url.pathname === tool.link ? 'active' : ''}
+								>{tool.name}</a
+							>
+						</li>
+					{/each}
 				</ul>
 			</div>
 		</div>
 
 		<!-- Page content here -->
-		<!-- <main class="relative flex flex-col min-h-screen"> -->
+		<!-- <main> -->
 		<slot />
 
 		<Alert />
@@ -52,7 +55,7 @@
 					Build by <a
 						class="link group inline-flex items-center gap-1"
 						href="https://github.com/YousefJalali"
-						target="_blank">Yousef Jalali {@html newPage}</a
+						target="_blank">Yousef Jalali {@html blankPage}</a
 					>
 				</p>
 			</aside>
@@ -64,10 +67,13 @@
 		<label for="my-drawer-3" aria-label="close sidebar" class="drawer-overlay"></label>
 		<ul class="menu bg-base-200 min-h-full w-80 p-4">
 			<!-- Sidebar content here -->
-			<li><a href="/merge">Merge PDF</a></li>
-			<li><a href="/split">Split PDF</a></li>
-			<li><a href="/compress">Compress PDF</a></li>
-			<li><a href="/pdf-to-image">PDF to Image</a></li>
+			{#each TOOLS as tool}
+				<li>
+					<a href={tool.link} class={$page.url.pathname === tool.link ? 'active' : ''}
+						>{tool.name}</a
+					>
+				</li>
+			{/each}
 		</ul>
 	</div>
 </div>
