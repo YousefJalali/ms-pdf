@@ -2,15 +2,31 @@
 	import { FileInput, UploadButton } from '$lib/ui'
 	import { docs, mergedPdf, pages } from '$lib/stores/merge'
 	import SideBarList from './SideBarList.svelte'
-	import { mergeStates } from '$lib/constants'
+	import { MAX_FILE_UPLOAD, mergeStates } from '$lib/constants'
+	import { alerts } from '$lib/stores/alerts'
 
 	let files: FileList | null
 
+	const maxFileReached = () =>
+		alerts.add('error', `The maximum number of files you can upload is ${MAX_FILE_UPLOAD}`)
+
 	$: if (files) {
-		for (const file of files) {
-			docs.add(file)
+		let count = Object.keys($docs).length
+
+		if (count < MAX_FILE_UPLOAD) {
+			for (const file of files) {
+				count++
+				if (count > MAX_FILE_UPLOAD) {
+					maxFileReached()
+					break
+				} else {
+					docs.add(file)
+				}
+			}
+			files = null
+		} else {
+			maxFileReached()
 		}
-		files = null
 	}
 </script>
 

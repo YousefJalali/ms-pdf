@@ -1,16 +1,29 @@
 import { get, writable } from 'svelte/store'
-import { randomColor, getPdfPage, getInputAsUint8Array } from '$lib/utils'
+import { getPdfPage, getInputAsUint8Array } from '$lib/utils'
 import { v4 as uuidv4 } from 'uuid'
 import type { Doc, PDFPage } from '$lib/types'
 import { pages } from './pages'
 import { preview } from './preview'
 import { mergedPdf } from './mergedPdf'
 import { PDFDocument, degrees } from 'pdf-lib'
+import { colors } from '../colors'
+
+function uploading() {
+	const { subscribe, set, update } = writable<boolean>(false)
+	return {
+		subscribe,
+		set
+	}
+}
+
+export const uploadingDocs = uploading()
 
 function handleFiles() {
 	const { subscribe, set, update } = writable<{ [docId: string]: Doc }>({})
 
 	async function add(file: File) {
+		uploadingDocs.set(true)
+
 		let docId = uuidv4()
 
 		let res = await getPdfPage(file)
@@ -39,7 +52,7 @@ function handleFiles() {
 			size: file.size,
 			showPages: false,
 			pageCount,
-			color: randomColor(),
+			color: colors.pick(),
 			destroyDoc: destroy,
 			pagesPdfProxy
 		}
@@ -56,6 +69,8 @@ function handleFiles() {
 				initialRotation: pagesPdfProxy[pageIds[i]].rotate
 			})
 		}
+
+		uploadingDocs.set(false)
 	}
 
 	function toggleShowPages(docId: string) {
@@ -79,6 +94,8 @@ function handleFiles() {
 		let d = { ...get(docs) }
 
 		if (destroyed) {
+			colors.returnColor(d[docId].color)
+
 			delete d[docId]
 
 			set(d)
@@ -164,6 +181,7 @@ function handleFiles() {
 		pages.set([])
 		preview.clear()
 		mergedPdf.reset()
+		colors.reset()
 	}
 
 	return {

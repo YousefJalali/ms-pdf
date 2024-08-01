@@ -5,6 +5,8 @@
 	import MergedDoc from './(MergedDoc)/MergedDoc.svelte'
 	import Preview from './(Cards)/Preview.svelte'
 	import { beforeNavigate } from '$app/navigation'
+	import { uploadingDocs } from '$lib/stores/merge/docs'
+	import { mergeStates } from '$lib/constants'
 
 	beforeNavigate(({ cancel }) => {
 		if ($pages.length) {
@@ -21,7 +23,13 @@
 	})
 </script>
 
-{#if $mergedPdf.src}
+{#if !Object.keys($docs).length && $uploadingDocs}
+	<div class="prose flex flex-col items-center justify-center mx-auto text-center">
+		<span class="loading loading-ring loading-lg mb-4"></span>
+		<h1>{mergeStates.uploading.title}</h1>
+		<p>{mergeStates.uploading.description}</p>
+	</div>
+{:else if $mergedPdf.src}
 	<MergedDoc />
 {:else}
 	{#if $pages.length}

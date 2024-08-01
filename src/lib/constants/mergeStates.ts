@@ -4,6 +4,11 @@ export const mergeStates = {
 		description:
 			'Easily combine your PDF files into one cohesive document. Simply upload your files below. You can select multiple files at once for a quick and efficient merge!'
 	},
+	uploading: {
+		title: 'Uploading Your PDFs...',
+		description:
+			'Your PDFs are being uploaded. Please wait a moment while we securely transfer your documents. Once the upload is complete, you will be able to merge them.'
+	},
 	merging: {
 		title: 'Merging Your PDFs...',
 		description:
