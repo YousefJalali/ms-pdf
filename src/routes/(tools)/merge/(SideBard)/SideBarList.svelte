@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { clickOutside } from '$lib/utils'
-	import { docs } from '$lib/stores/merge'
+	import { docs } from '$lib/stores'
 	import DocItem from '$lib/ui/DocItem.svelte'
 	import { more } from '$lib/ui'
 
@@ -34,7 +34,7 @@
 							</label>
 						</li>
 						<li>
-							<a class="text-error" href={null} on:click={() => docs.removeDoc(doc.docId)}>
+							<a class="text-error" href={null} on:click={() => docs.deleteDoc(doc.docId)}>
 								<!-- {@html trash}  -->
 								Delete Document
 							</a>

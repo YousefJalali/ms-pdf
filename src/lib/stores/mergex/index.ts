@@ -1,6 +1,5 @@
 export { docs } from './docs'
 export { images } from './images'
-export { mergedPdf } from './mergedPdf'
+export { mergedPdf } from '../mergedPdf'
 export { pages } from './pages'
-export { pageNum } from './PageNum'
 export { preview } from './preview'

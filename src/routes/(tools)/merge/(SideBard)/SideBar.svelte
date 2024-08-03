@@ -1,9 +1,8 @@
 <script lang="ts">
 	import { FileInput, UploadButton } from '$lib/ui'
-	import { docs, mergedPdf, pages } from '$lib/stores/merge'
+	import { docs, mergedPdf, pages, alerts } from '$lib/stores'
 	import SideBarList from './SideBarList.svelte'
 	import { MAX_FILE_UPLOAD, mergeStates } from '$lib/constants'
-	import { alerts } from '$lib/stores/alerts'
 
 	let files: FileList | null
 
@@ -20,13 +19,17 @@
 					maxFileReached()
 					break
 				} else {
-					docs.add(file)
+					docs.create(file)
 				}
 			}
 			files = null
 		} else {
 			maxFileReached()
 		}
+	}
+
+	function merge() {
+		console.log('merge')
 	}
 </script>
 
@@ -67,7 +70,7 @@
 			>
 
 			<button
-				on:click={docs.merge}
+				on:click={merge}
 				class="btn btn-primary w-full"
 				disabled={$pages.length < 2 || $mergedPdf.loading}
 			>

@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid'
 import type { Doc, PDFPage } from '$lib/types'
 import { pages } from './pages'
 import { preview } from './preview'
-import { mergedPdf } from './mergedPdf'
+import { mergedPdf } from '../mergedPdf'
 import { PDFDocument, degrees } from 'pdf-lib'
 import { colors } from '../colors'
 
@@ -60,14 +60,17 @@ function handleFiles() {
 		update((docs) => ({ ...docs, [docId]: newDoc }))
 
 		for (let i = 0; i < pageIds.length; i++) {
-			pages.add({
+			//if page is visible then load thumbnail otherwise no
+
+			const newPage = {
 				pageId: pageIds[i],
 				docId,
 				pageNum: i,
 				pageVisible: i === 0 ? true : false,
 				loadThumbnail: i === 0 ? true : false,
 				initialRotation: pagesPdfProxy[pageIds[i]].rotate
-			})
+			}
+			pages.add(newPage)
 		}
 
 		uploadingDocs.set(false)

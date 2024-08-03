@@ -11,7 +11,7 @@ export const pageNum: Readable<PageNum> = derived(
 		let countOfHiddenPages = 0
 
 		while (last >= 0) {
-			if (!$pages[last].pageVisible) {
+			if (!$pages[last].isVisible) {
 				countOfHiddenPages++
 				updatedPageNum[$pages[last].pageId] = last + 1
 			} else {

@@ -1,32 +1,32 @@
 <script lang="ts">
 	import { Modal } from '$lib/ui'
-	import { preview, images, pageNum, pages, docs } from '$lib/stores/merge'
+	import { previews, thumbnails, pageNum, pages, docs } from '$lib/stores'
 	import { rotationStyle } from '$lib/utils'
 	// import Actions from './Actions.svelte'
 
 	let index = 0
-	$: currentPageId = $preview[index]
+	$: currentPageId = Object.keys($previews)[index]
 	$: currentPage = $pages.find((p) => p.pageId === currentPageId)
 	$: doc = currentPage ? $docs[currentPage.docId] : undefined
 
 	function next() {
-		if (index >= $preview.length - 1) return
+		if (index >= Object.keys($previews).length - 1) return
 		index++
-		preview.next(index)
+		// preview.next(index)
 	}
 
 	function prev() {
 		if (index <= 0) return
 		index--
-		preview.next(index)
+		// preview.next(index)
 	}
 
 	function closeModal() {
-		preview.clear()
+		// preview.clear()
 		index = 0
 	}
 
-	$: showModal = !!$preview.length
+	$: showModal = !!$previews.length
 
 	$: pageNumber = String($pageNum[currentPageId]).split(',')[0]
 </script>
@@ -38,25 +38,27 @@
 			<div class="join-item btn pointer-events-none">
 				Page {pageNumber}
 			</div>
-			<button class="join-item btn" on:click={next} disabled={index === $preview.length - 1}
-				>»</button
+			<button
+				class="join-item btn"
+				on:click={next}
+				disabled={index === Object.keys($previews).length - 1}>»</button
 			>
 		</div>
 	</div>
 
-	{#if $images[currentPageId] && currentPage}
+	{#if $previews[currentPageId] && currentPage}
 		<div class="border border-transparent w-fit [&>img]:min-h-[600px] mx-auto">
-			{#if $images[currentPageId].large}
+			{#if $previews[currentPageId].src}
 				<img
 					style={rotationStyle(currentPage)}
-					src={URL.createObjectURL($images[currentPageId].large)}
+					src={URL.createObjectURL($previews[currentPageId].src)}
 					alt={`preview page ${pageNumber} of ${doc?.name || ''}`}
 					class="border object-contain select-none"
 				/>
-			{:else if $images[currentPageId].small}
+			{:else if $thumbnails[currentPageId].src}
 				<img
 					style={rotationStyle(currentPage)}
-					src={URL.createObjectURL($images[currentPageId].small)}
+					src={URL.createObjectURL($thumbnails[currentPageId].src)}
 					alt={`preview page ${pageNumber} of ${doc?.name || ''}`}
 					class="border object-contain w-full"
 				/>

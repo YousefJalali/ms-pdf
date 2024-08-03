@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { docs, pageNum, pages } from '$lib/stores/merge'
+	import { docs, pageNum, pages } from '$lib/stores'
 	import type { Page } from '$lib/types'
 	import Actions from './Actions.svelte'
 	import PageCardThumbnail from './PageCardThumbnail.svelte'
@@ -42,7 +42,7 @@
 		<!-- <canvas bind:this={canvases[page.docId]} id={page.docId} height="1" width="1"></canvas> -->
 
 		<div class="absolute top-0 left-0 w-full p-2 py-3 hidden group-hover:flex mx-auto">
-			<Actions {doc} {page} on:delete={() => pages.removePage(page.pageId)} />
+			<Actions {doc} {page} on:delete={() => pages.deletePage(page.pageId)} />
 		</div>
 	</div>
 {/if}

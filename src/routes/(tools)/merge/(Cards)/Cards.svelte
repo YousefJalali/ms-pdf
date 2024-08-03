@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { dndzone, TRIGGERS } from 'svelte-dnd-action'
 	import { flip } from 'svelte/animate'
-	import { mergedPdf, pages } from '$lib/stores/merge'
+	import { mergedPdf, pages } from '$lib/stores'
 	import PageCard from './(PageCard)/PageCard.svelte'
 	import type { Page } from '$lib/types'
 	import { mergeStates } from '$lib/constants'
@@ -41,7 +41,7 @@
 		//reposition the moved item
 		if (newIndex < items.length - 1) {
 			while (adjustedIndex < items.length - 1) {
-				if (!items[adjustedIndex + 1].pageVisible && items[adjustedIndex + 1].docId !== docId) {
+				if (!items[adjustedIndex + 1].isVisible && items[adjustedIndex + 1].docId !== docId) {
 					adjustedIndex++
 				} else {
 					break
@@ -59,7 +59,7 @@
 		let nextPageIndex = oldIndex + (adjustedIndex - oldIndex > 0 ? 0 : 1)
 		while (nextPageIndex + numberOfItemsToBeMoved < items.length) {
 			let item = items[nextPageIndex + numberOfItemsToBeMoved]
-			if (item.docId === items[adjustedIndex].docId && !item.pageVisible) {
+			if (item.docId === items[adjustedIndex].docId && !item.isVisible) {
 				numberOfItemsToBeMoved++
 			} else {
 				break
@@ -102,10 +102,10 @@
 	>
 		{#each $pages as page, pageIndex (page.id)}
 			<div
-				class={`group h-fit relative ${page.pageVisible ? 'block' : 'hidden'}`}
+				class={`group h-fit relative ${page.isVisible ? 'block' : 'hidden'}`}
 				animate:flip={{ duration: flipDurationMs }}
 			>
-				{#if page.pageVisible}
+				{#if page.isVisible}
 					<PageCard {page} />
 				{/if}
 			</div>

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { mergeStates } from '$lib/constants'
-	import { docs, mergedPdf, pages, images } from '$lib/stores/merge'
+	import { docs, mergedPdf, pages, previews, thumbnails } from '$lib/stores'
 	import { backIcon, downloadIcon, startOver } from '$lib/ui'
 	import MergedDocPreview from './MergedDocPreview.svelte'
 
@@ -20,7 +20,7 @@
 		link.click()
 		link.remove()
 
-		await docs.destroyAllDocs()
+		await docs.reset()
 
 		preparingLink = false
 		downloaded = true
@@ -52,8 +52,8 @@
 		>
 			{#each $pages as page}
 				<MergedDocPreview
-					largeImage={$images[page.pageId]?.large}
-					smallImage={$images[page.pageId]?.small}
+					largeImage={$previews[page.pageId]?.src}
+					smallImage={$thumbnails[page.pageId]?.src}
 					docName={$docs[page.docId].name}
 					{page}
 				/>

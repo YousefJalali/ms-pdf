@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { alerts } from '$lib/stores/alerts'
+	import { alerts } from '$lib/stores'
 
 	const icons: { [key: string]: string } = {
 		info: `<svg

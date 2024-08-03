@@ -6,3 +6,11 @@ export type Color = {
 	bg: string
 	fg: string
 }
+
+export type Canvas = {
+	[pageId: string]: {
+		src: Blob
+		docId: string
+		pageNumberInDoc: number
+	}
+}

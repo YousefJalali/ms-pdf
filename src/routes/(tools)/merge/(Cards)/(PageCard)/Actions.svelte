@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte'
-	import { pages, preview } from '$lib/stores/merge'
+	import { pages, previews } from '$lib/stores'
 	import type { Doc, Page } from '$lib/types'
 	import { rotate, trash, zoom } from '$lib/ui'
 
@@ -10,7 +10,7 @@
 	export let from: 'card' | 'preview' = 'card'
 
 	function showPreview() {
-		preview.add(page.pageId)
+		previews.create({ [page.pageId]: doc.pagesPdfProxy[page.pageId] }, doc.docId)
 	}
 
 	const dispatch = createEventDispatcher()

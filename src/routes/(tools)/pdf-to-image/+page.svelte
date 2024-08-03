@@ -1,14 +1,13 @@
 <script lang="ts">
 	import JSZip from 'jszip'
 	import { page } from '$app/stores'
-	import { docs, thumbnails, uploadingDocs } from '$lib/stores/convert'
+	import { docs, thumbnails, uploadingDocs, alerts } from '$lib/stores'
 	import { DocItem, FileInput } from '$lib/ui'
 	import UploadButton from '$lib/ui/UploadButton.svelte'
 	import { getPageAsBlob } from '$lib/utils'
 	import { writable } from 'svelte/store'
 	import { beforeNavigate } from '$app/navigation'
 	import { convertStates, MAX_FILE_UPLOAD, TOOLS } from '$lib/constants/'
-	import { alerts } from '$lib/stores/alerts'
 
 	const generateFileName = () =>
 		`Converted-PDF-${new Date()
@@ -47,7 +46,7 @@
 					maxFileReached()
 					break
 				} else {
-					docs.add(file)
+					docs.create(file, true)
 				}
 			}
 			files = null
@@ -121,7 +120,7 @@
 		link.click()
 		link.remove()
 
-		await docs.destroyAll()
+		await docs.reset()
 
 		downloading = false
 		downloaded = true
@@ -138,20 +137,20 @@
 		downloaded = false
 	}
 
-	beforeNavigate(({ cancel }) => {
-		if (Object.keys($docs).length) {
-			if (
-				!confirm(
-					'Are you sure you want to leave this page? You have unsaved changes that will be lost.'
-				)
-			) {
-				cancel()
-			} else {
-				docs.destroyAll()
-				reset()
-			}
-		}
-	})
+	// beforeNavigate(({ cancel }) => {
+	// 	if (Object.keys($docs).length) {
+	// 		if (
+	// 			!confirm(
+	// 				'Are you sure you want to leave this page? You have unsaved changes that will be lost.'
+	// 			)
+	// 		) {
+	// 			cancel()
+	// 		} else {
+	// 			docs.reset()
+	// 			reset()
+	// 		}
+	// 	}
+	// })
 </script>
 
 <!-- <div class="flex gap-8 h-[calc(100vh-100px-32px-25px)]"></div> -->
@@ -212,7 +211,9 @@
 						class="absolute bottom-3 left-1/2 -translate-x-1/2 flex py-0.5 px-2 rounded-xl"
 						style="background-color: {$docs[$thumbnails[pageId].docId].color};"
 					>
-						<span class="text-white relative text-xs">Page {$thumbnails[pageId].pageNumber}</span>
+						<span class="text-white relative text-xs"
+							>Page {$thumbnails[pageId].pageNumberInDoc}</span
+						>
 					</div>
 				</div>
 			{/each}

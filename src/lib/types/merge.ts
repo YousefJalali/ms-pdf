@@ -21,12 +21,21 @@ export type Page = {
 	pageId: string
 	docId: string
 	pageNum: number
-	pageVisible: boolean
-	loadThumbnail: boolean
-	loadPreview: boolean
+	isVisible: boolean
 	initialRotation: number
 	rotationDegree: number | undefined
 }
+// export type Page = {
+// 	id: string
+// 	pageId: string
+// 	docId: string
+// 	pageNum: number
+// 	pageVisible: boolean
+// 	loadThumbnail: boolean
+// 	loadPreview: boolean
+// 	initialRotation: number
+// 	rotationDegree: number | undefined
+// }
 
 export type Image = {
 	[key: string]: {

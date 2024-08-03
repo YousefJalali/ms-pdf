@@ -1,11 +1,11 @@
 <script lang="ts">
 	import type { Page } from '$lib/types'
-	import { docs, images } from '$lib/stores/merge'
+	import { docs, thumbnails } from '$lib/stores'
 	import { rotationStyle } from '$lib/utils'
 
 	export let page: Page
 
-	$: thumbnail = $images[page.pageId]?.small
+	$: thumbnail = $thumbnails[page.pageId]?.src
 </script>
 
 {#if thumbnail}
