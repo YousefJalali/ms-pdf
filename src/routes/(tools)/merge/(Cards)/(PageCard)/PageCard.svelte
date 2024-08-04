@@ -20,7 +20,7 @@
 	{/if}
 
 	<div
-		class={`relative z-10 flex flex-col justify-between bg-base-200 border border-base-400 p-3 rounded-xl w-[180px] h-[280px] ${multiPages ? 'shadow-sm' : ''}`}
+		class={`relative z-10 flex flex-col justify-between bg-base-200 border border-base-400 p-3 rounded-xl aspect-[180/280] ${multiPages ? 'shadow-sm' : ''}`}
 	>
 		<div
 			class="absolute top-0 left-1/2 -translate-x-1/2 h-1 w-1/2 rounded-b-xl"
@@ -37,11 +37,11 @@
 				Page
 				{typeof pageNumber === 'number' ? pageNumber : `${pageNumber[0]} to ${pageNumber[1]}`}
 			</span>
-			<!-- <span>{doc.showPages} / {page.pageVisible}</span> -->
 		</div>
-		<!-- <canvas bind:this={canvases[page.docId]} id={page.docId} height="1" width="1"></canvas> -->
 
-		<div class="absolute top-0 left-0 w-full p-2 py-3 hidden group-hover:flex mx-auto">
+		<div
+			class="hidden absolute top-0 left-1/2 -translate-x-1/2 w-fit p-2 py-3 group-hover:flex mx-auto"
+		>
 			<Actions {doc} {page} on:delete={() => pages.deletePage(page.pageId)} />
 		</div>
 	</div>

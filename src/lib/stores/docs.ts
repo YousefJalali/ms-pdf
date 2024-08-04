@@ -52,7 +52,7 @@ function handleFiles() {
 			file,
 			name: file.name,
 			size: file.size,
-			showPages: false,
+			showPages,
 			pageCount,
 			color: colors.pick(),
 			destroyDoc: destroy,

@@ -4,7 +4,6 @@
 	import { mergedPdf, pages } from '$lib/stores'
 	import PageCard from './(PageCard)/PageCard.svelte'
 	import type { Page } from '$lib/types'
-	import { mergeStates } from '$lib/constants'
 
 	function moveItem(arr: Page[], fromIndex: number, toIndex: number) {
 		var element = arr[fromIndex]
@@ -79,22 +78,23 @@
 	}
 </script>
 
+<!-- h-full overflow-y-scroll grid grid-cols-2 lg:grid-cols-4 gap-2 lg:gap-4 bg-base-200 rounded-2xl p-2 lg:p-4 -->
 <div
-	class="relative w-full h-full overflow-y-scroll flex-auto bg-base-100 border-2 border-dashed border-base-300 rounded-xl"
+	class="relative bg-base-100 border-2 border-dashed border-base-300 rounded-2xl h-full overflow-y-scroll p-2 lg:p-4"
 >
-	{#if $mergedPdf.loading}
+	<!-- {#if $mergedPdf.loading}
 		<div class="absolute top-0 left-0 w-full h-full z-20">
 			<div class="absolute top-0 left-0 w-full h-full bg-base-300 opacity-50" />
 			<div class="prose relative h-full text-center flex flex-col justify-center items-center">
 				<span class="loading loading-infinity loading-lg"></span>
-				<h1>{mergeStates.merging.title}</h1>
-				<p>{mergeStates.merging.description}</p>
+				<h1>mergeStates.merging.title</h1>
+				<p>mergeStates.merging.description</p>
 			</div>
 		</div>
-	{/if}
+	{/if} -->
 
 	<div
-		class="flex flex-wrap gap-8 w-full p-4"
+		class="grid grid-cols-2 lg:grid-cols-4 gap-2 lg:gap-4"
 		use:dndzone={{ items: $pages, flipDurationMs }}
 		on:consider={handleDndConsider}
 		on:finalize={handleDndFinalize}

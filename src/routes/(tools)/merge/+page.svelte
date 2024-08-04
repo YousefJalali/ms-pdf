@@ -1,12 +1,11 @@
 <script lang="ts">
 	import { docs, mergedPdf, pages } from '$lib/stores'
-	import SideBar from './(SideBard)/SideBar.svelte'
 	import Cards from './(Cards)/Cards.svelte'
 	import MergedDoc from './(MergedDoc)/MergedDoc.svelte'
 	import Preview from './(Cards)/Preview.svelte'
 	import { beforeNavigate } from '$app/navigation'
-	import { uploadingDocs } from '$lib/stores'
-	import { mergeStates } from '$lib/constants'
+	import Layout from '../Layout.svelte'
+	import { DocItem, DocItemOptions } from '$lib/ui'
 
 	// beforeNavigate(({ cancel }) => {
 	// 	if ($pages.length) {
@@ -21,22 +20,43 @@
 	// 		}
 	// 	}
 	// })
+
+	function merge() {
+		console.log('merge')
+	}
 </script>
 
-{#if !Object.keys($docs).length && $uploadingDocs}
-	<div class="prose flex flex-col items-center justify-center mx-auto text-center">
-		<span class="loading loading-ring loading-lg mb-4"></span>
-		<h1>{mergeStates.uploading.title}</h1>
-		<p>{mergeStates.uploading.description}</p>
-	</div>
-{:else if $mergedPdf.src}
+{#if $mergedPdf.src}
 	<MergedDoc />
 {:else}
-	{#if $pages.length}
-		<!-- drag and drop area -->
-		<Cards />
-		<Preview />
-	{/if}
+	<Layout>
+		<svelte:fragment slot="cards">
+			<Cards />
+			<Preview />
+		</svelte:fragment>
 
-	<SideBar />
+		<svelte:fragment slot="side">
+			<ul class="w-full h-0 flex-auto p-0 overflow-y-scroll hidden lg:block" data-testid="doc list">
+				{#each Object.values($docs) as doc}
+					<DocItem {doc}>
+						<DocItemOptions {doc} />
+					</DocItem>
+				{/each}
+			</ul>
+		</svelte:fragment>
+
+		<svelte:fragment slot="cta">
+			<button
+				on:click={merge}
+				class="btn btn-primary flex-1"
+				disabled={$pages.length < 2 || $mergedPdf.loading}
+			>
+				{#if $mergedPdf.loading}
+					<span class="loading loading-spinner"></span>Merging...
+				{:else}
+					Merge
+				{/if}
+			</button>
+		</svelte:fragment>
+	</Layout>
 {/if}

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte'
-	import { pages, previews } from '$lib/stores'
+	import { pages, previewModal, previews } from '$lib/stores'
 	import type { Doc, Page } from '$lib/types'
 	import { rotate, trash, zoom } from '$lib/ui'
 
@@ -10,6 +10,7 @@
 	export let from: 'card' | 'preview' = 'card'
 
 	function showPreview() {
+		previewModal.show()
 		previews.create({ [page.pageId]: doc.pagesPdfProxy[page.pageId] }, doc.docId)
 	}
 
@@ -24,8 +25,8 @@
 	{#if from === 'card'}
 		<div class="tooltip tooltip-bottom join-item flex-1" data-tip="Preview">
 			<button aria-label="preview" class="btn btn-sm btn-ghost" on:click={showPreview}
-				>{@html zoom}</button
-			>
+				>{@html zoom}
+			</button>
 		</div>
 	{/if}
 
@@ -36,8 +37,9 @@
 		<button
 			aria-label="rotate"
 			class="btn btn-sm btn-ghost"
-			on:click={() => pages.rotate(page.pageId, 90)}>{@html rotate}</button
-		>
+			on:click={() => pages.rotate(page.pageId, 90)}
+			>{@html rotate}
+		</button>
 	</div>
 
 	<div

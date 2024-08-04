@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Modal } from '$lib/ui'
-	import { previews, thumbnails, pageNum, pages, docs } from '$lib/stores'
+	import { previews, thumbnails, pageNum, pages, docs, previewModal } from '$lib/stores'
 	import { rotationStyle } from '$lib/utils'
 	// import Actions from './Actions.svelte'
 
@@ -22,11 +22,12 @@
 	}
 
 	function closeModal() {
+		previewModal.hide()
 		// preview.clear()
 		index = 0
 	}
 
-	$: showModal = !!$previews.length
+	$: showModal = !!Object.keys($previews).length && $previewModal
 
 	$: pageNumber = String($pageNum[currentPageId]).split(',')[0]
 </script>
@@ -55,13 +56,13 @@
 					alt={`preview page ${pageNumber} of ${doc?.name || ''}`}
 					class="border object-contain select-none"
 				/>
-			{:else if $thumbnails[currentPageId].src}
+				<!-- {:else if $thumbnails[currentPageId].src}
 				<img
 					style={rotationStyle(currentPage)}
 					src={URL.createObjectURL($thumbnails[currentPageId].src)}
 					alt={`preview page ${pageNumber} of ${doc?.name || ''}`}
 					class="border object-contain w-full"
-				/>
+				/> -->
 			{:else}
 				<div class="min-h-[600px] flex justify-center items-center">
 					<span class="loading loading-infinity loading-lg"></span>
