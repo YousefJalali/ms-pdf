@@ -5,6 +5,7 @@
 	import PageCardThumbnail from './PageCardThumbnail.svelte'
 
 	export let page: Page
+	export let pageIndex: number
 
 	$: doc = $docs[page.docId]
 	$: pageNumber = $pageNum[page.pageId]
@@ -42,7 +43,7 @@
 		<div
 			class="hidden absolute top-0 left-1/2 -translate-x-1/2 w-fit p-2 py-3 group-hover:flex mx-auto"
 		>
-			<Actions {doc} {page} on:delete={() => pages.deletePage(page.pageId)} />
+			<Actions {doc} {page} {pageIndex} on:delete={() => pages.deletePage(page.pageId)} />
 		</div>
 	</div>
 {/if}

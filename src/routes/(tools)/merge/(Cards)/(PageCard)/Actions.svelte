@@ -6,11 +6,12 @@
 
 	export let doc: Doc
 	export let page: Page
+	export let pageIndex: number
 
 	export let from: 'card' | 'preview' = 'card'
 
 	function showPreview() {
-		previewModal.show()
+		previewModal.show(pageIndex)
 		previews.create({ [page.pageId]: doc.pagesPdfProxy[page.pageId] }, doc.docId)
 	}
 
