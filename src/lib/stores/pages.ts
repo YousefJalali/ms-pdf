@@ -1,7 +1,7 @@
 import { get, writable } from 'svelte/store'
-import type { PDFPage, Page } from '$lib/types'
+import type { CreateImage, PDFPage, Page } from '$lib/types'
 import { docs } from './docs'
-import { thumbnails } from './images'
+import { previews, thumbnails } from './images'
 
 function handlePages() {
 	const { subscribe, set, update } = writable<Page[]>([])
@@ -11,13 +11,13 @@ function handlePages() {
 	}
 
 	function showDocPages(docId: string) {
-		let docPages: { [pageId: string]: PDFPage } = {}
+		let docPages: CreateImage = {}
 		let allDocs = get(docs)
 
 		update((pages) =>
 			pages.map((page) => {
 				if (page.docId === docId) {
-					docPages[page.pageId] = allDocs[page.docId].pagesPdfProxy[page.pageId]
+					docPages[page.pageId] = { pdfPage: allDocs[page.docId].pagesPdfProxy[page.pageId], docId }
 					let updatedPage: Page = { ...page, isVisible: true }
 					return updatedPage
 				}
@@ -26,7 +26,7 @@ function handlePages() {
 		)
 
 		//create thumbnail if its not created
-		thumbnails.create(docPages, docId)
+		thumbnails.create(docPages)
 	}
 
 	function hideDocPages(docId: string) {
@@ -57,7 +57,7 @@ function handlePages() {
 		update((pages) => pages.filter((page) => page.docId !== docId))
 	}
 
-	function deletePage(pageId: string, onePageOnly = false) {
+	function deletePage(pageId: string) {
 		let allPages = [...get(pages)]
 
 		let pageIndex = allPages.findIndex((page) => page.pageId === pageId)
@@ -68,14 +68,12 @@ function handlePages() {
 		const idsOfPagesToBeDeleted = [pageId]
 
 		//include next invisible pages
-		if (!onePageOnly) {
-			for (let i = pageIndex + 1; i < allPages.length; i++) {
-				if (!allPages[i].isVisible) {
-					count++
-					idsOfPagesToBeDeleted.push(allPages[i].pageId)
-				} else {
-					break
-				}
+		for (let i = pageIndex + 1; i < allPages.length; i++) {
+			if (!allPages[i].isVisible) {
+				count++
+				idsOfPagesToBeDeleted.push(allPages[i].pageId)
+			} else {
+				break
 			}
 		}
 
@@ -85,6 +83,7 @@ function handlePages() {
 
 		docs.decreasePageCount(docId, count)
 		thumbnails.deletePage(idsOfPagesToBeDeleted)
+		previews.deletePage(idsOfPagesToBeDeleted)
 	}
 
 	function rotate(pageId: string, degree: number) {
@@ -108,18 +107,6 @@ function handlePages() {
 		}
 
 		set(allPages)
-	}
-
-	async function loadThumbnail(pageId: string) {
-		update((pages) =>
-			pages.map((page) => (page.pageId === pageId ? { ...page, loadThumbnail: true } : page))
-		)
-	}
-
-	function loadPreview(pageId: string) {
-		update((pages) =>
-			pages.map((page) => (page.pageId === pageId ? { ...page, loadPreview: true } : page))
-		)
 	}
 
 	function reset() {

@@ -56,7 +56,7 @@
 
 				let pagePdf = doc.pagesPdfProxy[pageId]
 				docNames.push(doc.name.split('.')[0])
-				blobsPromise.push(getPageAsBlob(pagePdf, pageId, (quality * 4) / 100, true, imageFormat))
+				blobsPromise.push(getPageAsBlob(pagePdf, (quality * 4) / 100, imageFormat))
 			}
 		}
 

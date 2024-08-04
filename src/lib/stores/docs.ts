@@ -1,16 +1,11 @@
 import { get, writable } from 'svelte/store'
-import { getPdfPage, getInputAsUint8Array } from '$lib/utils'
+import { getPdfPage } from '$lib/utils'
 import { v4 as uuidv4 } from 'uuid'
-import type { Canvas, Doc, PDFPage } from '$lib/types'
+import type { CreateImage, Doc, PDFPage } from '$lib/types'
 import { colors } from './colors'
 import { pages } from './pages'
-import { thumbnails } from './images'
-// import { pages } from './pages'
-// import { preview } from './preview'
-// import { mergedPdf } from './mergedPdf'
-// import { PDFDocument, degrees } from 'pdf-lib'
-// import { colors } from '../colors'
-// import { thumbnails } from './convert'
+import { previews, thumbnails } from './images'
+import { mergedPdf } from './mergedPdf'
 
 function uploading() {
 	const { subscribe, set } = writable<boolean>(false)
@@ -61,7 +56,7 @@ function handleFiles() {
 
 		update((docs) => ({ ...docs, [newDoc.docId]: newDoc }))
 
-		const visiblePageIds: { [pageId: string]: PDFPage } = {}
+		const visiblePageIds: CreateImage = {}
 		for (let i = 0; i < pageIds.length; i++) {
 			const pageId = pageIds[i]
 
@@ -76,12 +71,15 @@ function handleFiles() {
 			pages.create(newPage)
 
 			if (newPage.isVisible) {
-				visiblePageIds[pageId] = pagesPdfProxy[pageId]
+				visiblePageIds[pageId] = {
+					pdfPage: pagesPdfProxy[pageId],
+					docId: newDoc.docId
+				}
 			}
 		}
 
 		//create thumbnails for visible pages
-		thumbnails.create(visiblePageIds, newDoc.docId)
+		thumbnails.create(visiblePageIds)
 
 		uploadingDocs.set(false)
 	}
@@ -119,68 +117,20 @@ function handleFiles() {
 	}
 
 	function decreasePageCount(docId: string, numOfPages: number) {
-		let d = { ...get(docs) }
+		let allDocs = { ...get(docs) }
 
-		d[docId].pageCount = d[docId].pageCount - numOfPages
+		allDocs[docId].pageCount = allDocs[docId].pageCount - numOfPages
 
-		if (d[docId].pageCount < 1) {
+		if (allDocs[docId].pageCount < 1) {
 			// deleteDoc(docId)
-			delete d[docId]
+			delete allDocs[docId]
 		}
 
-		set(d)
-	}
-
-	async function merge() {
-		console.log('merge')
-		// mergedPdf.setLoading(true)
-
-		// const allPages = [...get(pages)]
-		// const allDocs = { ...get(docs) }
-		// let docPages: {
-		// 	[docId: string]: { pageNumber: number[]; pageRotation: (number | undefined)[] }
-		// } = {}
-
-		// try {
-		// 	let merger = await PDFDocument.create()
-
-		// 	for (let page of allPages) {
-		// 		if (!page.loadThumbnail) pages.loadThumbnail(page.pageId)
-		// 		if (!page.loadPreview) pages.loadPreview(page.pageId)
-
-		// 		if (!docPages[page.docId]) docPages[page.docId] = { pageNumber: [], pageRotation: [] }
-		// 		docPages[page.docId].pageNumber.push(page.pageNum)
-		// 		docPages[page.docId].pageRotation.push(
-		// 			page.rotationDegree ? page.rotationDegree + page.initialRotation : undefined
-		// 		)
-		// 	}
-
-		// 	for (let docId in docPages) {
-		// 		let src = await getInputAsUint8Array(allDocs[docId].file)
-		// 		let pdfDoc = await PDFDocument.load(src)
-		// 		const copiedPages = await merger.copyPages(pdfDoc, docPages[docId].pageNumber)
-
-		// 		for (let [index, copiedPage] of copiedPages.entries()) {
-		// 			let rotation = docPages[docId].pageRotation[index]
-		// 			if (rotation) {
-		// 				copiedPage.setRotation(degrees(rotation))
-		// 			}
-		// 			merger.addPage(copiedPage)
-		// 		}
-		// 	}
-
-		// 	const merged = await merger.save()
-		// 	let blob = new Blob([merged], {
-		// 		type: 'application/pdf'
-		// 	})
-
-		// 	mergedPdf.setSrc(URL.createObjectURL(blob))
-
-		// 	mergedPdf.setLoading(false)
-		// } catch (error) {
-		// 	mergedPdf.setLoading(false)
-		// 	console.log(error)
-		// }
+		if (!Object.keys(allDocs)) {
+			reset()
+		} else {
+			set(allDocs)
+		}
 	}
 
 	async function destroyAllDocs() {
@@ -200,8 +150,8 @@ function handleFiles() {
 		pages.reset()
 		colors.reset()
 		thumbnails.reset()
-		// preview.clear()
-		// mergedPdf.reset()
+		previews.reset()
+		mergedPdf.reset()
 	}
 
 	return {

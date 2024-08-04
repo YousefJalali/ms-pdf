@@ -1,27 +1,23 @@
-import type { Canvas, PDFPage } from '$lib/types'
+import type { Canvas, CreateImage } from '$lib/types'
 import { getPageAsBlob } from '$lib/utils'
 import { get, writable } from 'svelte/store'
 
 function handleImages(size: 'small' | 'large') {
 	const { subscribe, set, update } = writable<Canvas>({})
 
-	async function create(pagesPdfProxy: { [pageId: string]: PDFPage }, docId: string) {
+	async function create(pagesPdfProxy: CreateImage) {
 		let newThumbs: Canvas = {}
 		let blobsPromise = []
 		let store = size === 'small' ? get(thumbnails) : get(previews)
 
 		for (let pageId in pagesPdfProxy) {
 			if (!store[pageId]) {
-				// newThumbs = {
-				// 	...newThumbs,
-				// 	[pageId]: {
-				// 		src: null,
-				// 		docId,
-				// 		pageNumberInDoc: 0
-				// 	}
-				// }
 				blobsPromise.push(
-					getPageAsBlob(pagesPdfProxy[pageId], size).then((src) => ({ src, pageId }))
+					getPageAsBlob(pagesPdfProxy[pageId].pdfPage, size).then((src) => ({
+						src,
+						pageId,
+						docId: pagesPdfProxy[pageId].docId
+					}))
 				)
 			}
 		}
@@ -37,7 +33,7 @@ function handleImages(size: 'small' | 'large') {
 						...newThumbs,
 						[blob.pageId]: {
 							src: blob.src,
-							docId,
+							docId: blob.docId,
 							pageNumberInDoc
 						}
 					}

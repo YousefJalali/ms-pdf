@@ -124,7 +124,7 @@ test('Delete one document', async ({ page }) => {
 	await page.goto('/merge')
 	//upload pdf
 	await page.getByTestId('upload doc').setInputFiles(`./tests/${onePage}`)
-	await page.getByTestId('upload doc').setInputFiles(`./tests/${twoPages}`)
+	await page.getByTestId('side').getByText('Add More Docs').setInputFiles(`./tests/${twoPages}`)
 
 	//3 pages should be uploaded (2 visible and one hidden)
 	await expect(page.locator('[data-testid="drop zone"]>div')).toHaveCount(3)
@@ -150,7 +150,7 @@ test('Delete all documents', async ({ page }) => {
 	await page.goto('/merge')
 	//upload pdf
 	await page.getByTestId('upload doc').setInputFiles(`./tests/${onePage}`)
-	await page.getByTestId('upload doc').setInputFiles(`./tests/${twoPages}`)
+	await page.getByTestId('side').getByText('Add More Docs').setInputFiles(`./tests/${twoPages}`)
 
 	//3 pages should be uploaded (2 visible and one hidden)
 	await expect(page.locator('[data-testid="drop zone"]>div')).toHaveCount(3)
@@ -273,7 +273,7 @@ test('Merge two docs', async ({ page }) => {
 	await page.goto('/merge')
 	//upload pdf
 	await page.getByTestId('upload doc').setInputFiles(`./tests/${onePage}`)
-	await page.getByTestId('upload doc').setInputFiles(`./tests/${twoPages}`)
+	await page.getByTestId('side').getByText('Add More Docs').setInputFiles(`./tests/${twoPages}`)
 
 	//click on merge button
 	await page.getByRole('button', { name: 'merge' }).click()

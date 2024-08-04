@@ -35,6 +35,7 @@
 
 		<div
 			class="lg:flex-[0_0_30%] flex w-full border bg-base-100 flex-col rounded-2xl p-4 fixed bottom-0 left-0 z-10 lg:relative"
+			data-testid="side"
 		>
 			<input type="checkbox" id="download-options" class="hidden peer" />
 			<div class="flex-1 hidden lg:flex lg:flex-col peer-checked:block">

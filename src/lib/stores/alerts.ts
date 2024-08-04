@@ -1,12 +1,7 @@
 import { v4 as uuidv4 } from 'uuid'
 import { get, writable } from 'svelte/store'
+import type { Alert, AlertType } from '$lib/types'
 
-export type AlertType = 'info' | 'success' | 'warning' | 'error'
-type Alert = {
-	id: string
-	type: AlertType
-	message: string
-}
 function handleAlerts() {
 	const { subscribe, set, update } = writable<Alert[]>([])
 

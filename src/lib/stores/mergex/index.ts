@@ -1,5 +1,0 @@
-export { docs } from './docs'
-export { images } from './images'
-export { mergedPdf } from '../mergedPdf'
-export { pages } from './pages'
-export { preview } from './preview'

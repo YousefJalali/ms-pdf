@@ -19,8 +19,21 @@ function handlePreview() {
 		let pageId = page.pageId
 		if (!get(previews)[pageId]) {
 			let doc = get(docs)[page.docId]
-			previews.create({ [pageId]: doc.pagesPdfProxy[pageId] }, doc.docId)
+			previews.create({
+				[pageId]: {
+					pdfPage: doc.pagesPdfProxy[pageId],
+					docId: doc.docId
+				}
+			})
 		}
+	}
+
+	function show(currentPageIndex: number) {
+		set({
+			isModalVisible: true,
+			currentPageIndex
+		})
+		createPreview(get(pages)[currentPageIndex])
 	}
 
 	function next(store: ModalPreview) {
@@ -45,13 +58,9 @@ function handlePreview() {
 
 	return {
 		subscribe,
+		show,
 		next: () => update((store) => next(store)),
 		prev: () => update((store) => prev(store)),
-		show: (currentPageIndex: number) =>
-			set({
-				isModalVisible: true,
-				currentPageIndex
-			}),
 		hide: () =>
 			set({
 				isModalVisible: false,

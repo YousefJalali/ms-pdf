@@ -2,33 +2,18 @@
 	import { Modal } from '$lib/ui'
 	import { previews, thumbnails, pageNum, pages, docs, previewModal } from '$lib/stores'
 	import { rotationStyle } from '$lib/utils'
-	// import Actions from './Actions.svelte'
 
 	$: currentPageIndex = $previewModal.currentPageIndex || 0
-	$: currentPageId = $pages[currentPageIndex].pageId
+	$: currentPageId = $pages[currentPageIndex]?.pageId
 	$: currentPage = $pages[currentPageIndex]
-	$: doc = $docs[currentPage.docId]
-
-	function createPreview(pageId: string) {
-		if (!$previews[pageId]) previews.create({ [pageId]: doc.pagesPdfProxy[pageId] }, doc.docId)
-	}
+	$: doc = $docs[currentPage?.docId]
 
 	function next() {
 		previewModal.next()
-		// createPreview($pages[currentPageIndex].pageId)
-		// if (currentPageIndex >= $pages.length - 1) return
-		// currentPageIndex++
-		// previewModal.setCurrentPage($pages[currentPageIndex].pageId)
-		// preview.next(index)
 	}
 
 	function prev() {
 		previewModal.prev()
-		// if (currentPageIndex <= 0) return
-		// currentPageIndex--
-		// previewModal.setCurrentPage($pages[currentPageIndex].pageId)
-		// createPreview($pages[currentPageIndex].pageId)
-		// preview.next(index)
 	}
 
 	function closeModal() {
@@ -66,7 +51,7 @@
 		{:else if $thumbnails[currentPageId]?.src}
 			<img
 				style={rotationStyle(currentPage)}
-				src={URL.createObjectURL($thumbnails[currentPageId].src)}
+				src={URL.createObjectURL($thumbnails[currentPageId]?.src)}
 				alt={`preview page ${pageNumber} of ${doc.name}`}
 				class="border object-contain w-full"
 			/>

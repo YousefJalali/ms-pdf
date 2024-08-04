@@ -1,6 +1,6 @@
 import type { PDFPageProxy } from 'pdfjs-dist'
 
-const LARGE = 600
+const LARGE = 800
 const SMALL = 200
 
 export async function getPageAsBlob(
