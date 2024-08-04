@@ -1,11 +1,13 @@
 <script lang="ts">
-	import { docs, mergedPdf, pages } from '$lib/stores'
+	import { docs, mergedPdf, pages, previews } from '$lib/stores'
 	import Cards from './(Cards)/Cards.svelte'
 	import MergedDoc from './(MergedDoc)/MergedDoc.svelte'
 	import Preview from './(Cards)/Preview.svelte'
 	import { beforeNavigate } from '$app/navigation'
 	import Layout from '../Layout.svelte'
-	import { DocItem, DocItemOptions } from '$lib/ui'
+	import { DocItem, DocItemOptions, PageLoadingState } from '$lib/ui'
+	import Merge from './(MergedDoc)/Merge.svelte'
+	import { LINKS, states } from '$lib/constants'
 
 	// beforeNavigate(({ cancel }) => {
 	// 	if ($pages.length) {
@@ -20,19 +22,23 @@
 	// 		}
 	// 	}
 	// })
-
-	function merge() {
-		console.log('merge')
-	}
 </script>
 
-{#if $mergedPdf.src}
+{#if $mergedPdf.loading}
+	<PageLoadingState
+		loading
+		title={states[LINKS.merge].merging.title}
+		description={states[LINKS.merge].merging.description}
+	/>
+{:else if $mergedPdf.src}
 	<MergedDoc />
 {:else}
 	<Layout>
 		<svelte:fragment slot="cards">
 			<Cards />
-			<Preview />
+			{#if Object.keys($previews).length && $pages.length}
+				<Preview />
+			{/if}
 		</svelte:fragment>
 
 		<svelte:fragment slot="side">
@@ -46,17 +52,7 @@
 		</svelte:fragment>
 
 		<svelte:fragment slot="cta">
-			<button
-				on:click={merge}
-				class="btn btn-primary flex-1"
-				disabled={$pages.length < 2 || $mergedPdf.loading}
-			>
-				{#if $mergedPdf.loading}
-					<span class="loading loading-spinner"></span>Merging...
-				{:else}
-					Merge
-				{/if}
-			</button>
+			<Merge />
 		</svelte:fragment>
 	</Layout>
 {/if}

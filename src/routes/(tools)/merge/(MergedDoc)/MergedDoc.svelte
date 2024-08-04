@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { LINKS, states } from '$lib/constants'
 	import { docs, mergedPdf, pages, previews, thumbnails } from '$lib/stores'
 	import { backIcon, downloadIcon, startOver } from '$lib/ui'
 	import MergedDocPreview from './MergedDocPreview.svelte'
@@ -36,15 +37,15 @@
 
 <div class="flex flex-col justify-center items-center mx-auto max-w-xl text-center prose">
 	{#if preparingLink}
-		<h1>mergeStates.downloading.title</h1>
-		<p>mergeStates.downloading.description</p>
+		<h1>{states[LINKS.merge].downloading.title}</h1>
+		<p>{states[LINKS.merge].downloading.description}</p>
 	{:else if downloaded}
-		<h1>mergeStates.downloaded.title</h1>
-		<p>mergeStates.downloaded.description</p>
+		<h1>{states[LINKS.merge].downloaded.title}</h1>
+		<p>{states[LINKS.merge].downloaded.description}</p>
 		<button class="btn btn-outline btn-wide" on:click={reset}>{@html startOver}Start Over</button>
 	{:else}
-		<h1>mergeStates.merged.title</h1>
-		<p>mergeStates.merged.description</p>
+		<h1>{states[LINKS.merge].merged.title}</h1>
+		<p>{states[LINKS.merge].merged.description}</p>
 		<div
 			data-testid="preview merged"
 			class="mx-auto border broder-base-300 w-[380px] h-[480px] overflow-y-scroll [&>img]:mx-auto [&>img]:m-0 divide-y-2"
