@@ -2,27 +2,37 @@ import type { Canvas, PDFPage } from '$lib/types'
 import { getPageAsBlob } from '$lib/utils'
 import { get, writable } from 'svelte/store'
 
-function handleImages() {
+function handleImages(size: 'small' | 'large') {
 	const { subscribe, set, update } = writable<Canvas>({})
 
 	async function create(pagesPdfProxy: { [pageId: string]: PDFPage }, docId: string) {
+		let newThumbs: Canvas = {}
 		let blobsPromise = []
+		let store = size === 'small' ? get(thumbnails) : get(previews)
 
 		for (let pageId in pagesPdfProxy) {
-			if (!get(thumbnails)[pageId]) {
-				blobsPromise.push(getPageAsBlob(pagesPdfProxy[pageId], pageId))
+			if (!store[pageId]) {
+				// newThumbs = {
+				// 	...newThumbs,
+				// 	[pageId]: {
+				// 		src: null,
+				// 		docId,
+				// 		pageNumberInDoc: 0
+				// 	}
+				// }
+				blobsPromise.push(
+					getPageAsBlob(pagesPdfProxy[pageId], size).then((src) => ({ src, pageId }))
+				)
 			}
 		}
 
-		let newThumbs: Canvas = {}
 		if (blobsPromise.length) {
 			let blobs = await Promise.all(blobsPromise)
 
 			let pageNumberInDoc = 1
 
 			for (let blob of blobs) {
-				if (!(blob instanceof Blob) && blob?.src) {
-					console.log(pageNumberInDoc)
+				if (blob.src) {
 					newThumbs = {
 						...newThumbs,
 						[blob.pageId]: {
@@ -31,13 +41,12 @@ function handleImages() {
 							pageNumberInDoc
 						}
 					}
-
 					pageNumberInDoc++
 				}
 			}
-
-			update((thumbs) => ({ ...thumbs, ...newThumbs }))
 		}
+
+		if (Object.keys(newThumbs).length) update((thumbs) => ({ ...thumbs, ...newThumbs }))
 	}
 
 	function deleteDoc(store: Canvas, docId: string) {
@@ -73,5 +82,5 @@ function handleImages() {
 	}
 }
 
-export const thumbnails = handleImages()
-export const previews = handleImages()
+export const thumbnails = handleImages('small')
+export const previews = handleImages('large')

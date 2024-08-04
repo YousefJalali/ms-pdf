@@ -5,16 +5,14 @@ const SMALL = 200
 
 export async function getPageAsBlob(
 	page: PDFPageProxy,
-	pageId: string,
-	type: 'small' | 'large' | number = 'small',
-	srcOnly = false,
-	format: 'jpeg' | 'webp' | 'png' = 'webp'
+	size: 'small' | 'large' | number = 'small',
+	type: 'jpeg' | 'webp' | 'png' = 'webp'
 ) {
 	try {
 		const scale =
-			typeof type === 'number'
-				? type
-				: (type === 'small' ? SMALL : LARGE) / page.getViewport({ scale: 1 }).height
+			typeof size === 'number'
+				? size
+				: (size === 'small' ? SMALL : LARGE) / page.getViewport({ scale: 1 }).height
 
 		const viewport = page.getViewport({ scale })
 
@@ -36,18 +34,10 @@ export async function getPageAsBlob(
 		await renderTask.promise
 
 		const src = await new Promise<Blob | null>((resolve) =>
-			canvas.toBlob(resolve, `image/${format}`, 1)
+			canvas.toBlob(resolve, `image/${type}`, 1)
 		)
 
-		if (srcOnly) {
-			return src
-		}
-
-		return {
-			pageId,
-			src,
-			type
-		}
+		return src
 	} catch (error) {
 		console.log(error)
 	}
