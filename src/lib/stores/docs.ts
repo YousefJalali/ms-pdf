@@ -151,7 +151,6 @@ function handleFiles() {
 		colors.reset()
 		thumbnails.reset()
 		previews.reset()
-		mergedPdf.reset()
 	}
 
 	return {

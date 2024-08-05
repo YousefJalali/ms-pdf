@@ -8,6 +8,7 @@
 	import { beforeNavigate } from '$app/navigation'
 	import { states, TOOLS } from '$lib/constants/'
 	import Layout from '../Layout.svelte'
+	import OtherTools from '../OtherTools.svelte'
 
 	const generateFileName = () =>
 		`Converted-PDF-${new Date()
@@ -144,13 +145,7 @@
 	>
 		<button class="btn btn-primary btn-outline btn-wide" on:click={reset}>Start Over</button>
 
-		<p>or explore other amazing tools we offer!</p>
-
-		<div class="flex flex-wrap gap-4 mt-6">
-			{#each TOOLS.filter((tool) => tool.link !== $page.url.pathname) as tool}
-				<a href={tool.link} class="btn [&>svg]:size-6">{@html tool.icon} {tool.name}</a>
-			{/each}
-		</div>
+		<OtherTools />
 	</PageLoadingState>
 {:else if !Object.keys($thumbnails).length && $uploadingDocs}
 	<PageLoadingState
