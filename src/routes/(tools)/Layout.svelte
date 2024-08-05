@@ -55,7 +55,7 @@
 		</div>
 		<label
 			for="download-options"
-			class="hidden peer-[:has(input[type='checkbox']:checked)]:block fixed top-0 left-0 z-10 w-screen h-screen bg-black opacity-50"
+			class="hidden peer-[:has(input[type='checkbox']:checked)]:block lg:!hidden fixed top-0 left-0 z-10 w-screen h-screen bg-black opacity-50"
 		/>
 	</div>
 {/if}
