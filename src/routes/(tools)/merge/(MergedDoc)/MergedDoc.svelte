@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { beforeNavigate } from '$app/navigation'
 	import { LINKS, states } from '$lib/constants'
 	import { docs, mergedPdf, pages, previews, thumbnails } from '$lib/stores'
 	import { backIcon, downloadIcon, startOver } from '$lib/ui'
@@ -34,6 +35,12 @@
 		mergedPdf.reset()
 		downloaded = false
 	}
+
+	beforeNavigate(() => {
+		if (!Object.keys($docs).length) {
+			mergedPdf.reset()
+		}
+	})
 </script>
 
 <div
