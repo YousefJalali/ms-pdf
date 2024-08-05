@@ -41,7 +41,7 @@
 		</div>
 
 		<div
-			class="hidden absolute top-0 left-1/2 -translate-x-1/2 w-fit p-2 py-3 group-hover:flex mx-auto"
+			class="lg:hidden absolute top-0 left-1/2 -translate-x-1/2 w-fit p-2 py-3 lg:group-hover:flex mx-auto"
 		>
 			<Actions {doc} {page} {pageIndex} on:delete={() => pages.deletePage(page.pageId)} />
 		</div>

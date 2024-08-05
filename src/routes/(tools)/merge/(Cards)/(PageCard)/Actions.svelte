@@ -23,7 +23,10 @@
 
 <div class="bg-neutral text-neutral-content shadow w-fit mx-auto join join-horizontal">
 	{#if from === 'card'}
-		<div class="tooltip tooltip-bottom join-item flex-1" data-tip="Preview">
+		<div
+			class="tooltip tooltip-bottom join-item flex-1 before:hidden lg:before:block"
+			data-tip="Preview"
+		>
 			<button
 				aria-label="preview"
 				class="btn btn-sm btn-ghost [&>svg]:size-5"
@@ -34,7 +37,7 @@
 	{/if}
 
 	<div
-		class="tooltip tooltip-bottom join-item flex-1"
+		class="tooltip tooltip-bottom join-item flex-1 before:hidden lg:before:block"
 		data-tip={doc.pageCount <= 1 || doc.showPages ? 'Rotate Page' : 'Rotate Document'}
 	>
 		<button
@@ -46,7 +49,7 @@
 	</div>
 
 	<div
-		class="tooltip tooltip-bottom join-item flex-1"
+		class="tooltip tooltip-bottom join-item flex-1 before:hidden lg:before:block"
 		data-tip={doc.pageCount <= 1 || doc.showPages ? 'Delete Page' : 'Delete Document'}
 	>
 		<button
