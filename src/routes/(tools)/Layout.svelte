@@ -28,17 +28,13 @@
 		<Upload component={FileInput} {showPages} />
 	</div>
 {:else}
-	<div class="group flex gap-8 w-full">
+	<div class="flex gap-8 w-full">
 		<div class="lg:flex-[0_0_calc(70%-2rem)]">
 			<slot name="cards" />
 		</div>
 
-		<label
-			for="download-options"
-			class="hidden group-[:has(input[type='checkbox']:checked)]:block fixed top-0 left-0 w-screen h-screen bg-black opacity-50"
-		/>
 		<div
-			class="lg:flex-[0_0_30%] flex w-full border bg-base-100 flex-col rounded-2xl p-4 fixed bottom-0 left-0 z-10 lg:relative"
+			class="peer lg:flex-[0_0_30%] flex w-full border bg-base-100 flex-col rounded-2xl p-4 fixed bottom-0 left-0 z-20 lg:relative"
 			data-testid="side"
 		>
 			<input type="checkbox" id="download-options" class="hidden peer" />
@@ -57,5 +53,9 @@
 				<slot name="cta" />
 			</div>
 		</div>
+		<label
+			for="download-options"
+			class="hidden peer-[:has(input[type='checkbox']:checked)]:block fixed top-0 left-0 z-10 w-screen h-screen bg-black opacity-50"
+		/>
 	</div>
 {/if}
