@@ -28,7 +28,7 @@
 		<Upload component={FileInput} {showPages} />
 	</div>
 {:else}
-	<div class="flex gap-8 pb-8 lg:pb-0 w-full">
+	<div class="flex gap-8 w-full">
 		<div class="lg:flex-[0_0_calc(70%-2rem)]">
 			<slot name="cards" />
 		</div>
@@ -39,7 +39,9 @@
 		>
 			<input type="checkbox" id="download-options" class="hidden peer" />
 			<div class="flex-1 hidden lg:flex lg:flex-col peer-checked:block">
-				<label for="download-options" class="btn btn-xs ml-auto flex w-fit lg:hidden">✕ </label>
+				<label for="download-options" class="btn btn-xs ml-auto flex w-fit lg:hidden mb-4"
+					>✕
+				</label>
 				<div class="mb-4">
 					<Upload component={UploadButton} {showPages} />
 				</div>
