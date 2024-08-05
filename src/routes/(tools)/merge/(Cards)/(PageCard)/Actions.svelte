@@ -24,7 +24,10 @@
 <div class="bg-neutral text-neutral-content shadow w-fit mx-auto join join-horizontal">
 	{#if from === 'card'}
 		<div class="tooltip tooltip-bottom join-item flex-1" data-tip="Preview">
-			<button aria-label="preview" class="btn btn-sm btn-ghost" on:click={showPreview}
+			<button
+				aria-label="preview"
+				class="btn btn-sm btn-ghost [&>svg]:size-5"
+				on:click={showPreview}
 				>{@html zoom}
 			</button>
 		</div>
@@ -36,7 +39,7 @@
 	>
 		<button
 			aria-label="rotate"
-			class="btn btn-sm btn-ghost"
+			class="btn btn-sm btn-ghost [&>svg]:size-5"
 			on:click={() => pages.rotate(page.pageId, 90)}
 			>{@html rotate}
 		</button>
@@ -46,7 +49,10 @@
 		class="tooltip tooltip-bottom join-item flex-1"
 		data-tip={doc.pageCount <= 1 || doc.showPages ? 'Delete Page' : 'Delete Document'}
 	>
-		<button aria-label="delete" class="btn btn-sm btn-ghost !text-error" on:click={onDelete}
+		<button
+			aria-label="delete"
+			class="btn btn-sm btn-ghost [&>svg]:size-5 !text-error"
+			on:click={onDelete}
 			>{@html trash}
 		</button>
 	</div>

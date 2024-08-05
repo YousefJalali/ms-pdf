@@ -2,7 +2,7 @@
 	import JSZip from 'jszip'
 	import { page } from '$app/stores'
 	import { docs, thumbnails, uploadingDocs } from '$lib/stores'
-	import { DocItem, gear, PageLoadingState } from '$lib/ui'
+	import { DocItem, PageLoadingState } from '$lib/ui'
 	import { getPageAsBlob } from '$lib/utils'
 	import { writable } from 'svelte/store'
 	import { beforeNavigate } from '$app/navigation'
@@ -162,7 +162,7 @@
 	<Layout>
 		<svelte:fragment slot="cards">
 			<div
-				class="h-full overflow-y-scroll grid grid-cols-2 lg:grid-cols-4 gap-2 lg:gap-4 bg-base-200 rounded-2xl p-2 lg:p-4"
+				class="h-full overflow-y-scroll grid auto-rows-min grid-cols-2 lg:grid-cols-4 gap-2 lg:gap-4 bg-base-200 rounded-2xl p-2 lg:p-4"
 			>
 				{#each Object.keys($thumbnails) as pageId}
 					<div

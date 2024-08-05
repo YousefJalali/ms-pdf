@@ -14,7 +14,7 @@
 
 {#if showList === doc.docId}
 	<div class="absolute top-1/2 right-4 z-20" use:clickOutside on:outclick={() => (showList = null)}>
-		<ul class="dropdown-content menu min-w-56 bg-base-100 rounded-box z-[1] w-fit p-2 shadow">
+		<ul class="dropdown-content menu min-w-56 bg-base-100 rounded-box z-[1] w-fit p-2 shadow-lg">
 			<li>
 				<label class="label cursor-pointer">
 					<span class="label-text">Show Pages</span>

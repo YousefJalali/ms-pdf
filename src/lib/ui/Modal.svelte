@@ -24,7 +24,7 @@
 		on:click|self={closeHandler}
 	>
 		<!-- svelte-ignore a11y-no-static-element-interactions -->
-		<div on:click|stopPropagation class="modal-box overflow-y-scroll">
+		<div on:click|stopPropagation class="modal-box overflow-hidden transform-none">
 			<div class="sticky right-0 top-0 flex justify-end h-0 z-10">
 				<button class="btn btn-sm btn-circle shadow" on:click={closeHandler}>✕</button>
 			</div>

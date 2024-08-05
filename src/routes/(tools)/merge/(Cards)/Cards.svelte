@@ -79,7 +79,7 @@
 </script>
 
 <div
-	class="relative bg-base-100 border-2 border-dashed border-base-300 rounded-2xl h-full overflow-y-scroll p-2 lg:p-4"
+	class="relative overflow-x-hidden bg-base-100 border-2 border-dashed border-base-300 rounded-2xl h-full overflow-y-scroll p-2 lg:p-4"
 >
 	<div
 		class="grid grid-cols-2 lg:grid-cols-4 gap-2 lg:gap-4"

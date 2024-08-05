@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { Modal } from '$lib/ui'
 	import { previews, thumbnails, pageNum, pages, docs, previewModal } from '$lib/stores'
-	import { rotationStyle } from '$lib/utils'
 
 	$: currentPageIndex = $previewModal.currentPageIndex || 0
 	$: currentPageId = $pages[currentPageIndex]?.pageId
@@ -18,11 +17,23 @@
 
 	function closeModal() {
 		previewModal.hide()
+		transform = {}
 	}
 
 	$: showModal = !!Object.keys($previews).length && $previewModal.isModalVisible
 
 	$: pageNumber = String($pageNum[currentPageId]).split(',')[0]
+
+	let imgContainer: HTMLDivElement
+
+	let transform: { [pageId: string]: string } = {}
+	$: if (showModal && imgContainer && currentPage && $previews[currentPageId]?.src) {
+		if (((currentPage.initialRotation + (currentPage.rotationDegree || 0)) / 90) % 2 !== 0) {
+			let { height, width } = imgContainer.getBoundingClientRect()
+			transform[currentPage.pageId] =
+				`transform: rotate(${currentPage.rotationDegree}deg) scale(${(width / height) * 0.95}) translateX(-50%)`
+		}
+	}
 </script>
 
 <Modal bind:showModal on:close={closeModal}>
@@ -40,21 +51,24 @@
 		</div>
 	</div>
 
-	<div class="border border-transparent w-fit [&>img]:min-h-[600px] mx-auto">
+	<div
+		bind:this={imgContainer}
+		class="relative border border-transparent overflow-hidden h-[70vh] w-full mx-auto"
+	>
 		{#if $previews[currentPageId]?.src && currentPage}
 			<img
-				style={rotationStyle(currentPage)}
+				style={transform[currentPageId]}
 				src={URL.createObjectURL($previews[currentPageId].src)}
 				alt={`preview page ${pageNumber} of ${doc.name}`}
-				class="border object-contain select-none"
+				class="origin-left absolute top-0 left-1/2 -translate-x-1/2 h-full w-auto border object-scale-down select-none"
 			/>
-		{:else if $thumbnails[currentPageId]?.src}
+			<!-- {:else if $thumbnails[currentPageId]?.src}
 			<img
-				style={rotationStyle(currentPage)}
+				style={transform[currentPageId]}
 				src={URL.createObjectURL($thumbnails[currentPageId]?.src)}
 				alt={`preview page ${pageNumber} of ${doc.name}`}
-				class="border object-contain w-full"
-			/>
+				class="origin-left absolute top-0 left-1/2 -translate-x-1/2 h-full w-auto border object-scale-down select-none"
+			/> -->
 		{:else}
 			<div class="min-h-[600px] flex justify-center items-center">
 				<span class="loading loading-infinity loading-lg"></span>
