@@ -5,30 +5,32 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
 ).toString()
 
 export async function getPdfPage(file: File) {
+	if (file.type !== 'application/pdf') throw new ReferenceError('Invalid type')
+
 	let loadingTask = pdfjsLib.getDocument(URL.createObjectURL(file))
 
-	try {
-		let pdf = await loadingTask.promise
+	// try {
+	let pdf = await loadingTask.promise
 
-		const pages = []
-		for (let i = 1; i <= pdf.numPages; i++) {
-			pages.push(pdf.getPage(i))
-		}
-
-		let pdfPages = await Promise.all(pages)
-
-		return {
-			pdfPages,
-			destroy: async () => {
-				pdfPages.forEach((p) => {
-					p.cleanup()
-				})
-				await pdf.destroy()
-				// await loadingTask.destroy()
-				return loadingTask.destroyed
-			}
-		}
-	} catch (error) {
-		console.log(error)
+	const pages = []
+	for (let i = 1; i <= pdf.numPages; i++) {
+		pages.push(pdf.getPage(i))
 	}
+
+	let pdfPages = await Promise.all(pages)
+
+	return {
+		pdfPages,
+		destroy: async () => {
+			pdfPages.forEach((p) => {
+				p.cleanup()
+			})
+			await pdf.destroy()
+			return loadingTask.destroyed
+		}
+	}
+	// } catch (error) {
+	// return { error }
+	// console.log(error)
+	// }
 }
