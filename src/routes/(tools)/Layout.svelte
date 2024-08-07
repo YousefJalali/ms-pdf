@@ -34,7 +34,7 @@
 		</div>
 
 		<div
-			class="peer lg:flex-[0_0_30%] flex w-full border border-base-300 bg-base-100 flex-col rounded-2xl p-4 fixed bottom-0 left-0 z-20 lg:relative"
+			class="peer lg:flex-[0_0_30%] flex w-full border border-base-300 bg-base-100 flex-col rounded-2xl p-4 fixed bottom-0 left-0 max-h-[80vh] lg:max-h-none z-20 lg:relative"
 			data-testid="side"
 		>
 			<input type="checkbox" id="download-options" class="hidden peer" />
