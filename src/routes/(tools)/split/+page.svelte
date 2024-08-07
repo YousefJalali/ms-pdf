@@ -2,23 +2,24 @@
 	import JSZip from 'jszip'
 	import { page } from '$app/stores'
 	import { docs, pages, previews, thumbnails, uploadingDocs } from '$lib/stores'
-	import { DocItem, DocItemOptions, PageLoadingState, trash } from '$lib/ui'
-	import { getPageAsBlob } from '$lib/utils'
+	import { arrowLongRight, PageLoadingState, plus, trash } from '$lib/ui'
+	import { generateFileName, getInputAsUint8Array } from '$lib/utils'
 	import { writable } from 'svelte/store'
 	import { beforeNavigate } from '$app/navigation'
-	import { states, TOOLS } from '$lib/constants/'
+	import { states } from '$lib/constants/'
 	import Layout from '../Layout.svelte'
 	import OtherTools from '../OtherTools.svelte'
 	import Cards from '../merge/(Cards)/Cards.svelte'
 	import PageCard from '../merge/(Cards)/(PageCard)/PageCard.svelte'
 	import Preview from '../merge/(Cards)/Preview.svelte'
+	import { PDFDocument } from 'pdf-lib'
 
 	let splitType = 'range'
 	let downloaded = false
 	let ranges: { [pageIndex: number]: string } = {}
 	let rangeFrom = 1
 	let rangeTo = 1
-	let displayRanges = []
+	let displayRanges: number[][] = []
 	$: displayRanges = Object.keys(ranges).map((from, i, arr) => {
 		return [+from + 1, +arr[i + 1] || $pages.length]
 	})
@@ -39,10 +40,6 @@
 		docCount = docsLength
 	}
 
-	// $: if (rangeTo > $pages.length) rangeTo = $pages.length
-	// $: if (rangeFrom > $pages.length) rangeFrom = $pages.length
-	// $: if (rangeTo < rangeFrom) rangeTo = rangeFrom
-	//[[], [], []]
 	function addRange() {
 		let from = { [rangeFrom - 1]: $pages[rangeFrom - 1].pageId }
 		let to =
@@ -76,12 +73,100 @@
 	}
 
 	let downloading = false
-	async function download() {}
+	async function download(blobs: Blob[]) {
+		let blob: Blob | null = null
 
-	function reset() {
-		// files = null
+		if (blobs.length === 1) {
+			if (blobs[0] instanceof Blob) {
+				blob = blobs[0]
+			}
+		} else {
+			const zip = new JSZip()
+
+			let i = 0
+			for (let blob of blobs) {
+				if (blob instanceof Blob) {
+					zip.file(`Split (${i}).pdf`, blob, {
+						base64: true
+					})
+
+					i++
+				}
+			}
+
+			blob = await zip.generateAsync({ type: 'blob' })
+		}
+
 		downloading = false
-		downloaded = false
+		if (!blob) return
+
+		const link = document.createElement('a')
+		link.href = URL.createObjectURL(blob)
+		link.download = generateFileName('Split')
+		document.body.append(link)
+		link.click()
+		link.remove()
+
+		await docs.reset()
+
+		downloaded = true
+	}
+
+	function findIndex(arr: number[], num: number) {
+		for (let i = 0; i < arr.length; i++) {
+			console.log(i, arr, arr.length - 1)
+			if (num === 0) return 0
+			if (num <= arr[i]) return i
+		}
+
+		return arr.length - 1
+	}
+
+	async function split() {
+		downloading = true
+
+		const froms = Object.keys(ranges).map((key) => +key)
+		const docsSplitPromise = new Array(froms.length).fill(0).map(() => PDFDocument.create())
+		const docsSplit = await Promise.all(docsSplitPromise)
+
+		const pdfDocsPromise = Object.keys($docs).map((docId) =>
+			getInputAsUint8Array($docs[docId].file)
+				.then((src) => PDFDocument.load(src))
+				.then((doc) => ({ [docId]: doc }))
+		)
+		const pdfDocs: {
+			[docId: string]: PDFDocument
+		} = Object.assign({}, ...(await Promise.all(pdfDocsPromise)))
+
+		const copiedPagesPromise = []
+		for (let i = 0; i < $pages.length; i++) {
+			const indexInFroms = findIndex(froms, i)
+
+			copiedPagesPromise.push(
+				docsSplit[indexInFroms]
+					.copyPages(pdfDocs[$pages[i].docId], [$pages[i].pageNum])
+					.then((pgs) => {
+						pgs.forEach((pg, idx) => {
+							docsSplit[indexInFroms].addPage(pgs[idx])
+						})
+					})
+			)
+		}
+
+		await Promise.all(copiedPagesPromise)
+
+		const urls = await Promise.all(
+			docsSplit.map((doc) =>
+				doc.save().then(
+					(url) =>
+						new Blob([url], {
+							type: 'application/pdf'
+						})
+				)
+			)
+		)
+
+		download(urls)
 	}
 
 	function splitTypeHandler(e: Event) {
@@ -98,6 +183,20 @@
 		all: 'Split your PDF into individual pages, creating a separate file for each page. Ideal for when you need to extract every page separately.',
 		range:
 			'Specify the page ranges you want to split. Enter the start and end page numbers to extract specific sections of your PDF. '
+	}
+
+	function adjustRangeTo() {
+		if (rangeTo < rangeFrom) rangeTo = rangeFrom
+	}
+
+	function reset() {
+		downloading = false
+		downloaded = false
+		ranges = {}
+		rangeFrom = 1
+		rangeTo = 1
+		displayRanges = []
+		docCount = 0
 	}
 </script>
 
@@ -165,7 +264,7 @@
 				</div>
 			</div>
 
-			<p class="text-sm opacity-80">
+			<p class="text-sm opacity-80 text-center">
 				{#if splitType === 'all'}
 					{description['all']}
 				{:else}
@@ -174,47 +273,54 @@
 			</p>
 
 			{#if splitType === 'range'}
-				<div class="join mt-4">
+				<div class="flex items-center gap-2 mt-8 w-full">
+					<!-- <label class="form-control w-full max-w-xs">
+						<div class="label">
+							<span class="label-text">From</span>
+						</div>
+						<input
+							type="number"
+							min={1}
+							max={$pages.length}
+							class="input input-sm input-bordered w-full"
+							placeholder="From"
+							bind:value={rangeFrom}
+							on:blur={adjustRangeTo}
+						/>
+					</label> -->
 					<input
 						type="number"
 						min={1}
 						max={$pages.length}
-						class="join-item input input-sm input-bordered w-full"
+						class="input input-sm input-bordered w-full"
 						placeholder="From"
 						bind:value={rangeFrom}
+						on:blur={adjustRangeTo}
 					/>
+
+					<div>{@html arrowLongRight}</div>
 					<input
 						type="number"
 						min={1}
 						max={$pages.length}
-						class="join-item input input-sm input-bordered w-full"
+						class="input input-sm input-bordered w-full"
 						placeholder="To"
 						bind:value={rangeTo}
+						on:blur={adjustRangeTo}
 					/>
-					<button class="join-item btn btn-sm btn-primary" on:click={addRange}>Add Range</button>
+					<button class="btn btn-sm btn-primary [&>svg]:size-5" on:click={addRange}
+						>{@html plus}Range</button
+					>
 				</div>
 
-				<ul class="mt-4 space-y-2">
+				<ul
+					class="my-4 space-y-2 w-full flex-auto p-0 overflow-y-scroll h-[30vh] max-h-[40vh] lg:max-h-none lg:h-0"
+				>
 					{#each displayRanges as range, index}
-						<li class="flex justify-between items-center border border-base-300 rounded-lg p-2">
+						<li class="flex justify-between items-center bg-base-200 rounded-lg p-2">
 							<span class="font-semibold text-sm flex items-center gap-4">
 								Page {range[0]}
-								<span class="opacity-60 font-normal"
-									><svg
-										xmlns="http://www.w3.org/2000/svg"
-										fill="none"
-										viewBox="0 0 24 24"
-										stroke-width="1.5"
-										stroke="currentColor"
-										class="size-6 inline-block"
-									>
-										<path
-											stroke-linecap="round"
-											stroke-linejoin="round"
-											d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3"
-										/>
-									</svg>
-								</span>
+								<span class="opacity-60 font-normal">{@html arrowLongRight} </span>
 								Page {range[1]}
 							</span>
 
@@ -230,7 +336,7 @@
 		</svelte:fragment>
 
 		<svelte:fragment slot="cta">
-			<button disabled class="btn btn-primary flex-1" on:click={download}>
+			<button class="btn btn-primary flex-1" on:click={split}>
 				{#if downloading}
 					<span class="loading loading-spinner"></span>
 				{/if}
