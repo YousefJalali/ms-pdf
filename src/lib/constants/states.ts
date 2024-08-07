@@ -59,5 +59,37 @@ export const states = {
 			description:
 				'Your merged PDF has been successfully downloaded. Thank you for using our service! If you have any other documents to combine, feel free to merge more PDFs anytime.'
 		}
+	},
+	[LINKS['split']]: {
+		upload: {
+			title: 'Split Your PDF Easily!',
+			description:
+				'Quickly separate your PDF into multiple files. Simply upload your PDF below to get started.'
+		},
+		uploading: {
+			title: 'Uploading Your PDF...',
+			description:
+				'Your PDF is being uploaded. Please wait a moment while we securely transfer your document. Once the upload is complete, you will be able to split it.'
+		},
+		splitting: {
+			title: 'Splitting Your PDF...',
+			description:
+				'Your PDF file is currently being split into multiple documents. This may take a moment. Please wait while the process completes.'
+		},
+		split: {
+			title: '🎉 Your PDF Has Been Split!',
+			description:
+				'Your PDF file has been successfully split into multiple documents. You can preview the split PDFs below.'
+		},
+		downloading: {
+			title: '⏳ Preparing Your Download Links...',
+			description:
+				'Please wait a moment while we generate the download links for your split PDFs. This should only take a few seconds.'
+		},
+		downloaded: {
+			title: '✅ Download Complete!',
+			description:
+				'Your split PDFs have been successfully downloaded. Thank you for using our service! If you have any other documents to split, feel free to split more PDFs anytime.'
+		}
 	}
 }

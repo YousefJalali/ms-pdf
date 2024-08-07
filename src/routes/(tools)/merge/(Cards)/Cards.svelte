@@ -40,7 +40,7 @@
 		//reposition the moved item
 		if (newIndex < items.length - 1) {
 			while (adjustedIndex < items.length - 1) {
-				if (!items[adjustedIndex + 1].isVisible && items[adjustedIndex + 1].docId !== docId) {
+				if (!items[adjustedIndex + 1].isVisible) {
 					adjustedIndex++
 				} else {
 					break
@@ -93,9 +93,10 @@
 				class={`group h-fit relative ${page.isVisible ? 'block' : 'hidden'}`}
 				animate:flip={{ duration: flipDurationMs }}
 			>
-				{#if page.isVisible}
+				<slot {page} {pageIndex} />
+				<!-- {#if page.isVisible}
 					<PageCard {page} {pageIndex} />
-				{/if}
+				{/if} -->
 			</div>
 		{/each}
 	</div>

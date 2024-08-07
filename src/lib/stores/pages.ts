@@ -1,5 +1,5 @@
 import { get, writable } from 'svelte/store'
-import type { CreateImage, PDFPage, Page } from '$lib/types'
+import type { CreateImage, Page } from '$lib/types'
 import { docs } from './docs'
 import { previews, thumbnails } from './images'
 
@@ -10,6 +10,65 @@ function handlePages() {
 		update((pages) => [...pages, { ...newPage, id: newPage.pageId, rotationDegree: undefined }])
 	}
 
+	function showPage(pageId: string) {
+		let p: CreateImage = {}
+
+		update((pages) =>
+			pages.map((page) => {
+				if (page.pageId === pageId) {
+					p[page.pageId] = {
+						pdfPage: get(docs)[page.docId].pagesPdfProxy[page.pageId],
+						docId: page.docId
+					}
+
+					let updatedPage: Page = { ...page, isVisible: true }
+					return updatedPage
+				}
+				return page
+			})
+		)
+
+		//create thumbnail if its not created
+		thumbnails.create(p)
+	}
+
+	function toggleAllPagesVisibility(
+		visibility: boolean,
+		except: { [pageIndex: number]: string } = {}
+	) {
+		let p: CreateImage = {}
+		const allDocs = get(docs)
+
+		update((pages) =>
+			pages.map((page, i) => {
+				if (visibility || (!visibility && except[i] !== undefined)) {
+					//do only when showing page
+					p[page.pageId] = {
+						pdfPage: allDocs[page.docId].pagesPdfProxy[page.pageId],
+						docId: page.docId
+					}
+				}
+
+				if (except[i] === undefined) {
+					let updatedPage: Page = { ...page, isVisible: visibility }
+					return updatedPage
+				}
+				return { ...page, isVisible: !visibility }
+			})
+		)
+
+		//create thumbnail if its not created
+		thumbnails.create(p)
+	}
+
+	function showAll(except: { [pageIndex: number]: string } = {}) {
+		toggleAllPagesVisibility(true, except)
+	}
+
+	function hideAll(except: { [pageIndex: number]: string } = {}) {
+		toggleAllPagesVisibility(false, except)
+	}
+
 	function showDocPages(docId: string) {
 		let docPages: CreateImage = {}
 		let allDocs = get(docs)
@@ -17,7 +76,11 @@ function handlePages() {
 		update((pages) =>
 			pages.map((page) => {
 				if (page.docId === docId) {
-					docPages[page.pageId] = { pdfPage: allDocs[page.docId].pagesPdfProxy[page.pageId], docId }
+					docPages[page.pageId] = {
+						pdfPage: allDocs[page.docId].pagesPdfProxy[page.pageId],
+						docId
+					}
+
 					let updatedPage: Page = { ...page, isVisible: true }
 					return updatedPage
 				}
@@ -117,6 +180,9 @@ function handlePages() {
 		subscribe,
 		set,
 		create,
+		showPage,
+		showAll,
+		hideAll,
 		showDocPages,
 		hideDocPages,
 		deleteDocPages,

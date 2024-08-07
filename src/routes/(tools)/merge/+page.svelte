@@ -8,6 +8,7 @@
 	import { DocItem, DocItemOptions, PageLoadingState } from '$lib/ui'
 	import Merge from './(MergedDoc)/Merge.svelte'
 	import { LINKS, states } from '$lib/constants'
+	import PageCard from './(Cards)/(PageCard)/PageCard.svelte'
 
 	// beforeNavigate(({ cancel }) => {
 	// 	if ($pages.length) {
@@ -35,7 +36,11 @@
 {:else}
 	<Layout>
 		<svelte:fragment slot="cards">
-			<Cards />
+			<Cards let:page let:pageIndex>
+				{#if page.isVisible}
+					<PageCard {page} {pageIndex} />
+				{/if}
+			</Cards>
 			{#if Object.keys($previews).length && $pages.length}
 				<Preview />
 			{/if}
