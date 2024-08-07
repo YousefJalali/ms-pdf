@@ -64,7 +64,7 @@ export const states = {
 		upload: {
 			title: 'Split Your PDF Easily!',
 			description:
-				'Quickly separate your PDF into multiple files. Simply upload your PDF below to get started.'
+				'Quickly separate your PDF into multiple files with ease. Simply upload your PDF below to get started. Choose to split all pages or specify custom page ranges to extract the sections you need. Get precise, organized, and easily manageable files in just a few clicks.'
 		},
 		uploading: {
 			title: 'Uploading Your PDF...',
