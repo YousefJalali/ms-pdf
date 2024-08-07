@@ -3,20 +3,14 @@
 	import { page } from '$app/stores'
 	import { docs, thumbnails, uploadingDocs } from '$lib/stores'
 	import { DocItem, PageLoadingState } from '$lib/ui'
-	import { getPageAsBlob } from '$lib/utils'
+	import { generateFileName, getPageAsBlob } from '$lib/utils'
 	import { writable } from 'svelte/store'
 	import { beforeNavigate } from '$app/navigation'
 	import { states, TOOLS } from '$lib/constants/'
 	import Layout from '../Layout.svelte'
 	import OtherTools from '../OtherTools.svelte'
 
-	const generateFileName = () =>
-		`Converted-PDF-${new Date()
-			.toLocaleString()
-			.split(',')[0]
-			.replaceAll('/', '')}-${new Date().toLocaleTimeString().split(' ')[0].replaceAll(':', '')}`
-
-	const defaultFileName = generateFileName()
+	const defaultFileName = generateFileName('Converted')
 	const QUALITY_LABEL: { [ket: number]: string } = {
 		25: 'Low Quality',
 		50: 'Medium Quality',
@@ -110,7 +104,7 @@
 		quality = 75
 		imageFormat = IMAGE_FORMATS[0]
 		selected.set({})
-		fileName = generateFileName()
+		fileName = generateFileName('Converted')
 		downloaded = false
 	}
 
