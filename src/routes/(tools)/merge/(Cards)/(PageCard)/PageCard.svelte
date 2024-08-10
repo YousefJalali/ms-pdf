@@ -57,9 +57,10 @@
 			</span>
 		</div>
 
+		<!----------- Options ------------>
 		<!-- desktop -->
 		<div class="absolute top-2 left-0 w-full hidden lg:group-hover:inline-flex">
-			<ul class="bg-neutral text-neutral-content menu menu-horizontal rounded-box mx-auto">
+			<ul class="bg-neutral text-neutral-content menu menu-horizontal rounded-box mx-auto p-1">
 				<PageCardOptions {doc} {page} {pageIndex} on:delete={() => pages.deletePage(page.pageId)} />
 			</ul>
 		</div>
@@ -68,7 +69,8 @@
 		<button
 			class="btn btn-sm btn-ghost btn-circle bg-base-100 border border-base-300 absolute right-1 top-1 lg:hidden"
 			on:click={() => optionsModal.showModal()}
-			><svg
+		>
+			<svg
 				xmlns="http://www.w3.org/2000/svg"
 				fill="none"
 				viewBox="0 0 24 24"
