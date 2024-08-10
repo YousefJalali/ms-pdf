@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { docs, pageNum, pages } from '$lib/stores'
 	import type { Page } from '$lib/types'
-	import Actions from './Actions.svelte'
+	import PageCardOptions from './PageCardOptions.svelte'
 	import PageCardThumbnail from './PageCardThumbnail.svelte'
 
 	export let page: Page
@@ -48,7 +48,7 @@
 		<!-- desktop -->
 		<div class="absolute top-2 left-0 w-full hidden lg:group-hover:inline-flex">
 			<ul class="bg-neutral text-neutral-content menu menu-horizontal rounded-box mx-auto">
-				<Actions {doc} {page} {pageIndex} on:delete={() => pages.deletePage(page.pageId)} />
+				<PageCardOptions {doc} {page} {pageIndex} on:delete={() => pages.deletePage(page.pageId)} />
 			</ul>
 		</div>
 
@@ -74,7 +74,7 @@
 		<dialog id="my_modal_5" class="modal modal-bottom sm:modal-middle" bind:this={optionsModal}>
 			<div class="modal-box p-0">
 				<ul class="menu p-0">
-					<Actions
+					<PageCardOptions
 						{doc}
 						{page}
 						{pageIndex}
