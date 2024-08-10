@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { docs, mergedPdf, pages, previews } from '$lib/stores'
-	import Cards from './(Cards)/Cards.svelte'
+	import DraggableCards from '../DraggableCards.svelte'
 	import MergedDoc from './(MergedDoc)/MergedDoc.svelte'
 	import Preview from './(Cards)/Preview.svelte'
 	import { beforeNavigate } from '$app/navigation'
@@ -36,11 +36,11 @@
 {:else}
 	<Layout>
 		<svelte:fragment slot="cards">
-			<Cards let:page let:pageIndex>
+			<DraggableCards let:page let:pageIndex>
 				{#if page.isVisible}
 					<PageCard {page} {pageIndex} />
 				{/if}
-			</Cards>
+			</DraggableCards>
 			{#if Object.keys($previews).length && $pages.length}
 				<Preview />
 			{/if}

@@ -2,7 +2,6 @@
 	import { dndzone, TRIGGERS } from 'svelte-dnd-action'
 	import { flip } from 'svelte/animate'
 	import { pages } from '$lib/stores'
-	import PageCard from './(PageCard)/PageCard.svelte'
 	import type { Page } from '$lib/types'
 
 	function moveItem(arr: Page[], fromIndex: number, toIndex: number) {
@@ -90,13 +89,10 @@
 	>
 		{#each $pages as page, pageIndex (page.id)}
 			<div
-				class={`group h-fit relative ${page.isVisible ? 'block' : 'hidden'}`}
+				class={`group z-0 h-fit relative ${page.isVisible ? 'block' : 'hidden'}`}
 				animate:flip={{ duration: flipDurationMs }}
 			>
 				<slot {page} {pageIndex} />
-				<!-- {#if page.isVisible}
-					<PageCard {page} {pageIndex} />
-				{/if} -->
 			</div>
 		{/each}
 	</div>
