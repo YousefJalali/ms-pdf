@@ -5,8 +5,7 @@
 	import { DocItem, PageLoadingState } from '$lib/ui'
 	import { generateFileName, getPageAsBlob } from '$lib/utils'
 	import { writable } from 'svelte/store'
-	import { beforeNavigate } from '$app/navigation'
-	import { states, TOOLS } from '$lib/constants/'
+	import { states } from '$lib/constants/'
 	import Layout from '../Layout.svelte'
 	import OtherTools from '../OtherTools.svelte'
 
@@ -223,14 +222,14 @@
 					<span class="font-semibold text-xs mb-1 inline-block opacity-60 uppercase">type</span>
 					{#each IMAGE_FORMATS as format}
 						<div class="form-control">
-							<label class="label cursor-pointer checked:bg-base-300">
+							<label class="label cursor-pointer">
 								<span class="label-text uppercase">{format}</span>
 								<input
 									type="radio"
-									name="image format"
 									class="radio checked:bg-primary"
 									bind:group={imageFormat}
 									value={format}
+									checked={format === imageFormat}
 								/>
 							</label>
 						</div>
