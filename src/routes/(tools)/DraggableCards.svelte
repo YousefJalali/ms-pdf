@@ -1,8 +1,10 @@
 <script lang="ts">
 	import { dndzone, TRIGGERS } from 'svelte-dnd-action'
 	import { flip } from 'svelte/animate'
-	import { pages } from '$lib/stores'
+	import { docs, pages } from '$lib/stores'
 	import type { Page } from '$lib/types'
+	import PageCardOptions from './(PageCard)/PageCardOptions.svelte'
+	import { moreVertical } from '$lib/ui'
 
 	function moveItem(arr: Page[], fromIndex: number, toIndex: number) {
 		var element = arr[fromIndex]
@@ -75,6 +77,18 @@
 		pages.set(items)
 		oldIndex = null
 	}
+
+	let optionsModal: HTMLDialogElement
+	let selectedPage: Page | null = null
+
+	function closeOptionsModal() {
+		optionsModal.close()
+		selectedPage = null
+	}
+	function openOptionsModal(page: Page) {
+		selectedPage = page
+		optionsModal.showModal()
+	}
 </script>
 
 <div
@@ -96,8 +110,40 @@
 				class={`group z-0 h-fit relative ${page.isVisible ? 'block' : 'hidden'}`}
 				animate:flip={{ duration: flipDurationMs }}
 			>
-				<slot {page} {pageIndex} />
+				{#if page.isVisible}
+					<button
+						class="btn btn-sm btn-ghost btn-circle bg-base-100 border border-base-300 absolute z-50 right-1 top-3 lg:hidden"
+						on:click={() => openOptionsModal(page)}
+					>
+						{@html moreVertical}
+					</button>
+
+					<slot {page} {pageIndex} />
+				{/if}
 			</div>
 		{/each}
 	</div>
+
+	<dialog
+		data-testid="card-options-mobile"
+		id="card-options-mobile"
+		class="modal modal-bottom sm:modal-middle"
+		bind:this={optionsModal}
+	>
+		<div class="modal-box p-0">
+			{#if selectedPage}
+				<ul class="menu">
+					<PageCardOptions
+						doc={$docs[selectedPage.docId]}
+						page={selectedPage}
+						on:delete={closeOptionsModal}
+						on:preview={closeOptionsModal}
+					/>
+				</ul>
+			{/if}
+		</div>
+		<form method="dialog" class="modal-backdrop">
+			<button></button>
+		</form>
+	</dialog>
 </div>

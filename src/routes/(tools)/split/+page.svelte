@@ -8,7 +8,7 @@
 	import Layout from '../Layout.svelte'
 	import OtherTools from '../OtherTools.svelte'
 	import DraggableCards from '../DraggableCards.svelte'
-	import PageCard from '../merge/(Cards)/(PageCard)/PageCard.svelte'
+	import PageCard from '../(PageCard)/PageCard.svelte'
 	import Preview from '../merge/(Cards)/Preview.svelte'
 	import { PDFDocument } from 'pdf-lib'
 
@@ -223,9 +223,7 @@
 	<Layout>
 		<svelte:fragment slot="cards">
 			<DraggableCards let:page let:pageIndex>
-				{#if page.isVisible}
-					<PageCard {page} {pageIndex} />
-				{/if}
+				<PageCard {page} {pageIndex} />
 			</DraggableCards>
 			{#if Object.keys($previews).length && $pages.length}
 				<Preview />

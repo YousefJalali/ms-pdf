@@ -44,7 +44,7 @@
 </script>
 
 <div
-	class="flex flex-col justify-center items-center mx-auto max-w-full lg:max-w-xl text-center prose"
+	class="flex flex-col justify-center items-center mx-auto max-w-full lg:max-w-xl text-center prose mt-6"
 >
 	{#if downloading}
 		<h1>{states[LINKS.merge].downloading.title}</h1>

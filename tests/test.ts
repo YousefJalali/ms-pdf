@@ -105,21 +105,26 @@ test('show & hide pages', async ({ page }) => {
 	await page
 		.locator('[data-testid="side"]>[data-testid="doc list"]')
 		.first()
-		.getByRole('button')
+		.getByLabel('doc-options')
 		.click()
 
 	//dropdown should be visible
-	await expect(page.locator('[data-testid="doc list"] .dropdown-content')).toBeVisible()
+	await expect(
+		page.locator('[data-testid="side"]>[data-testid="doc list"] .dropdown-content')
+	).toBeVisible()
 
 	//show pages
-	await page.locator('[data-testid="doc list"] .dropdown-content').getByLabel('Show Pages').check()
+	await page
+		.locator('[data-testid="side"]>[data-testid="doc list"] .dropdown-content')
+		.getByLabel('Show Pages')
+		.check()
 
 	//second page should be visible
 	await expect(page.locator('[data-testid="drop zone"]>div').nth(1)).toBeVisible()
 
 	//hide pages
 	await page
-		.locator('[data-testid="doc list"] .dropdown-content')
+		.locator('[data-testid="side"]>[data-testid="doc list"] .dropdown-content')
 		.getByLabel('Show Pages')
 		.uncheck()
 
@@ -231,16 +236,20 @@ test('drag and drop', async ({ page }) => {
 	await page
 		.locator('[data-testid="side"]>[data-testid="doc list"]')
 		.first()
-		.getByRole('button')
+		.getByLabel('doc-options')
 		.click()
 
 	//show pages
-	await page.locator('[data-testid="doc list"] .dropdown-content').getByLabel('Show Pages').check()
+	await page
+		.locator('[data-testid="side"]>[data-testid="doc list"] .dropdown-content')
+		.getByLabel('Show Pages')
+		.check()
 
 	//first page (index 0) should be the first page
-	await expect(
-		page.locator('[data-testid="drop zone"]>div').getByRole('img').first()
-	).toHaveAttribute('alt', `${twoPages} 0`)
+	await expect(page.locator('[data-testid="thumbnail"]').getByRole('img').first()).toHaveAttribute(
+		'alt',
+		`${twoPages} 0`
+	)
 
 	//drag
 	await page
@@ -269,15 +278,18 @@ test('drag and drop', async ({ page }) => {
 		.filter({ hasText: `${twoPages} Page 2` })
 		.nth(1)
 		.hover()
+
 	await page.mouse.up()
 
 	//second page (index 1) should be the first page & first page (index 0) should be second
-	await expect(
-		page.locator('[data-testid="drop zone"]>div').getByRole('img').first()
-	).toHaveAttribute('alt', `${twoPages} 1`)
-	await expect(
-		page.locator('[data-testid="drop zone"]>div').getByRole('img').nth(1)
-	).toHaveAttribute('alt', `${twoPages} 0`)
+	await expect(page.locator('[data-testid="thumbnail"]').getByRole('img').first()).toHaveAttribute(
+		'alt',
+		`${twoPages} 1`
+	)
+	await expect(page.locator('[data-testid="thumbnail"]').getByRole('img').nth(1)).toHaveAttribute(
+		'alt',
+		`${twoPages} 0`
+	)
 })
 
 test('Merge two docs', async ({ page }) => {

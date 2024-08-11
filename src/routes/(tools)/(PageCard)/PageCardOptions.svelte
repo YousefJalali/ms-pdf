@@ -6,7 +6,7 @@
 
 	export let doc: Doc
 	export let page: Page
-	export let pageIndex: number
+	// export let pageIndex: number
 
 	const dispatch = createEventDispatcher()
 
@@ -16,7 +16,7 @@
 	}
 
 	function onPreview() {
-		previewModal.show(pageIndex)
+		previewModal.show($pages.findIndex((p) => p.pageId === page.pageId))
 		dispatch('preview')
 	}
 
@@ -43,11 +43,7 @@
 </script>
 
 {#each actions as { label, action, icon, dataTip }}
-	<li
-		class="relative {label === 'delete'
-			? 'text-error'
-			: ''} first:pt-2 last:pb-2 lg:first:p-0 lg:last:p-0"
-	>
+	<li class="relative {label === 'delete' ? 'text-error' : ''} ">
 		<button aria-label={label} on:click={action} class="absolute inset-0"></button>
 		<a href={undefined} class="lg:p-1 lg:px-2">
 			{@html icon}

@@ -1,13 +1,12 @@
 <script lang="ts">
 	import { docs, pageNum, pages } from '$lib/stores'
 	import type { Page } from '$lib/types'
+	import { moreVertical } from '$lib/ui'
 	import PageCardOptions from './PageCardOptions.svelte'
 	import PageCardThumbnail from './PageCardThumbnail.svelte'
 
 	export let page: Page
 	export let pageIndex: number
-
-	let optionsModal: HTMLDialogElement
 
 	const RATIO = 180 / 280
 
@@ -44,7 +43,7 @@
 		/>
 
 		<!-- Thumbnail -->
-		<div class="h-full flex items-center">
+		<div data-testid="thumbnail" class="h-full flex items-center">
 			<PageCardThumbnail {page} />
 		</div>
 
@@ -64,50 +63,10 @@
 			class="absolute top-2 left-0 w-full hidden lg:group-hover:inline-flex"
 		>
 			<ul class="bg-neutral text-neutral-content menu menu-horizontal rounded-box mx-auto p-1">
-				<PageCardOptions {doc} {page} {pageIndex} on:delete={() => pages.deletePage(page.pageId)} />
+				<PageCardOptions {doc} {page} on:delete={() => pages.deletePage(page.pageId)} />
 			</ul>
 		</div>
 
 		<!-- mobile -->
-		<button
-			class="btn btn-sm btn-ghost btn-circle bg-base-100 border border-base-300 absolute right-1 top-1 lg:hidden"
-			on:click={() => optionsModal.showModal()}
-		>
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				fill="none"
-				viewBox="0 0 24 24"
-				stroke-width="1.5"
-				stroke="currentColor"
-				class="size-5"
-			>
-				<path
-					stroke-linecap="round"
-					stroke-linejoin="round"
-					d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z"
-				/>
-			</svg>
-		</button>
-		<dialog
-			data-testid="card-options-mobile"
-			id="my_modal_5"
-			class="modal modal-bottom sm:modal-middle"
-			bind:this={optionsModal}
-		>
-			<div class="modal-box p-0">
-				<ul class="menu p-0">
-					<PageCardOptions
-						{doc}
-						{page}
-						{pageIndex}
-						on:delete={() => optionsModal.close()}
-						on:preview={() => optionsModal.close()}
-					/>
-				</ul>
-			</div>
-			<form method="dialog" class="modal-backdrop">
-				<button></button>
-			</form>
-		</dialog>
 	</div>
 {/if}
