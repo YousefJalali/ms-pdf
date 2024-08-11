@@ -57,7 +57,11 @@
 			</div>
 		</div>
 
-		<dialog id="my_modal_5" class="modal modal-bottom sm:modal-middle" bind:this={optionsModal}>
+		<dialog
+			id="my_modal_5"
+			class="modal modal-bottom sm:modal-middle lg:hidden"
+			bind:this={optionsModal}
+		>
 			<div class="modal-box p-6">
 				<button class="btn btn-xs ml-auto flex w-fit mb-4" on:click={() => optionsModal.close()}>
 					✕

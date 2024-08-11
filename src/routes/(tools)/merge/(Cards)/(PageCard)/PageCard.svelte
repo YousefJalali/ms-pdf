@@ -59,7 +59,10 @@
 
 		<!----------- Options ------------>
 		<!-- desktop -->
-		<div class="absolute top-2 left-0 w-full hidden lg:group-hover:inline-flex">
+		<div
+			data-testid="card-options-desktop"
+			class="absolute top-2 left-0 w-full hidden lg:group-hover:inline-flex"
+		>
 			<ul class="bg-neutral text-neutral-content menu menu-horizontal rounded-box mx-auto p-1">
 				<PageCardOptions {doc} {page} {pageIndex} on:delete={() => pages.deletePage(page.pageId)} />
 			</ul>
@@ -85,7 +88,12 @@
 				/>
 			</svg>
 		</button>
-		<dialog id="my_modal_5" class="modal modal-bottom sm:modal-middle" bind:this={optionsModal}>
+		<dialog
+			data-testid="card-options-mobile"
+			id="my_modal_5"
+			class="modal modal-bottom sm:modal-middle"
+			bind:this={optionsModal}
+		>
 			<div class="modal-box p-0">
 				<ul class="menu p-0">
 					<PageCardOptions

@@ -48,8 +48,8 @@
 			? 'text-error'
 			: ''} first:pt-2 last:pb-2 lg:first:p-0 lg:last:p-0"
 	>
-		<button on:click={action} class="absolute inset-0"></button>
-		<a href={undefined} aria-label={label} class="lg:p-1 lg:px-2">
+		<button aria-label={label} on:click={action} class="absolute inset-0"></button>
+		<a href={undefined} class="lg:p-1 lg:px-2">
 			{@html icon}
 			<span class="lg:hidden whitespace-nowrap">{dataTip}</span>
 		</a>

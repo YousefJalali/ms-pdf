@@ -11,8 +11,10 @@ test.describe('upload pdf', () => {
 	})
 
 	test('doc name to be in the side list', async ({ page }) => {
-		await expect(page.getByTestId('doc list')).toBeVisible()
-		await expect(page.getByTestId('doc list')).toContainText(fileName)
+		await expect(page.locator('[data-testid="side"]>[data-testid="doc list"]')).toBeVisible()
+		await expect(page.locator('[data-testid="side"]>[data-testid="doc list"]')).toContainText(
+			fileName
+		)
 	})
 
 	test('doc name to be in the drop zone', async ({ page }) => {
@@ -36,9 +38,13 @@ test.describe('one page doc', () => {
 	})
 
 	test('doc name to be in the side list', async ({ page }) => {
-		await expect(page.getByTestId('doc list')).toBeVisible()
-		await expect(page.getByTestId('doc list')).toContainText(onePage)
-		await expect(page.getByTestId('doc list')).toContainText('1 page')
+		await expect(page.locator('[data-testid="side"]>[data-testid="doc list"]')).toBeVisible()
+		await expect(page.locator('[data-testid="side"]>[data-testid="doc list"]')).toContainText(
+			onePage
+		)
+		await expect(page.locator('[data-testid="side"]>[data-testid="doc list"]')).toContainText(
+			'1 page'
+		)
 	})
 
 	test('doc name to be in the drop zone', async ({ page }) => {
@@ -70,7 +76,7 @@ test('modal should open when click on zoom and close when click on x', async ({ 
 
 	//click on zoom button
 	await page
-		.locator('[data-testid="drop zone"]>div')
+		.locator('[data-testid="card-options-desktop"]')
 		.first()
 		.getByRole('button', { name: 'preview' })
 		.click()
@@ -96,7 +102,11 @@ test('show & hide pages', async ({ page }) => {
 	await expect(page.locator('[data-testid="drop zone"]>div').nth(1)).toBeHidden()
 
 	//click on more button
-	await page.getByTestId('doc list').first().getByRole('button').click()
+	await page
+		.locator('[data-testid="side"]>[data-testid="doc list"]')
+		.first()
+		.getByRole('button')
+		.click()
 
 	//dropdown should be visible
 	await expect(page.locator('[data-testid="doc list"] .dropdown-content')).toBeVisible()
@@ -124,7 +134,7 @@ test('Delete one document', async ({ page }) => {
 	await page.goto('/merge')
 	//upload pdf
 	await page.getByTestId('upload doc').setInputFiles(`./tests/${onePage}`)
-	await page.getByTestId('side').getByText('Add More Docs').setInputFiles(`./tests/${twoPages}`)
+	await page.getByTestId('side').getByText('Add Files').setInputFiles(`./tests/${twoPages}`)
 
 	//3 pages should be uploaded (2 visible and one hidden)
 	await expect(page.locator('[data-testid="drop zone"]>div')).toHaveCount(3)
@@ -134,7 +144,7 @@ test('Delete one document', async ({ page }) => {
 
 	//click on zoom button
 	await page
-		.locator('[data-testid="drop zone"]>div')
+		.locator('[data-testid="card-options-desktop"]')
 		.first()
 		.getByRole('button', { name: 'delete' })
 		.click()
@@ -150,7 +160,7 @@ test('Delete all documents', async ({ page }) => {
 	await page.goto('/merge')
 	//upload pdf
 	await page.getByTestId('upload doc').setInputFiles(`./tests/${onePage}`)
-	await page.getByTestId('side').getByText('Add More Docs').setInputFiles(`./tests/${twoPages}`)
+	await page.getByTestId('side').getByText('Add Files').setInputFiles(`./tests/${twoPages}`)
 
 	//3 pages should be uploaded (2 visible and one hidden)
 	await expect(page.locator('[data-testid="drop zone"]>div')).toHaveCount(3)
@@ -160,7 +170,7 @@ test('Delete all documents', async ({ page }) => {
 
 	//click on zoom button
 	await page
-		.locator('[data-testid="drop zone"]>div')
+		.locator('[data-testid="card-options-desktop"]')
 		.first()
 		.getByRole('button', { name: 'delete' })
 		.click()
@@ -173,7 +183,7 @@ test('Delete all documents', async ({ page }) => {
 
 	//click on zoom button
 	await page
-		.locator('[data-testid="drop zone"]>div')
+		.locator('[data-testid="card-options-desktop"]')
 		.first()
 		.getByRole('button', { name: 'delete' })
 		.click()
@@ -200,7 +210,7 @@ test('Rotate doc', async ({ page }) => {
 
 	//click on zoom button
 	await page
-		.locator('[data-testid="drop zone"]>div')
+		.locator('[data-testid="card-options-desktop"]')
 		.first()
 		.getByRole('button', { name: 'rotate' })
 		.click()
@@ -218,7 +228,11 @@ test('drag and drop', async ({ page }) => {
 	await page.getByTestId('upload doc').setInputFiles(`./tests/${twoPages}`)
 
 	//click on more button
-	await page.getByTestId('doc list').first().getByRole('button').click()
+	await page
+		.locator('[data-testid="side"]>[data-testid="doc list"]')
+		.first()
+		.getByRole('button')
+		.click()
 
 	//show pages
 	await page.locator('[data-testid="doc list"] .dropdown-content').getByLabel('Show Pages').check()
@@ -273,7 +287,7 @@ test('Merge two docs', async ({ page }) => {
 	await page.goto('/merge')
 	//upload pdf
 	await page.getByTestId('upload doc').setInputFiles(`./tests/${onePage}`)
-	await page.getByTestId('side').getByText('Add More Docs').setInputFiles(`./tests/${twoPages}`)
+	await page.getByTestId('side').getByText('Add Files').setInputFiles(`./tests/${twoPages}`)
 
 	//click on merge button
 	await page.getByRole('button', { name: 'merge' }).click()
