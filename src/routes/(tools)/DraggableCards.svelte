@@ -99,7 +99,7 @@
 		use:dndzone={{
 			items: $pages,
 			flipDurationMs,
-			dropTargetStyle: { outline: 'transparent 1px solid' }
+			dropTargetStyle: {}
 		}}
 		on:consider={handleDndConsider}
 		on:finalize={handleDndFinalize}
@@ -107,7 +107,7 @@
 	>
 		{#each $pages as page, pageIndex (page.id)}
 			<div
-				class={`group z-0 h-fit relative ${page.isVisible ? 'block' : 'hidden'}`}
+				class={`group focus:!outline-none z-0 h-fit relative ${page.isVisible ? 'block' : 'hidden'}`}
 				animate:flip={{ duration: flipDurationMs }}
 			>
 				{#if page.isVisible}

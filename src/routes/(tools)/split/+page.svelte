@@ -261,7 +261,7 @@
 						type="number"
 						min={1}
 						max={$pages.length}
-						class="input input-sm input-bordered w-full"
+						class="input input-sm input-bordered w-full text-[1rem]"
 						placeholder="From"
 						bind:value={rangeFrom}
 						on:blur={adjustRangeTo}
@@ -272,7 +272,7 @@
 						type="number"
 						min={1}
 						max={$pages.length}
-						class="input input-sm input-bordered w-full"
+						class="input input-sm input-bordered w-full text-[1rem]"
 						placeholder="To"
 						bind:value={rangeTo}
 						on:blur={adjustRangeTo}
