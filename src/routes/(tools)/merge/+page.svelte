@@ -60,7 +60,7 @@
 			</ul>
 		</svelte:fragment>
 
-		<svelte:fragment slot="cta">
+		<svelte:fragment slot="download">
 			<Merge />
 		</svelte:fragment>
 	</Layout>

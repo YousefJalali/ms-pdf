@@ -80,9 +80,13 @@
 		<div
 			class="flex mt-2 gap-2 fixed bottom-0 left-0 w-full p-6 pt-10 lg:hidden bg-gradient-to-t from-base-100"
 		>
-			<button class="btn btn-primary flex-1" on:click={() => optionsModal.showModal()}>
-				<slot name="cta" />
-			</button>
+			{#if $$slots.cta}
+				<button class="btn btn-primary flex-1" on:click={() => optionsModal.showModal()}>
+					<slot name="cta" />
+				</button>
+			{:else}
+				<slot name="download" />
+			{/if}
 		</div>
 	</div>
 {/if}
