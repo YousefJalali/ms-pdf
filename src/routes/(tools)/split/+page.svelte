@@ -235,7 +235,7 @@
 				<div class="flex gap-1">
 					{#each ['range', 'all'] as split}
 						<input
-							class="btn btn-sm btn-ghost text-primary flex-1"
+							class="btn btn-sm btn-ghost text-primary flex-1 whitespace-nowrap"
 							type="radio"
 							aria-label={split === 'range' ? 'Split By Range' : 'Split All'}
 							bind:group={splitType}
@@ -306,11 +306,11 @@
 				{#if downloading}
 					<span class="loading loading-spinner"></span>
 				{/if}
-				Split {splitType === 'all'
+				Download {splitType === 'all'
 					? `(${$pages.length} PDFs)`
 					: Object.keys(ranges).length > 1
 						? `(${Object.keys(ranges).length} PDFs)`
-						: ''}
+						: '(1 PDF)'}
 			</button>
 		</svelte:fragment>
 	</Layout>

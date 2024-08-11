@@ -3,7 +3,7 @@
 	import { LINKS, states } from '$lib/constants'
 
 	import { docs, uploadingDocs } from '$lib/stores'
-	import { FileInput, gear, UploadButton } from '$lib/ui'
+	import { FileInput, adjust, UploadButton } from '$lib/ui'
 	import Upload from './Upload.svelte'
 
 	$: path = $page.url.pathname
@@ -31,12 +31,12 @@
 	</div>
 {:else}
 	<div class="flex gap-8 w-full">
-		<div class="lg:flex-[0_0_calc(70%-2rem)]">
+		<div class="lg:flex-[0_0_calc(70%-2rem)] w-full">
 			<div class="sticky top-0 z-50 bg-base-100 flex justify-between w-full pt-6 pb-4 lg:hidden">
 				<Upload component={UploadButton} {showPages} />
-				<button class="btn btn-sm btn-square" on:click={() => optionsModal.showModal()}
-					>{@html gear}</button
-				>
+				<button class="btn btn-sm btn-square" on:click={() => optionsModal.showModal()}>
+					{@html adjust}
+				</button>
 			</div>
 
 			<slot name="cards" />
@@ -65,7 +65,12 @@
 				<button class="btn btn-xs ml-auto flex w-fit mb-4" on:click={() => optionsModal.close()}>
 					✕
 				</button>
+
 				<slot name="side" />
+
+				<div class="flex mt-12 w-full">
+					<slot name="cta" />
+				</div>
 			</div>
 			<form method="dialog" class="modal-backdrop">
 				<button></button>
@@ -75,7 +80,8 @@
 		<div
 			class="flex mt-2 gap-2 fixed bottom-0 left-0 w-full p-6 pt-10 lg:hidden bg-gradient-to-t from-base-100"
 		>
-			<slot name="cta" />
+			<button class="btn btn-primary flex-1" on:click={() => optionsModal.showModal()}>Split</button
+			>
 		</div>
 	</div>
 {/if}
