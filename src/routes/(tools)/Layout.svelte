@@ -49,10 +49,9 @@
 			<div class="mb-4">
 				<Upload component={UploadButton} {showPages} />
 			</div>
-
 			<slot name="side" />
 
-			<div class="flex mt-2 gap-2">
+			<div class="flex gap-2 mt-auto">
 				<slot name="cta" />
 			</div>
 		</div>

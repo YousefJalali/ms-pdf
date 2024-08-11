@@ -223,7 +223,7 @@
 	<Layout>
 		<svelte:fragment slot="cards">
 			<DraggableCards let:page let:pageIndex>
-				<PageCard {page} {pageIndex} />
+				<PageCard {page} />
 			</DraggableCards>
 			{#if Object.keys($previews).length && $pages.length}
 				<Preview />
@@ -237,7 +237,6 @@
 						<input
 							class="btn btn-sm btn-ghost text-primary flex-1"
 							type="radio"
-							name="Split By Range"
 							aria-label={split === 'range' ? 'Split By Range' : 'Split All'}
 							bind:group={splitType}
 							on:change={splitTypeHandler}
@@ -277,7 +276,7 @@
 						bind:value={rangeTo}
 						on:blur={adjustRangeTo}
 					/>
-					<button class="btn btn-sm btn-primary [&>svg]:size-5" on:click={addRange}
+					<button class="btn btn-sm btn-primary btn-outline [&>svg]:size-5" on:click={addRange}
 						>{@html plus}Range</button
 					>
 				</div>

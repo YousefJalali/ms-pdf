@@ -37,7 +37,7 @@
 	<Layout>
 		<svelte:fragment slot="cards">
 			<DraggableCards let:page let:pageIndex>
-				<PageCard {page} {pageIndex} />
+				<PageCard {page} />
 			</DraggableCards>
 			{#if Object.keys($previews).length && $pages.length}
 				<Preview />
@@ -45,8 +45,11 @@
 		</svelte:fragment>
 
 		<svelte:fragment slot="side">
+			<div class="divider divider-center opacity-80 text-sm hidden lg:flex">
+				Uploaded Docs ({Object.keys($docs).length})
+			</div>
 			<ul
-				class="w-full flex-auto pb-16 overflow-y-scroll divide-y lg:py-4 lg:h-0"
+				class="w-full flex-auto pb-16 overflow-y-scroll divide-y lg:pb-4 lg:h-0"
 				data-testid="doc list"
 			>
 				{#each Object.values($docs) as doc}

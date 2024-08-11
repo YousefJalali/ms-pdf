@@ -112,7 +112,7 @@
 			>
 				{#if page.isVisible}
 					<button
-						class="btn btn-sm btn-ghost btn-circle bg-base-100 border border-base-300 absolute z-50 right-1 top-3 lg:hidden"
+						class="btn btn-sm btn-ghost btn-circle bg-base-100 border border-base-300 absolute z-50 right-1 top-1 lg:hidden"
 						on:click={() => openOptionsModal(page)}
 					>
 						{@html moreVertical}

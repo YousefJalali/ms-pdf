@@ -1,12 +1,10 @@
 <script lang="ts">
 	import { docs, pageNum, pages } from '$lib/stores'
 	import type { Page } from '$lib/types'
-	import { moreVertical } from '$lib/ui'
 	import PageCardOptions from './PageCardOptions.svelte'
 	import PageCardThumbnail from './PageCardThumbnail.svelte'
 
 	export let page: Page
-	export let pageIndex: number
 
 	const RATIO = 180 / 280
 
@@ -14,7 +12,6 @@
 	const scaleX = (100 - 4) / 100
 
 	const translateY = (100 * (1 - scaleY)) / 2
-	const translateX = (100 * (1 - scaleX)) / 2
 
 	$: doc = $docs[page.docId]
 	$: pageNumber = $pageNum[page.pageId]
@@ -25,16 +22,14 @@
 	{#if multiPages}
 		<div
 			class="absolute top-0 left-0 h-full w-full bg-base-200 rounded-box border border-base-300"
-			style="height: {100 - translateY}%; width: {100 - translateX}%"
+			style={`transform: scaleX(${scaleX});`}
 			data-testid="page stack"
 		/>
 	{/if}
 
 	<div
 		class={`relative z-10 flex flex-col justify-between bg-base-200 border border-base-400 p-3 rounded-box aspect-[180/280] shadow-sm`}
-		style={multiPages
-			? `transform: scale(${scaleX}, ${scaleY}) translate(${translateX}%, ${translateY}%);`
-			: ''}
+		style={multiPages ? `transform: scaleY(${scaleY}) translateY(-${translateY}%);` : ''}
 	>
 		<!-- Document Color -->
 		<div
