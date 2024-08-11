@@ -52,7 +52,7 @@
 			<slot name="side" />
 
 			<div class="flex gap-2 mt-auto">
-				<slot name="cta" />
+				<slot name="download" />
 			</div>
 		</div>
 
@@ -69,7 +69,7 @@
 				<slot name="side" />
 
 				<div class="flex mt-12 w-full">
-					<slot name="cta" />
+					<slot name="download" />
 				</div>
 			</div>
 			<form method="dialog" class="modal-backdrop">
@@ -80,8 +80,9 @@
 		<div
 			class="flex mt-2 gap-2 fixed bottom-0 left-0 w-full p-6 pt-10 lg:hidden bg-gradient-to-t from-base-100"
 		>
-			<button class="btn btn-primary flex-1" on:click={() => optionsModal.showModal()}>Split</button
-			>
+			<button class="btn btn-primary flex-1" on:click={() => optionsModal.showModal()}>
+				<slot name="cta" />
+			</button>
 		</div>
 	</div>
 {/if}

@@ -301,7 +301,9 @@
 			{/if}
 		</svelte:fragment>
 
-		<svelte:fragment slot="cta">
+		<svelte:fragment slot="cta">Split</svelte:fragment>
+
+		<svelte:fragment slot="download">
 			<button class="btn btn-primary flex-1" on:click={split}>
 				{#if downloading}
 					<span class="loading loading-spinner"></span>

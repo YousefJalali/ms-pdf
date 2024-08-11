@@ -257,13 +257,17 @@
 			</div>
 		</svelte:fragment>
 
-		<svelte:fragment slot="cta">
+		<svelte:fragment slot="cta">Convert</svelte:fragment>
+
+		<svelte:fragment slot="download">
 			<button class="btn btn-primary flex-1" on:click={download}>
 				{#if downloading}
 					<span class="loading loading-spinner"></span>
 				{/if}
 				Download
-				{Object.keys($selected).length ? `Selected (${Object.keys($selected).length})` : 'All'}
+				{Object.keys($selected).length
+					? `Selected (${Object.keys($selected).length})`
+					: `All (${Object.keys($thumbnails).length} images)`}
 			</button>
 		</svelte:fragment>
 	</Layout>
