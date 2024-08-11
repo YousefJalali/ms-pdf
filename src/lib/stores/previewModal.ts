@@ -50,6 +50,8 @@ function handlePreview() {
 	function prev(store: ModalPreview) {
 		if (store.currentPageIndex <= 0) return store
 
+		createPreview(get(pages)[store.currentPageIndex - 1])
+
 		return {
 			...store,
 			currentPageIndex: store.currentPageIndex - 1
