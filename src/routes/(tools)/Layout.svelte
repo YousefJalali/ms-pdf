@@ -8,6 +8,8 @@
 
 	$: path = $page.url.pathname
 	$: showPages = path === LINKS.pdfToImage ? true : false
+
+	let optionsModal: HTMLDialogElement
 </script>
 
 {#if !Object.keys($docs).length && $uploadingDocs}
@@ -30,32 +32,47 @@
 {:else}
 	<div class="flex gap-8 w-full">
 		<div class="lg:flex-[0_0_calc(70%-2rem)]">
+			<div class="sticky top-0 z-50 bg-base-100 flex justify-between w-full pt-6 pb-4 lg:hidden">
+				<Upload component={UploadButton} {showPages} />
+				<button class="btn btn-sm btn-square" on:click={() => optionsModal.showModal()}
+					>{@html gear}</button
+				>
+			</div>
+
 			<slot name="cards" />
 		</div>
 
 		<div
-			class="peer lg:flex-[0_0_30%] flex w-full border border-base-300 bg-base-100 flex-col rounded-2xl p-4 fixed bottom-0 left-0 max-h-[80vh] lg:max-h-none z-20 lg:relative"
+			class="hidden lg:flex lg:flex-[0_0_30%] w-full border border-base-300 bg-base-100 flex-col rounded-box p-4 fixed bottom-0 left-0 max-h-[80vh] lg:max-h-none z-20 lg:relative"
 			data-testid="side"
 		>
-			<input type="checkbox" id="download-options" class="hidden peer" />
-			<div class="flex-1 hidden lg:flex lg:flex-col peer-checked:block">
-				<label for="download-options" class="btn btn-xs ml-auto flex w-fit lg:hidden mb-4"
-					>✕
-				</label>
-				<div class="mb-4">
-					<Upload component={UploadButton} {showPages} />
-				</div>
-				<slot name="side" />
+			<div class="mb-4">
+				<Upload component={UploadButton} {showPages} />
 			</div>
 
+			<slot name="side" />
+
 			<div class="flex mt-2 gap-2">
-				<label for="download-options" class="btn btn-square lg:hidden">{@html gear} </label>
 				<slot name="cta" />
 			</div>
 		</div>
-		<label
-			for="download-options"
-			class="hidden peer-[:has(input[type='checkbox']:checked)]:block lg:!hidden fixed top-0 left-0 z-10 w-screen h-screen bg-black opacity-50"
-		/>
+
+		<dialog id="my_modal_5" class="modal modal-bottom sm:modal-middle" bind:this={optionsModal}>
+			<div class="modal-box p-6">
+				<button class="btn btn-xs ml-auto flex w-fit mb-4" on:click={() => optionsModal.close()}>
+					✕
+				</button>
+				<slot name="side" />
+			</div>
+			<form method="dialog" class="modal-backdrop">
+				<button></button>
+			</form>
+		</dialog>
+
+		<div
+			class="flex mt-2 gap-2 fixed bottom-0 left-0 w-full p-6 pt-10 lg:hidden bg-gradient-to-t from-base-100"
+		>
+			<slot name="cta" />
+		</div>
 	</div>
 {/if}

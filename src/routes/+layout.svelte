@@ -1,16 +1,19 @@
-<script>
+<script lang="ts">
 	import '../app.css'
 	import { page } from '$app/stores'
 	import Alert from '$lib/ui/Alert.svelte'
 	import { TOOLS } from '$lib/constants/'
 	import { blankPage } from '$lib/ui'
+
+	let drawer: HTMLDivElement
 </script>
 
 <div class="drawer container mx-auto max-w-5xl">
-	<input id="my-drawer-3" type="checkbox" class="drawer-toggle" />
+	<input id="my-drawer-3" type="checkbox" class="drawer-toggle" bind:this={drawer} />
 	<div class="drawer-content flex flex-col">
 		<!-- Navbar -->
-		<div class="navbar w-full lg:h-[100px]">
+		<div class="navbar w-full px-4 lg:h-[100px] border-b lg:p-0 lg:border-0">
+			<div class="mx-2 flex-1 px-2"><a href="/">LOGO</a></div>
 			<div class="flex-none lg:hidden">
 				<label for="my-drawer-3" aria-label="open sidebar" class="btn btn-square btn-ghost">
 					<svg
@@ -28,7 +31,6 @@
 					</svg>
 				</label>
 			</div>
-			<div class="mx-2 flex-1 px-2"><a href="/">LOGO</a></div>
 			<div class="hidden flex-none lg:block">
 				<!-- Navbar menu content here -->
 				<ul class="menu menu-horizontal">
@@ -69,9 +71,13 @@
 			<!-- Sidebar content here -->
 			{#each TOOLS as tool}
 				<li>
-					<a href={tool.link} class={$page.url.pathname === tool.link ? 'active' : ''}
-						>{tool.name}</a
+					<a
+						href={tool.link}
+						class={$page.url.pathname === tool.link ? 'active' : ''}
+						on:click={() => drawer.click()}
 					>
+						{tool.name}
+					</a>
 				</li>
 			{/each}
 		</ul>

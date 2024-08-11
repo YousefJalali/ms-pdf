@@ -47,10 +47,7 @@
 		</svelte:fragment>
 
 		<svelte:fragment slot="side">
-			<ul
-				class="w-full flex-auto p-0 overflow-y-scroll h-[30vh] max-h-[40vh] lg:max-h-none lg:h-0"
-				data-testid="doc list"
-			>
+			<ul class="w-full flex-auto pb-8 overflow-y-scroll lg:py-4 lg:h-0" data-testid="doc list">
 				{#each Object.values($docs) as doc}
 					<DocItem {doc}>
 						<DocItemOptions {doc} />

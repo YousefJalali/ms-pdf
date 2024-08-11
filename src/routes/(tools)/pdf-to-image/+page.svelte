@@ -151,11 +151,11 @@
 	<Layout>
 		<svelte:fragment slot="cards">
 			<div
-				class="h-full overflow-y-scroll grid auto-rows-min grid-cols-2 lg:grid-cols-4 gap-2 lg:gap-4 bg-base-100 lg:bg-base-200 lg:rounded-2xl pb-8 lg:p-4"
+				class="h-full overflow-y-scroll grid auto-rows-min grid-cols-2 lg:grid-cols-4 gap-2 lg:gap-4 bg-base-100 lg:bg-base-200 lg:rounded-box pb-8 lg:p-4"
 			>
 				{#each Object.keys($thumbnails) as pageId}
 					<div
-						class="relative h-fit bg-white rounded-xl py-3 border"
+						class="relative h-fit bg-white rounded-box py-3 border"
 						style="opacity: {Object.keys($selected).length && !$selected[pageId] ? 0.5 : 1};"
 					>
 						<div class="absolute top-2 right-2">
@@ -168,13 +168,13 @@
 						</div>
 
 						<img
-							class="rounded-xl w-[200px] h-[200px] object-scale-down"
+							class="rounded-box w-[200px] h-[200px] object-scale-down"
 							src={URL.createObjectURL($thumbnails[pageId].src)}
 							alt={pageId}
 						/>
 
 						<div
-							class="absolute bottom-3 left-1/2 -translate-x-1/2 flex py-0.5 px-2 rounded-xl"
+							class="absolute bottom-3 left-1/2 -translate-x-1/2 flex py-0.5 px-2 rounded-btn"
 							style="background-color: {$docs[$thumbnails[pageId].docId].color};"
 						>
 							<span class="text-white relative text-xs"

@@ -16,7 +16,7 @@
 </script>
 
 <label for="file-input-button">
-	<div class="btn btn-outline btn-primary w-full">{@html plusIcon}Add More Docs</div>
+	<div class="btn btn-sm lg:btn-md w-full">{@html plusIcon}Add Files</div>
 	<input
 		bind:files
 		type="file"

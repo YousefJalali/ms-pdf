@@ -6,6 +6,13 @@ export default {
 	},
 	plugins: [require('@tailwindcss/typography'), require('daisyui')],
 	daisyui: {
-		themes: ['winter']
+		themes: [
+			{
+				lofi: {
+					...require('daisyui/src/theming/themes')['lofi'],
+					primary: '#D50101'
+				}
+			}
+		]
 	}
 }

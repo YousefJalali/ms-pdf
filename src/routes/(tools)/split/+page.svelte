@@ -4,8 +4,6 @@
 	import { docs, pages, previews, thumbnails, uploadingDocs } from '$lib/stores'
 	import { arrowLongRight, PageLoadingState, plus, trash } from '$lib/ui'
 	import { generateFileName, getInputAsUint8Array } from '$lib/utils'
-	import { writable } from 'svelte/store'
-	import { beforeNavigate } from '$app/navigation'
 	import { states } from '$lib/constants/'
 	import Layout from '../Layout.svelte'
 	import OtherTools from '../OtherTools.svelte'
@@ -228,11 +226,6 @@
 				{#if page.isVisible}
 					<PageCard {page} {pageIndex} />
 				{/if}
-				<!-- {#if ranges[pageIndex - 1]}
-					<div
-						class="absolute top-0 -right-2 h-full w-[2px] aspect-[180/280] bg-black inline-block"
-					/>
-				{/if} -->
 			</DraggableCards>
 			{#if Object.keys($previews).length && $pages.length}
 				<Preview />
@@ -240,15 +233,7 @@
 		</svelte:fragment>
 
 		<svelte:fragment slot="side">
-			<!-- <ul class="w-full h-0 flex-auto p-0 overflow-y-scroll hidden lg:block" data-testid="doc list">
-				{#each Object.values($docs) as doc}
-					<DocItem {doc}>
-						<DocItemOptions {doc} />
-					</DocItem>
-				{/each}
-			</ul> -->
-
-			<div class="bg-base-200 p-1.5 h-fit my-4 rounded-xl">
+			<div class="bg-base-200 p-1.5 h-fit my-4 rounded-btn">
 				<div class="flex gap-1">
 					{#each ['range', 'all'] as split}
 						<input
@@ -264,7 +249,7 @@
 				</div>
 			</div>
 
-			<p class="text-sm opacity-80 text-center">
+			<p class="text-sm opacity-80 text-center py-8 lg:p-4">
 				{#if splitType === 'all'}
 					{description['all']}
 				{:else}
@@ -274,20 +259,6 @@
 
 			{#if splitType === 'range'}
 				<div class="flex items-center gap-2 mt-8 w-full">
-					<!-- <label class="form-control w-full max-w-xs">
-						<div class="label">
-							<span class="label-text">From</span>
-						</div>
-						<input
-							type="number"
-							min={1}
-							max={$pages.length}
-							class="input input-sm input-bordered w-full"
-							placeholder="From"
-							bind:value={rangeFrom}
-							on:blur={adjustRangeTo}
-						/>
-					</label> -->
 					<input
 						type="number"
 						min={1}
@@ -313,11 +284,9 @@
 					>
 				</div>
 
-				<ul
-					class="my-4 space-y-2 w-full flex-auto p-0 overflow-y-scroll h-[30vh] max-h-[40vh] lg:max-h-none lg:h-0"
-				>
+				<ul class="my-4 space-y-2 w-full flex-auto p-0 overflow-y-scroll lg:h-0">
 					{#each displayRanges as range, index}
-						<li class="flex justify-between items-center bg-base-200 rounded-lg p-2">
+						<li class="flex justify-between items-center bg-base-200 rounded-box p-2">
 							<span class="font-semibold text-sm flex items-center gap-4">
 								Page {range[0]}
 								<span class="opacity-60 font-normal">{@html arrowLongRight} </span>
