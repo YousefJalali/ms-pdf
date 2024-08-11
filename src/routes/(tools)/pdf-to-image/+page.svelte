@@ -154,14 +154,14 @@
 			>
 				{#each Object.keys($thumbnails) as pageId}
 					<div
-						class="relative h-fit bg-white rounded-box py-3 border"
+						class="relative h-fit bg-base-100 rounded-box py-3 border border-base-300"
 						style="opacity: {Object.keys($selected).length && !$selected[pageId] ? 0.5 : 1};"
 					>
 						<div class="absolute top-2 right-2">
 							<input
 								type="checkbox"
 								checked={$selected[pageId]}
-								class="checkbox checkbox-primary"
+								class="checkbox checkbox-primary bg-base-100"
 								on:change={() => handleSelected(pageId)}
 							/>
 						</div>

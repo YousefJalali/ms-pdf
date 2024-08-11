@@ -28,7 +28,7 @@
 	{/if}
 
 	<div
-		class={`relative z-10 flex flex-col justify-between bg-base-200 border border-base-400 p-3 rounded-box aspect-[180/280] shadow-sm`}
+		class={`relative z-10 flex flex-col justify-between bg-base-200 border border-base-300 p-3 rounded-box aspect-[180/280] shadow-sm`}
 		style={multiPages ? `transform: scaleY(${scaleY}) translateY(-${translateY}%);` : ''}
 	>
 		<!-- Document Color -->

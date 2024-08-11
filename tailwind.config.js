@@ -12,7 +12,9 @@ export default {
 					...require('daisyui/src/theming/themes')['lofi'],
 					primary: '#D50101'
 				}
-			}
+			},
+
+			'business'
 		]
 	}
 }
