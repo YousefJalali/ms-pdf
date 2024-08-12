@@ -3,7 +3,7 @@
 	import { LINKS, states } from '$lib/constants'
 
 	import { docs, uploadingDocs } from '$lib/stores'
-	import { FileInput, adjust, UploadButton } from '$lib/ui'
+	import { DnDFIleInput, adjust, UploadButton } from '$lib/ui'
 	import Upload from './Upload.svelte'
 
 	$: path = $page.url.pathname
@@ -27,7 +27,7 @@
 			<h1>{states[path].upload.title}</h1>
 			<p>{states[path].upload.description}</p>
 		</div>
-		<Upload component={FileInput} {showPages} />
+		<Upload component={DnDFIleInput} {showPages} />
 	</div>
 {:else}
 	<div class="flex gap-8 w-full">
