@@ -52,7 +52,12 @@
 
 {#each actions as { label, action, icon, dataTip, dataTestId }}
 	<li class="relative {label === 'delete' ? 'text-error' : ''} ">
-		<button data-testid={dataTestId} aria-label={label} on:click={action} class="absolute inset-0">
+		<button
+			data-testid={dataTestId}
+			aria-label={label}
+			on:click={action}
+			class="absolute inset-0 z-50"
+		>
 		</button>
 		<a href={undefined} class="lg:p-1 lg:px-2">
 			<div class="lg:tooltip lg:tooltip-bottom" data-tip={dataTip}>
