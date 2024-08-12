@@ -8,7 +8,7 @@
 	let drawer: HTMLDivElement
 </script>
 
-<div class="drawer container mx-auto max-w-5xl">
+<div class="drawer container mx-auto max-w-5xl lg:px-6">
 	<input id="my-drawer-3" type="checkbox" class="drawer-toggle" bind:this={drawer} />
 	<div class="drawer-content flex flex-col">
 		<!-- Navbar -->
@@ -34,7 +34,7 @@
 
 				<!-- sun icon -->
 				<svg
-					class="swap-off size-6 lg:size-8 fill-current"
+					class="swap-off size-6 fill-current"
 					xmlns="http://www.w3.org/2000/svg"
 					viewBox="0 0 24 24"
 				>
@@ -45,7 +45,7 @@
 
 				<!-- moon icon -->
 				<svg
-					class="swap-on size-6 lg:size-8 fill-current"
+					class="swap-on size-6 fill-current"
 					xmlns="http://www.w3.org/2000/svg"
 					viewBox="0 0 24 24"
 				>
@@ -55,7 +55,7 @@
 				</svg>
 			</label>
 
-			<div class="flex-none lg:hidden">
+			<div class="flex-none lg:hidden ml-2">
 				<label for="my-drawer-3" aria-label="open sidebar" class="btn btn-square btn-ghost">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"

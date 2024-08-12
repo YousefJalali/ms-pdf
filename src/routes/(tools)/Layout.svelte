@@ -32,7 +32,9 @@
 {:else}
 	<div class="flex gap-8 w-full">
 		<div class="lg:flex-[0_0_calc(70%-2rem)] w-full">
-			<div class="sticky top-0 z-50 bg-base-100 flex justify-between w-full pt-6 pb-4 lg:hidden">
+			<div
+				class="sticky top-0 z-50 bg-base-100 flex gap-4 justify-between sm:justify-start w-full pt-6 pb-4 lg:hidden"
+			>
 				<Upload component={UploadButton} {showPages} />
 				<button class="btn btn-sm btn-square" on:click={() => optionsModal.showModal()}>
 					{@html adjust}
@@ -78,10 +80,10 @@
 		</dialog>
 
 		<div
-			class="flex mt-2 gap-2 fixed bottom-0 left-0 w-full p-6 pt-10 lg:hidden bg-gradient-to-t from-base-100"
+			class="flex mt-2 gap-2 fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-2xl p-6 pt-10 lg:hidden bg-gradient-to-t from-base-100 sm:from-transparent"
 		>
 			{#if $$slots.cta}
-				<button class="btn btn-primary flex-1" on:click={() => optionsModal.showModal()}>
+				<button class="btn btn-primary flex-1 shadow-md" on:click={() => optionsModal.showModal()}>
 					<slot name="cta" />
 				</button>
 			{:else}
