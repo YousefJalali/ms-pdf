@@ -71,7 +71,7 @@
 			/> -->
 		{:else}
 			<div class="min-h-[600px] flex justify-center items-center">
-				<span class="loading loading-infinity loading-lg"></span>
+				<span data-testid="preview-loading" class="loading loading-infinity loading-lg"></span>
 			</div>
 		{/if}
 	</div>

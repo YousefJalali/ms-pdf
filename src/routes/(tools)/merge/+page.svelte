@@ -2,7 +2,7 @@
 	import { docs, mergedPdf, pages, previews } from '$lib/stores'
 	import DraggableCards from '../DraggableCards.svelte'
 	import MergedDoc from './(MergedDoc)/MergedDoc.svelte'
-	import Preview from './(Cards)/Preview.svelte'
+	import Preview from '../(PageCard)/Preview.svelte'
 	import { beforeNavigate } from '$app/navigation'
 	import Layout from '../Layout.svelte'
 	import { DocItem, DocItemOptions, PageLoadingState } from '$lib/ui'

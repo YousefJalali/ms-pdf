@@ -19,13 +19,13 @@
 </script>
 
 {#if doc && page}
-	{#if multiPages}
-		<div
-			class="absolute top-0 left-0 h-full w-full bg-base-200 rounded-box border border-base-300"
-			style={`transform: scaleX(${scaleX});`}
-			data-testid="page stack"
-		/>
-	{/if}
+	<div
+		class="{multiPages
+			? 'block'
+			: 'hidden'} absolute top-0 left-0 h-full w-full bg-base-200 rounded-box border border-base-300"
+		style={`transform: scaleX(${scaleX});`}
+		data-testid="page stack"
+	/>
 
 	<div
 		class={`relative z-10 flex flex-col justify-between bg-base-200 border border-base-300 p-3 rounded-box aspect-[180/280] shadow-sm`}

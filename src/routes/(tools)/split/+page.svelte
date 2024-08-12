@@ -9,7 +9,7 @@
 	import OtherTools from '../OtherTools.svelte'
 	import DraggableCards from '../DraggableCards.svelte'
 	import PageCard from '../(PageCard)/PageCard.svelte'
-	import Preview from '../merge/(Cards)/Preview.svelte'
+	import Preview from '../(PageCard)/Preview.svelte'
 	import { PDFDocument } from 'pdf-lib'
 
 	let splitType = 'range'

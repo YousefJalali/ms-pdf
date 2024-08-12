@@ -14,8 +14,13 @@
 	on:outclick={() => (list.open = false)}
 	class="dropdown dropdown-left"
 >
-	<summary aria-label="doc-options" class="btn btn-circle btn-sm btn-ghost">{@html more}</summary>
-	<ul class="dropdown-content menu min-w-56 bg-base-100 rounded-box z-[1000] w-fit p-2 shadow-lg">
+	<summary aria-label="doc-options-btn" class="btn btn-circle btn-sm btn-ghost"
+		>{@html more}</summary
+	>
+	<ul
+		aria-label="doc-options-dropdown"
+		class="dropdown-content menu min-w-56 bg-base-100 rounded-box z-[1000] w-fit p-2 shadow-lg"
+	>
 		<li>
 			<label class="label cursor-pointer">
 				<span class="label-text">Show Pages</span>

@@ -26,25 +26,34 @@
 	}
 
 	const actions = [
-		{ label: 'preview', icon: zoom, action: onPreview, dataTip: 'Preview' },
+		{
+			label: 'preview',
+			icon: zoom,
+			action: onPreview,
+			dataTip: 'Preview',
+			dataTestId: 'card-preview'
+		},
 		{
 			label: 'rotate',
 			icon: rotate,
 			action: onRotate,
-			dataTip: doc.pageCount <= 1 || doc.showPages ? 'Rotate Page' : 'Rotate Document'
+			dataTip: doc.pageCount <= 1 || doc.showPages ? 'Rotate Page' : 'Rotate Document',
+			dataTestId: 'card-rotate'
 		},
 		{
 			label: 'delete',
 			icon: trash,
 			action: onDelete,
-			dataTip: doc.pageCount <= 1 || doc.showPages ? 'Delete Page' : 'Delete Document'
+			dataTip: doc.pageCount <= 1 || doc.showPages ? 'Delete Page' : 'Delete Document',
+			dataTestId: 'card-delete'
 		}
 	]
 </script>
 
-{#each actions as { label, action, icon, dataTip }}
+{#each actions as { label, action, icon, dataTip, dataTestId }}
 	<li class="relative {label === 'delete' ? 'text-error' : ''} ">
-		<button aria-label={label} on:click={action} class="absolute inset-0"></button>
+		<button data-testid={dataTestId} aria-label={label} on:click={action} class="absolute inset-0"
+		></button>
 		<a href={undefined} class="lg:p-1 lg:px-2">
 			{@html icon}
 			<span class="lg:hidden whitespace-nowrap">{dataTip}</span>
