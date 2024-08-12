@@ -2,9 +2,14 @@
 	import { TOOLS } from '$lib/constants'
 
 	function scrollToBottom() {
-		if (!window) return
-		window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })
+		if (!window || !toolsSection) return
+		window.scrollTo({
+			top: document.body.scrollHeight - toolsSection.scrollHeight - 100,
+			behavior: 'smooth'
+		})
 	}
+
+	let toolsSection: HTMLElement
 </script>
 
 <div class="px-6 lg:p-0">
@@ -21,7 +26,7 @@
 		</div>
 	</section>
 
-	<section class="mb-6 lg:mb-24">
+	<section class="mb-6 lg:mb-24" bind:this={toolsSection}>
 		<h2 class="text-2xl lg:text-4xl font-black mb-8">Our Tools</h2>
 
 		<div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
