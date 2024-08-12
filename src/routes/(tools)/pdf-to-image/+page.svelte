@@ -1,13 +1,15 @@
 <script lang="ts">
 	import JSZip from 'jszip'
 	import { page } from '$app/stores'
-	import { docs, thumbnails, uploadingDocs } from '$lib/stores'
+	import { docs, pages, thumbnails, uploadingDocs } from '$lib/stores'
 	import { DocItem, PageLoadingState } from '$lib/ui'
 	import { generateFileName, getPageAsBlob } from '$lib/utils'
 	import { writable } from 'svelte/store'
 	import { states } from '$lib/constants/'
 	import Layout from '../Layout.svelte'
 	import OtherTools from '../OtherTools.svelte'
+	import { afterNavigate } from '$app/navigation'
+	import type { CreateImage } from '$lib/types'
 
 	const defaultFileName = generateFileName('Converted')
 	const QUALITY_LABEL: { [ket: number]: string } = {
@@ -106,6 +108,23 @@
 		fileName = generateFileName('Converted')
 		downloaded = false
 	}
+
+	afterNavigate(() => {
+		//if there some uncreated thumbnails, create them
+		if (Object.keys($thumbnails).length < $pages.length) {
+			let obj: CreateImage = {}
+			for (let page of $pages) {
+				if (!$thumbnails[page.pageId]) {
+					obj[page.pageId] = {
+						pdfPage: $docs[page.docId].pagesPdfProxy[page.pageId],
+						docId: page.docId
+					}
+				}
+			}
+
+			thumbnails.create(obj)
+		}
+	})
 
 	// beforeNavigate(({ cancel }) => {
 	// 	if (Object.keys($docs).length) {
