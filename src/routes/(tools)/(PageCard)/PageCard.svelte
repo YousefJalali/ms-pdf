@@ -58,7 +58,7 @@
 			class="absolute top-2 left-0 w-full hidden lg:group-hover:inline-flex"
 		>
 			<ul class="bg-neutral text-neutral-content menu menu-horizontal rounded-box mx-auto p-1">
-				<PageCardOptions {doc} {page} on:delete={() => pages.deletePage(page.pageId)} />
+				<PageCardOptions {doc} {page} />
 			</ul>
 		</div>
 

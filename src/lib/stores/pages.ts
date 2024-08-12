@@ -125,6 +125,8 @@ function handlePages() {
 
 		let pageIndex = allPages.findIndex((page) => page.pageId === pageId)
 
+		if (pageIndex < 0) return
+
 		let docId = allPages[pageIndex].docId
 
 		let count = 1
