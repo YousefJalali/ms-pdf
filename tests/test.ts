@@ -94,7 +94,7 @@ test.describe('merge', () => {
 		await expect(cards.nth(2)).toBeHidden()
 	})
 
-	test('Delete one document', async ({ page }) => {
+	test('Delete one page', async ({ page }) => {
 		//3 pages should be uploaded (2 visible and one hidden)
 		await expect(cards).toHaveCount(3)
 
@@ -112,35 +112,29 @@ test.describe('merge', () => {
 		await expect(cards).toHaveCount(2)
 	})
 
-	test('Delete all documents', async ({ page }) => {
+	test('Delete page and hidden pages of document', async ({ page }) => {
 		//3 pages should be uploaded (2 visible and one hidden)
 		await expect(cards).toHaveCount(3)
 
 		//hover over doc
-		await cards.first().hover()
+		await cards.nth(1).hover()
 
 		//click on zoom button
-		await page
-			.locator('[data-testid="card-options-desktop"]')
-			.first()
-			.getByRole('button', { name: 'delete' })
-			.click()
+		await cardsDelete.nth(1).click()
 
 		//one page doc should be deleted
-		await expect(cards).toHaveCount(2)
+		await expect(cards).toHaveCount(1)
+	})
 
-		//hover over doc
-		await cards.first().hover()
+	test('Delete doc from doc list', async ({ page }) => {
+		//3 pages should be uploaded (2 visible and one hidden)
+		await expect(cards).toHaveCount(3)
 
-		//click on zoom button
-		await page
-			.locator('[data-testid="card-options-desktop"]')
-			.first()
-			.getByRole('button', { name: 'delete' })
-			.click()
+		//delete second doc (2 pages)
+		await docList.nth(1).getByLabel('doc-options-btn').click()
+		await docList.nth(1).getByLabel('doc-options-dropdown').getByLabel('delete document').click()
 
-		//drop zone should be hidden
-		await expect(dropZone).toBeHidden()
+		await expect(cards).toHaveCount(1)
 	})
 
 	test('Rotate page', async ({ page }) => {
@@ -154,11 +148,7 @@ test.describe('merge', () => {
 		await cards.first().hover()
 
 		//click on zoom button
-		await page
-			.locator('[data-testid="card-options-desktop"]')
-			.first()
-			.getByRole('button', { name: 'rotate' })
-			.click()
+		await cardsRotate.first().click()
 
 		//image should be rotated -> transform: rotate(90deg) scale(0.8)
 		await expect(cards.first().getByRole('img', { name: firstDoc })).toHaveCSS(
@@ -170,11 +160,12 @@ test.describe('merge', () => {
 		await cards.first().hover()
 
 		//click on zoom button
-		await page
-			.locator('[data-testid="card-options-desktop"]')
-			.first()
-			.getByRole('button', { name: 'rotate' })
-			.click()
+		await cardsRotate.first().click()
+		// await page
+		// 	.locator('[data-testid="card-options-desktop"]')
+		// 	.first()
+		// 	.getByRole('button', { name: 'rotate' })
+		// 	.click()
 
 		//image should be rotated -> transform: rotate(180deg) scale(1)
 		await expect(cards.first().getByRole('img', { name: firstDoc })).toHaveCSS(
@@ -231,5 +222,36 @@ test.describe('merge', () => {
 		await expect(
 			page.getByTestId('preview merged').locator('div').nth(2).getByRole('img')
 		).toHaveAttribute('alt', `${secondDoc} 1`)
+	})
+
+	test('back to editing after merge', async ({ page }) => {
+		//click on merge button
+		await page.getByRole('button', { name: 'merge' }).click()
+
+		//preview box should be visible
+		await expect(page.getByTestId('preview merged')).toBeVisible()
+		await expect(dropZone).toBeHidden()
+
+		await page.getByRole('button', { name: 'Back to Editing' }).click()
+
+		//preview box should be visible
+		await expect(page.getByTestId('preview merged')).toBeHidden()
+		await expect(dropZone).toBeVisible()
+		await expect(cards).toHaveCount(3)
+	})
+
+	test('download merged doc', async ({ page }) => {
+		//click on merge button
+		await page.getByRole('button', { name: 'merge' }).click()
+
+		// Start waiting for download before clicking. Note no await.
+		const downloadPromise = page.waitForEvent('download')
+		await page.getByRole('button', { name: 'Download' }).click()
+		const download = await downloadPromise
+
+		expect(download.suggestedFilename()).toEqual('merged-pdf.pdf')
+
+		// Wait for the download process to complete and save the downloaded file somewhere.
+		// await download.saveAs('./tests/' + download.suggestedFilename())
 	})
 })

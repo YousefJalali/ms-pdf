@@ -34,7 +34,12 @@
 			</label>
 		</li>
 		<li>
-			<a class="text-error" href={null} on:click={() => docs.deleteDoc(doc.docId)}>
+			<a
+				aria-label="delete document"
+				class="text-error"
+				href={null}
+				on:click={() => docs.deleteDoc(doc.docId)}
+			>
 				Delete Document
 			</a>
 		</li>
