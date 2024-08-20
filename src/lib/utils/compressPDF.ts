@@ -8,7 +8,13 @@ const execPromise = promisify(exec)
 
 const cwd = process.cwd()
 
-export const compressPdf = async (name: string, base64: string): Promise<string> => {
+export const compressPdf = async ({
+	name,
+	base64
+}: {
+	name: string
+	base64: string
+}): Promise<string> => {
 	try {
 		const tempFolder = path.join(cwd, 'temp')
 		const hasTempFolder = existsSync(tempFolder)
@@ -22,34 +28,35 @@ export const compressPdf = async (name: string, base64: string): Promise<string>
 
 		await fs.writeFile(originalFilePath, base64, 'base64')
 
-		await execPromise(
-			`gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.2 -r200 -dPrinted=false -dNOPAUSE -dQUIET -dBATCH -sOutputFile="${compressFilePath}" ${originalFilePath}`
-		)
-		// await execPromise(
-		// 	`gs
-		//   -sDEVICE=pdfwrite
-		//   -dCompatibilityLevel=1.3
-		//   -r200
-		//   -dPrinted=false
-		//   -dNOPAUSE
-		//   -dQUIET
-		//   -dBATCH
-		//   -dPDFSETTINGS=/ebook
-		//   -dEmbedAllFonts=true
-		//   -dSubsetFonts=true
-		//   -dAutoRotatePages=/None
-		//   -dColorImageDownsampleType=/Bicubic
-		//   -dColorImageResolution=150
-		//   -dGrayImageDownsampleType=/Bicubic
-		//   -dGrayImageResolution=150
-		//   -dMonoImageDownsampleType=/Bicubic
-		//   -dMonoImageResolution=150
-		//   -sOutputFile="${compressFilePath}" ${originalFilePath}`
-		// )
+		let options = [
+			'gs',
+			'-sDEVICE=pdfwrite',
+			`-dCompatibilityLevel=1.7`,
+			// `-dCompatibilityLevel=${version}`,
+			'-dPDFSETTINGS=/screen',
+			// '-r150',
+			'-dNOPAUSE',
+			'-dQUIET',
+			'-dBATCH',
+			// '-dDetectDuplicateImages',
+			// '-dCompressFonts=true',
+			// '-sColorConversionStrategy=Gray', //convert to gray
+			// '-dOverPrint=/simulate',
+			// '-dPrinted=false',
+			// '-dEmbedAllFonts=true',
+			// '-dSubsetFonts=true',
+			// '-dAutoRotatePages=/None',
+			// '-dDownsampleColorImages=true',
+			// '-dColorImageDownsampleType=/Bicubic',
+			// '-dColorImageResolution=150',
+			// '-dGrayImageDownsampleType=/Bicubic',
+			// '-dGrayImageResolution=150',
+			// '-dMonoImageDownsampleType=/Bicubic',
+			// '-dMonoImageResolution=150',
+			`-sOutputFile="${compressFilePath}" ${originalFilePath}`
+		]
 
-		// await execPromise(
-		// 	`gs -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -sOutputFile="${compressFilePath}" ${originalFilePath}`
-		// )
+		await execPromise(`${options.join(' ')}`)
 
 		const compressFileBase64 = await fs.readFile(compressFilePath, 'base64')
 

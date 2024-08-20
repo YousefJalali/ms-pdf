@@ -1,13 +1,22 @@
 <script lang="ts">
-	import { docs } from '$lib/stores'
-	import { formatBytes } from '$lib/utils'
+	import { formatBytes, getInputAsUint8Array } from '$lib/utils'
 	import { PDFDocument } from 'pdf-lib'
 	import { writable } from 'svelte/store'
 	// import { compressPdf } from '$lib/utils/compressPDF'
 
+	const result = writable([])
+
 	let loading = false
 
-	const result = writable([])
+	let files: FileList
+	let doc: File[] = []
+
+	$: if (files) {
+		for (const file of files) {
+			console.log(`${file.name}: ${file.size} bytes`)
+			doc.push(file)
+		}
+	}
 
 	function slugify(title: string) {
 		return title
@@ -33,106 +42,159 @@
 		})
 	}
 
-	function base64ToBlob(base64: string, contentType: string): Blob {
+	function base64ToBlob(base64: string): Blob {
 		const byteCharacters = atob(base64)
 		const byteNumbers = new Array(byteCharacters.length)
 		for (let i = 0; i < byteCharacters.length; i++) {
 			byteNumbers[i] = byteCharacters.charCodeAt(i)
 		}
 		const byteArray = new Uint8Array(byteNumbers)
-		return new Blob([byteArray], { type: contentType })
+		return new Blob([byteArray], { type: 'application/pdf' })
 	}
 
-	async function compress() {
-		if (!doc.length) return
+	// async function compress() {
+	// 	if (!doc.length) return
 
-		console.log(formatBytes(doc[0].size))
+	// 	console.log(formatBytes(doc[0].size))
 
-		// let file = doc
-		let file = await fileToBase64(doc[0])
+	// 	// let file = doc
+	// 	let file = await fileToBase64(doc[0])
 
-		if (typeof file !== 'string') return
+	// 	if (typeof file !== 'string') return
 
-		// console.log(/^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/.test(file))
+	// 	// console.log(/^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/.test(file))
 
-		const response = await fetch('/compress', {
-			method: 'POST',
-			body: JSON.stringify({ file }),
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		})
+	// 	const response = await fetch('/compress', {
+	// 		method: 'POST',
+	// 		body: JSON.stringify({ file }),
+	// 		headers: {
+	// 			'Content-Type': 'application/json'
+	// 		}
+	// 	})
 
-		const { compressedBase64 } = await response.json()
+	// 	const { compressedBase64 } = await response.json()
 
-		const blob = base64ToBlob(compressedBase64, 'application/pdf')
+	// 	const blob = base64ToBlob(compressedBase64, 'application/pdf')
 
-		console.log(formatBytes(blob.size))
+	// 	console.log(formatBytes(blob.size))
 
-		// const dataUrl = `data:application/pdf;base64,${compressedBase64}`;
-		//     const link = document.createElement('a');
-		//     link.href = dataUrl;
-		//     link.download = 'compressed.pdf';
-		//     link.click();
-	}
+	// 	// const dataUrl = `data:application/pdf;base64,${compressedBase64}`;
+	// 	//     const link = document.createElement('a');
+	// 	//     link.href = dataUrl;
+	// 	//     link.download = 'compressed.pdf';
+	// 	//     link.click();
+	// }
 
 	async function compressMultiple() {
 		if (!doc.length) return
 
-		loading = true
+		try {
+			loading = true
 
-		const res = await Promise.all(
-			doc.map((d) =>
-				fileToBase64(d).then((base64) =>
-					fetch('/compress', {
-						method: 'POST',
-						body: JSON.stringify({
-							file: base64,
-							initialSize: d.size,
-							name: slugify(d.name.split('.')[0])
-						}),
-						headers: {
-							'Content-Type': 'application/json'
+			// const filesWithVersion = await Promise.all(
+			// 	doc.map(async (file) => {
+			// 		try {
+			// 			const uint8Array = await getInputAsUint8Array(file)
+			// 			const pdf = await PDFDocument.load(uint8Array, { ignoreEncryption: true })
+
+			// 			const newPDF = await PDFDocument.create()
+			// 			const pageCount = pdf.getPageCount()
+			// 			const copiedPages = await newPDF.copyPages(
+			// 				pdf,
+			// 				Array.from({ length: pageCount }, (_, i) => i)
+			// 			)
+
+			// 			for (let copiedPage of copiedPages) {
+			// 				newPDF.addPage(copiedPage)
+			// 			}
+
+			// 			let fileBase64 = await newPDF.saveAsBase64()
+
+			// 			// let fileBase64 = await fileToBase64(file)
+
+			// 			let pdfSize = base64ToBlob(fileBase64).size
+
+			// 			return {
+			// 				file,
+			// 				fileBase64,
+			// 				pdfSize,
+			// 				version: `${pdf.context.header.major}.${pdf.context.header.minor}`,
+			// 				pdf
+			// 			}
+			// 		} catch (error) {
+			// 			throw new Error(`Failed to process file ${file}: ${error.message}`)
+			// 		}
+			// 	})
+			// )
+
+			// console.log(filesWithVersion)
+
+			const res = await Promise.all(
+				doc.map((file) =>
+					fileToBase64(file).then((base64) =>
+						fetch('/compress', {
+							method: 'POST',
+							body: JSON.stringify({
+								file: base64,
+								initialSize: file.size,
+								name: slugify(file.name.split('.')[0])
+							}),
+							headers: {
+								'Content-Type': 'application/json'
+							}
+						})
+					)
+				)
+			)
+
+			const data = await Promise.all(
+				res.map((r) =>
+					r.json().then((d) => {
+						let compressedBlob = null
+						let link = null
+						if (d.compressedBase64) {
+							compressedBlob = base64ToBlob(d.compressedBase64)
+							link = `data:application/pdf;base64,${d.compressedBase64}`
+						}
+
+						return {
+							...d,
+							compressedBlob,
+							newSize: compressedBlob?.size || d.initialSize,
+							link
 						}
 					})
 				)
 			)
-		)
 
-		const data = await Promise.all(
-			res.map((r) =>
-				r.json().then((d) => {
-					let compressedBlob = base64ToBlob(d.compressedBase64, 'application/pdf')
-					return {
-						...d,
-						compressedBlob,
-						newSize: compressedBlob.size
-					}
-				})
-			)
-		)
+			loading = false
 
-		loading = false
-
-		result.set(data)
+			result.set(data)
+		} catch (error) {
+			console.log(error)
+		}
 
 		// console.log(data)
 	}
 
-	let files: FileList
-	let doc: File[] = []
+	function downloadCompressed(obj: Blob | string, name: string) {
+		const link = document.createElement('a')
 
-	$: if (files) {
-		console.log(files)
+		link.href = obj instanceof Blob ? URL.createObjectURL(obj) : obj
+		link.download = `compressed-${name}`
+		// some browser needs the anchor to be in the doc
+		document.body.append(link)
+		link.click()
+		link.remove()
+	}
 
-		for (const file of files) {
-			console.log(`${file.name}: ${file.size} bytes`)
-			doc.push(file)
-		}
+	function rowClass(oldSize: number, newSize: number) {
+		let p = 100 - (newSize * 100) / oldSize
+		return p > 50 ? 'text-[#009e4c]' : p <= 0 ? 'text-[#df270a]' : ''
 	}
 </script>
 
-<div class="flex flex-col mx-auto gap-8">
+<div class="flex flex-col items-center mx-auto gap-8">
 	<div class="w-fit mx-auto">
 		<input
 			class="file-input file-input-bordered w-full max-w-xs"
@@ -144,34 +206,43 @@
 		/>
 
 		<!-- <button class="btn" on:click={compress}>compress</button> -->
-		<button class="btn" on:click={compressMultiple}>Compress</button>
+		<button class="btn btn-primary" on:click={compressMultiple}>Compress</button>
 	</div>
 
 	{#if loading}
-		<span class="loading loading-spinner loading-lg"></span>
+		<span class="loading loading-spinner loading-lg mx-auto mt-8"></span>
 	{/if}
 
 	{#if $result.length}
 		<div class="overflow-x-auto">
 			<table class="table">
 				<!-- head -->
-				<thead>
+				<thead class="sticky top-0 bg-base-100">
 					<tr>
 						<th></th>
 						<th>Name</th>
 						<th>Initial Size</th>
-						<th>New Size</th>
+						<th>Compressed Size</th>
 						<th>Reduced by %</th>
+						<th></th>
 					</tr>
 				</thead>
 				<tbody>
 					{#each $result as res, i}
-						<tr>
+						<tr class={rowClass(res.initialSize, res.newSize)}>
 							<th>{i + 1}</th>
 							<td>{res.name}</td>
 							<td>{formatBytes(res.initialSize)}</td>
 							<td>{formatBytes(res.newSize)}</td>
-							<td>{(100 - (res.newSize * 100) / res.initialSize).toFixed(1)} %</td>
+							<td>{(100 - (res.newSize * 100) / res.initialSize).toFixed(1)}</td>
+							<td>
+								<button
+									class="link link-sm"
+									on:click={() => downloadCompressed(res.link, res.name)}
+								>
+									link
+								</button>
+							</td>
 						</tr>
 					{/each}
 				</tbody>
