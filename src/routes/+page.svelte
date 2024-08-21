@@ -13,7 +13,7 @@
 </script>
 
 <div class="px-6 lg:p-0">
-	<section class="flex items-center justify-center min-h-[calc(100vh-100px)]">
+	<section class="flex items-center justify-center min-h-[calc(100vh-64px)]">
 		<div class="text-center prose lg:prose-xl">
 			<h1>Transform PDFs Like a Pro</h1>
 			<p>

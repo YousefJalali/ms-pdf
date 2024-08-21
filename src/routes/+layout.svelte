@@ -4,7 +4,7 @@
 	import { blankPage } from '$lib/ui'
 </script>
 
-<div class="navbar w-full px-4 lg:px-6 lg:h-[64px] border-b">
+<div class="navbar w-full px-4 lg:px-6 lg:h-[64px]">
 	<div class="mx-2 flex-1"><a href="/">LOGO</a></div>
 
 	<!-- dark mode -->
@@ -54,7 +54,7 @@
 <slot />
 <Alert />
 
-<footer class="footer footer-center text-base-content p-4 h-[50px] border-t">
+<footer class="footer footer-center text-base-content p-4 h-[50px]">
 	<aside>
 		<p>
 			Build by <a

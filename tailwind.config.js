@@ -16,5 +16,6 @@ export default {
 
 			'business'
 		]
-	}
+	},
+	darkMode: ['class', '[data-theme="business"]']
 }

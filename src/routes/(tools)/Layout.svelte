@@ -30,10 +30,12 @@
 		<Upload component={DnDFIleInput} {showPages} />
 	</div>
 {:else}
-	<div class="flex gap-6 w-full lg:p-6">
-		<div class="lg:flex-[0_0_calc(70%-1.5rem)] 2xl:flex-[0_0_calc(75%-1.5rem)] w-full">
+	<div class="flex gap-6 w-full">
+		<div
+			class="pb-10 lg:pb-0 lg:flex-[0_0_calc(70%-1.5rem)] 2xl:flex-[0_0_calc(75%-1.5rem)] w-full h-[calc(100%-64px)] lg:h-full"
+		>
 			<div
-				class="sticky top-0 z-50 bg-base-100 flex gap-4 justify-between sm:justify-start w-full pt-6 pb-4 lg:hidden"
+				class="sticky top-0 z-50 bg-base-100 flex items-center gap-4 justify-between sm:justify-start w-full h-[64px] lg:hidden"
 			>
 				<Upload component={UploadButton} {showPages} />
 				<button class="btn btn-sm btn-square" on:click={() => optionsModal.showModal()}>
@@ -80,7 +82,7 @@
 		</dialog>
 
 		<div
-			class="flex mt-2 gap-2 fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-2xl p-6 pt-10 lg:hidden bg-gradient-to-t from-base-100 sm:from-transparent"
+			class="flex mt-2 gap-2 fixed bottom-0 pb-6 left-1/2 -translate-x-1/2 w-full max-w-2xl px-6 lg:hidden bg-gradient-to-t from-base-100 sm:from-transparent"
 		>
 			{#if $$slots.cta}
 				<button class="btn btn-primary flex-1 shadow-md" on:click={() => optionsModal.showModal()}>
