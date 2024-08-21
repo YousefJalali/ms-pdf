@@ -5,13 +5,13 @@
 	let drawer: HTMLDivElement
 </script>
 
-<div class="drawer lg:drawer-open lg:px-6">
+<div class="drawer lg:drawer-open lg:px-6 flex-1">
 	<input id="my-drawer-3" type="checkbox" class="drawer-toggle" bind:this={drawer} />
-	<div class="drawer-content flex flex-col">
+	<div
+		class="drawer-content flex flex-col has-[#dropzone-file]:lg:bg-base-200 has-[#dropzone-file]:lg:rounded-box has-[#dropzone-file]:lg:p-3"
+	>
 		<!-- <main> -->
-		<div
-			class="flex gap-8 min-h-[calc(100vh-64px-50px)] lg:min-h-[calc(100vh-64px-50px)] lg:max-h-[calc(100vh-64px-50px)] px-6 lg:p-0"
-		>
+		<div class="flex flex-1 gap-8 px-6 lg:p-0">
 			<slot />
 		</div>
 		<!-- </main> -->

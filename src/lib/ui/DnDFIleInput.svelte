@@ -34,7 +34,7 @@
 	<label
 		data-testid="upload doc"
 		for="dropzone-file"
-		class="flex flex-col items-center justify-center w-full h-64 cursor-pointer bg-base-200"
+		class="flex flex-col items-center justify-center w-full h-64 cursor-pointer bg-base-300"
 	>
 		<div
 			class="prose flex flex-col items-center justify-center pt-5 pb-6 [&>svg]:stroke-neutral-content"
