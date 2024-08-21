@@ -95,7 +95,7 @@
 	class="relative overflow-x-hidden bg-base-100 border-0 lg:border-2 border-dashed border-base-300 lg:rounded-box h-full overflow-y-scroll pb-8 lg:p-4"
 >
 	<div
-		class="grid grid-cols-2 min-[460px]:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-4 gap-4"
+		class="grid grid-cols-2 min-[460px]:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-6 gap-4"
 		use:dndzone={{
 			items: $pages,
 			flipDurationMs,

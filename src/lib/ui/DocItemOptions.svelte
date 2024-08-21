@@ -19,7 +19,7 @@
 	>
 	<ul
 		aria-label="doc-options-dropdown"
-		class="dropdown-content menu min-w-56 bg-base-100 rounded-box z-[1000] w-fit p-2 shadow-lg"
+		class="dropdown-content menu min-w-48 xl:min-w-56 bg-base-100 rounded-box z-[1000] w-fit p-2 shadow-lg"
 	>
 		<li>
 			<label class="label cursor-pointer">

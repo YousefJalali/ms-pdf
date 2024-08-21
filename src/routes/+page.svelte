@@ -26,7 +26,7 @@
 		</div>
 	</section>
 
-	<section class="mb-6 lg:mb-24" bind:this={toolsSection}>
+	<section class="mb-6 lg:mb-24 max-w-4xl mx-auto" bind:this={toolsSection}>
 		<h2 class="text-2xl lg:text-4xl font-black mb-8">Our Tools</h2>
 
 		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">

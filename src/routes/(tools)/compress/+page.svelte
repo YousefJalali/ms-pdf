@@ -1,10 +1,18 @@
 <script lang="ts">
-	import { formatBytes, getInputAsUint8Array } from '$lib/utils'
-	import { PDFDocument } from 'pdf-lib'
+	import { formatBytes } from '$lib/utils'
 	import { writable } from 'svelte/store'
 	// import { compressPdf } from '$lib/utils/compressPDF'
 
-	const result = writable([])
+	const result = writable<
+		{
+			file: File
+			initialSize: number
+			name: string
+			compressedBlob: null | Blob
+			newSize: number
+			link: string
+		}[]
+	>([])
 
 	let loading = false
 
@@ -91,44 +99,6 @@
 		try {
 			loading = true
 
-			// const filesWithVersion = await Promise.all(
-			// 	doc.map(async (file) => {
-			// 		try {
-			// 			const uint8Array = await getInputAsUint8Array(file)
-			// 			const pdf = await PDFDocument.load(uint8Array, { ignoreEncryption: true })
-
-			// 			const newPDF = await PDFDocument.create()
-			// 			const pageCount = pdf.getPageCount()
-			// 			const copiedPages = await newPDF.copyPages(
-			// 				pdf,
-			// 				Array.from({ length: pageCount }, (_, i) => i)
-			// 			)
-
-			// 			for (let copiedPage of copiedPages) {
-			// 				newPDF.addPage(copiedPage)
-			// 			}
-
-			// 			let fileBase64 = await newPDF.saveAsBase64()
-
-			// 			// let fileBase64 = await fileToBase64(file)
-
-			// 			let pdfSize = base64ToBlob(fileBase64).size
-
-			// 			return {
-			// 				file,
-			// 				fileBase64,
-			// 				pdfSize,
-			// 				version: `${pdf.context.header.major}.${pdf.context.header.minor}`,
-			// 				pdf
-			// 			}
-			// 		} catch (error) {
-			// 			throw new Error(`Failed to process file ${file}: ${error.message}`)
-			// 		}
-			// 	})
-			// )
-
-			// console.log(filesWithVersion)
-
 			const res = await Promise.all(
 				doc.map((file) =>
 					fileToBase64(file).then((base64) =>
@@ -171,6 +141,7 @@
 
 			result.set(data)
 		} catch (error) {
+			loading = false
 			console.log(error)
 		}
 
@@ -228,18 +199,15 @@
 					</tr>
 				</thead>
 				<tbody>
-					{#each $result as res, i}
-						<tr class={rowClass(res.initialSize, res.newSize)}>
+					{#each $result as { name, initialSize, newSize, link }, i}
+						<tr class={rowClass(initialSize, newSize)}>
 							<th>{i + 1}</th>
-							<td>{res.name}</td>
-							<td>{formatBytes(res.initialSize)}</td>
-							<td>{formatBytes(res.newSize)}</td>
-							<td>{(100 - (res.newSize * 100) / res.initialSize).toFixed(1)}</td>
+							<td>{name}</td>
+							<td>{formatBytes(initialSize)}</td>
+							<td>{formatBytes(newSize)}</td>
+							<td>{(100 - (newSize * 100) / initialSize).toFixed(1)}</td>
 							<td>
-								<button
-									class="link link-sm"
-									on:click={() => downloadCompressed(res.link, res.name)}
-								>
+								<button class="link link-sm" on:click={() => downloadCompressed(link, name)}>
 									link
 								</button>
 							</td>

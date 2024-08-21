@@ -13,7 +13,7 @@
 </script>
 
 {#if !Object.keys($docs).length && $uploadingDocs}
-	<div class="prose flex flex-col items-center justify-center mx-auto text-center">
+	<div class="prose max-w-4xl mx-auto flex flex-col items-center justify-center text-center">
 		<span class="loading loading-ring loading-lg mb-4"></span>
 		<h1>Uploading Your PDFs...</h1>
 		<p>
@@ -22,7 +22,7 @@
 		</p>
 	</div>
 {:else if !Object.keys($docs).length}
-	<div class="flex flex-col items-center justify-center">
+	<div class="max-w-4xl mx-auto flex flex-col items-center justify-center">
 		<div class="mb-8 prose prose-sm lg:prose-lg max-w-none text-center">
 			<h1>{states[path].upload.title}</h1>
 			<p>{states[path].upload.description}</p>
@@ -30,8 +30,8 @@
 		<Upload component={DnDFIleInput} {showPages} />
 	</div>
 {:else}
-	<div class="flex gap-8 w-full">
-		<div class="lg:flex-[0_0_calc(70%-2rem)] w-full">
+	<div class="flex gap-6 w-full lg:p-6">
+		<div class="lg:flex-[0_0_calc(70%-1.5rem)] 2xl:flex-[0_0_calc(75%-1.5rem)] w-full">
 			<div
 				class="sticky top-0 z-50 bg-base-100 flex gap-4 justify-between sm:justify-start w-full pt-6 pb-4 lg:hidden"
 			>
@@ -45,7 +45,7 @@
 		</div>
 
 		<div
-			class="hidden lg:flex lg:flex-[0_0_30%] w-full border border-base-300 bg-base-100 flex-col rounded-box p-4 fixed bottom-0 left-0 max-h-[80vh] lg:max-h-none z-20 lg:relative"
+			class="hidden lg:flex lg:flex-[0_0_30%] 2xl:flex-[0_0_25%] w-full border border-base-300 bg-base-100 flex-col rounded-box p-4 fixed bottom-0 left-0 max-h-[80vh] lg:max-h-none z-20 lg:relative"
 			data-testid="side"
 		>
 			<div class="mb-4">
