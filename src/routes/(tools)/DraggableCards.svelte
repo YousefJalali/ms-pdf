@@ -124,7 +124,7 @@
 		{/each}
 	</div>
 
-	<!-- <dialog
+	<dialog
 		data-testid="card-options-mobile"
 		id="card-options-mobile"
 		class="modal modal-bottom sm:modal-middle"
@@ -145,5 +145,5 @@
 		<form method="dialog" class="modal-backdrop">
 			<button></button>
 		</form>
-	</dialog> -->
+	</dialog>
 </div>
