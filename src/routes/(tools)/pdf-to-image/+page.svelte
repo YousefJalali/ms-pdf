@@ -142,6 +142,10 @@
 	// })
 </script>
 
+<svelte:head>
+	<title>PDF to Image</title>
+</svelte:head>
+
 <!-- <div class="flex gap-8 h-[calc(100vh-100px-32px-25px)]"></div> -->
 <!-- <div class="flex gap-8 lg:h-[calc(100vh-100px-32px-25px)] lg:overflow-hidden p-6 lg:p-0"> -->
 {#if downloading}

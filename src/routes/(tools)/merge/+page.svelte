@@ -25,6 +25,10 @@
 	// })
 </script>
 
+<svelte:head>
+	<title>Merge PDF</title>
+</svelte:head>
+
 {#if $mergedPdf.loading}
 	<PageLoadingState
 		loading

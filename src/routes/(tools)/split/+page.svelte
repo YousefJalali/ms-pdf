@@ -198,6 +198,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Split PDF</title>
+</svelte:head>
+
 {#if downloading}
 	<PageLoadingState
 		loading
