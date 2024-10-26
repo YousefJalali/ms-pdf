@@ -25,6 +25,7 @@
 			{#each TOOLS as tool}
 				<li>
 					<a
+						aria-label={tool.name}
 						href={tool.link}
 						class={$page.url.pathname === tool.link
 							? 'active [&>span>svg>g>*]:fill-neutral-content'

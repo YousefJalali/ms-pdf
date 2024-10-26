@@ -200,6 +200,10 @@
 
 <svelte:head>
 	<title>Split PDF</title>
+	<meta
+		name="description"
+		content="Split PDFs instantly with our free online PDF splitter. Separate pages or extract custom page ranges in seconds, without downloads or sign-ups. Secure, fast, and optimized for all devices. Simplify your PDF management today!"
+	/>
 </svelte:head>
 
 {#if downloading}

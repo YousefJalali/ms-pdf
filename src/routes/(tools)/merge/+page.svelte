@@ -27,6 +27,10 @@
 
 <svelte:head>
 	<title>Merge PDF</title>
+	<meta
+		name="description"
+		content="Easily merge PDFs online with our free PDF merger. Combine multiple files into one PDF in seconds, no downloads or sign-ups required. Fast, secure, and compatible with all devices. Streamline your PDF files today!"
+	/>
 </svelte:head>
 
 {#if $mergedPdf.loading}

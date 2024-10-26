@@ -144,6 +144,10 @@
 
 <svelte:head>
 	<title>PDF to Image</title>
+	<meta
+		name="description"
+		content="Convert PDFs to high-quality images with our free online PDF to image converter. Quickly transform each PDF page into JPG, PNG, or other image formats. No downloads or sign-ups needed. Fast, secure, and easy-to-use—convert your PDFs today!"
+	/>
 </svelte:head>
 
 <!-- <div class="flex gap-8 h-[calc(100vh-100px-32px-25px)]"></div> -->

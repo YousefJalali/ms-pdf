@@ -11,7 +11,12 @@
 		<!-- dark mode -->
 		<label class="swap swap-rotate">
 			<!-- this hidden checkbox controls the state -->
-			<input type="checkbox" class="theme-controller" value="business" />
+			<input
+				aria-label="dark-mode-toggle"
+				type="checkbox"
+				class="theme-controller"
+				value="business"
+			/>
 
 			<!-- sun icon -->
 			<svg
