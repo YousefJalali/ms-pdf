@@ -16,10 +16,10 @@
 
 <div class="flex flex-col h-screen">
 	<div class="navbar w-full px-4 lg:px-6 lg:h-[64px]">
-		<div class="mx-2 flex-1"><a href="/">LOGO</a></div>
+		<div class="flex-1"><a class="btn btn-ghost btn-square" href="/">LOGO</a></div>
 
 		<!-- dark mode -->
-		<label class="swap swap-rotate">
+		<label class="swap swap-rotate btn btn-ghost btn-square -mr-2">
 			<!-- this hidden checkbox controls the state -->
 			<input
 				aria-label="dark-mode-toggle"

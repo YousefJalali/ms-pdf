@@ -14,7 +14,7 @@
 
 <div class="px-6 lg:p-0">
 	<section class="flex items-center justify-center min-h-[calc(100vh-64px)]">
-		<div class="text-center prose lg:prose-xl">
+		<div class="text-center prose lg:prose-xl max-w-4xl">
 			<h1>Transform PDFs Like a Pro</h1>
 			<p>
 				Step into a world where managing PDFs is as thrilling as a magician's trick! With our
