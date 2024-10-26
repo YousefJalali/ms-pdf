@@ -4,6 +4,10 @@
 	import { blankPage } from '$lib/ui'
 </script>
 
+<svelte:head>
+	<meta name="google-site-verification" content="maUHEPNCAafwRrAAQo-ufXpX0pn_8GDOxfIeZEl4DYc" />
+</svelte:head>
+
 <div class="flex flex-col h-screen">
 	<div class="navbar w-full px-4 lg:px-6 lg:h-[64px]">
 		<div class="mx-2 flex-1"><a href="/">LOGO</a></div>
