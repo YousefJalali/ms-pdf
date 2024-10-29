@@ -4,8 +4,8 @@ export default {
 	theme: {
 		extend: {
 			fontFamily: {
-				heading: ['Montserrat'],
-				body: ['Lato']
+				heading: ['Montserrat', 'system-ui'],
+				body: ['Lato', 'system-ui']
 			}
 		}
 	},
@@ -15,7 +15,10 @@ export default {
 			{
 				lofi: {
 					...require('daisyui/src/theming/themes')['lofi'],
-					primary: '#D50101'
+					primary: '#D50101',
+					'base-200': '#FBFAFA',
+					'base-300': '#EEEEF1',
+					neutral: '#290202'
 				}
 			},
 

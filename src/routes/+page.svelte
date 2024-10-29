@@ -12,6 +12,7 @@
 	let toolsSection: HTMLElement
 </script>
 
+<!-- Landing Page -->
 <div class="px-6 lg:p-0">
 	<section class="flex items-center justify-center min-h-[calc(100vh-64px)]">
 		<div class="text-center prose lg:prose-xl max-w-4xl">
