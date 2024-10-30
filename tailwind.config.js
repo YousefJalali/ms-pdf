@@ -17,10 +17,10 @@ export default {
 					...require('daisyui/src/theming/themes')['lofi'],
 					primary: '#D50101',
 					'base-200': '#FBFAFA',
-					'base-300': '#EEEEF1',
+					'base-300': '#EEEEF1'
 					// neutral: '#290202'
-					'--rounded-box': '0.5rem',
-					'--rounded-btn': '0.5rem'
+					// '--rounded-box': '0.5rem',
+					// '--rounded-btn': '0.5rem'
 				}
 			},
 
