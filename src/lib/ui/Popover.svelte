@@ -52,7 +52,7 @@
 	{...$$restProps}
 	bind:this={popover}
 	popover=""
-	class="m-4 bg-transparent"
+	class="m-4 bg-transparent transition ease-in-out duration-[30ms]"
 	on:toggle={({ newState }) => {
 		if (newState === 'closed') {
 			closeHandler()
