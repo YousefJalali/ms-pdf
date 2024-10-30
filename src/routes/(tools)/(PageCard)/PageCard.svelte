@@ -28,7 +28,7 @@
 	/>
 
 	<div
-		class={`relative z-10 flex flex-col justify-between bg-base-200 border border-base-300 p-3 rounded-box aspect-[180/280] shadow-sm`}
+		class={`relative z-10 flex flex-col justify-between bg-base-100 p-3 rounded-box aspect-[180/280] shadow-sm`}
 		style={multiPages ? `transform: scaleY(${scaleY}) translateY(-${translateY}%);` : ''}
 	>
 		<!-- Document Color -->
@@ -43,7 +43,7 @@
 		</div>
 
 		<!-- Document name & page number in $pages -->
-		<div class="text-center text-sm flex flex-col mt-2">
+		<div class="text-center text-sm flex flex-col mt-2 text-neutral/80">
 			<span class="truncate">{doc.name} </span>
 			<span class="opacity-70 text-xs mt-1">
 				Page

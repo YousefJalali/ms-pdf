@@ -15,8 +15,8 @@
 </svelte:head>
 
 <div class="flex flex-col h-screen">
-	<header class="navbar hidden w-full px-4 lg:px-6 lg:h-[64px]">
-		<!-- <div class="flex-1"><a class="btn btn-ghost btn-square" href="/">LOGO</a></div> -->
+	<header class="navbar lg:hidden w-full px-4 lg:px-6 lg:h-[64px]">
+		<div class="flex-1"><a class="btn btn-ghost btn-square" href="/">LOGO</a></div>
 
 		<!-- dark mode -->
 		<label class="swap swap-rotate btn btn-ghost btn-square -mr-2">

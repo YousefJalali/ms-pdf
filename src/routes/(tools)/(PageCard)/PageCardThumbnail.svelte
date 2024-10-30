@@ -10,7 +10,7 @@
 
 {#if thumbnail}
 	<img
-		class="border mx-auto"
+		class="mx-auto h-full object-contain"
 		style={rotationStyle(page)}
 		src={URL.createObjectURL(thumbnail)}
 		alt={`${$docs[page.docId].name} ${page.pageNum}`}

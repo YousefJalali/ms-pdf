@@ -5,7 +5,7 @@
 	export let drawer
 </script>
 
-<ul class="menu bg-base-100 min-h-full xl:min-w-64 w-906 lg:w-fit p-0 py-6 gap-2">
+<ul class="menu bg-base-100 min-h-full xl:min-w-64 w-[70vw] md:w-64 lg:w-fit p-0 py-6 gap-2">
 	{#each TOOLS as tool}
 		<li>
 			<a

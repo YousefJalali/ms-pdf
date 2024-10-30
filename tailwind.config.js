@@ -18,7 +18,9 @@ export default {
 					primary: '#D50101',
 					'base-200': '#FBFAFA',
 					'base-300': '#EEEEF1',
-					neutral: '#290202'
+					// neutral: '#290202'
+					'--rounded-box': '0.5rem',
+					'--rounded-btn': '0.5rem'
 				}
 			},
 

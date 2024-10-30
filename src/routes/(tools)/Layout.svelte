@@ -31,11 +31,12 @@
 	</div>
 {:else}
 	<div class="flex gap-3 w-full">
+		<!-- Draggable Cards -->
 		<div
 			class="pb-10 lg:pb-0 lg:grow-[7] 2xl:grow-[7.5] lg:basis-0 lg:w-auto w-full h-[calc(100%-64px)] lg:h-full"
 		>
 			<div
-				class="sticky top-0 z-50 bg-base-100 flex items-center gap-4 justify-between sm:justify-start w-full h-[64px] lg:hidden"
+				class="sticky top-0 z-50 bg-base-300 flex items-center gap-4 justify-between sm:justify-start w-full h-[64px] lg:hidden"
 			>
 				<Upload component={UploadButton} {showPages} />
 				<button class="btn btn-sm btn-square" on:click={() => optionsModal.showModal()}>
@@ -46,8 +47,9 @@
 			<slot name="cards" />
 		</div>
 
+		<!-- Side Tools -->
 		<div
-			class="hidden lg:flex lg:grow-[3] 2xl:grow-[2.5] lg:basis-0 lg:w-auto w-full border border-base-300 bg-base-100 flex-col rounded-box p-4 fixed bottom-0 left-0 max-h-[80vh] lg:max-h-none z-20 lg:relative"
+			class="hidden lg:flex lg:grow-[3] 2xl:grow-[2.5] lg:basis-0 lg:w-auto w-full border border-base-300 bg-base-100 flex-col p-4 fixed bottom-0 left-0 max-h-[80vh] lg:max-h-none z-20 lg:relative"
 			data-testid="side"
 		>
 			<div class="mb-4">
@@ -61,7 +63,7 @@
 		</div>
 
 		<dialog
-			id="my_modal_5"
+			id="mobile-tools-side-modal"
 			class="modal modal-bottom sm:modal-middle lg:hidden"
 			bind:this={optionsModal}
 		>
