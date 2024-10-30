@@ -4,19 +4,10 @@
 	import { docs, pages } from '$lib/stores'
 	import type { Page } from '$lib/types'
 	import PageCardOptions from './(PageCard)/PageCardOptions.svelte'
-	import { more } from '$lib/ui'
+	import { more, Popover } from '$lib/ui'
 
-	let popover: HTMLElement
-	// let optionsModal: HTMLDialogElement
 	let selectedPage: Page | null = null
 	let optionButtons: { [cardId: string]: HTMLButtonElement } = {}
-	$: if (selectedPage) {
-		const { x, y, width } = optionButtons[selectedPage.id].getBoundingClientRect()
-		let padding = 16
-
-		popover.style.transform = `translate(${x - padding + width - 170}px, ${y - padding + 24}px)`
-		popover.showPopover()
-	}
 
 	function moveItem(arr: Page[], fromIndex: number, toIndex: number) {
 		var element = arr[fromIndex]
@@ -27,6 +18,8 @@
 	let oldIndex: number | null
 	const flipDurationMs = 300
 	function handleDndConsider(e: CustomEvent<DndEvent<Page>>) {
+		selectedPage = null
+
 		let {
 			items,
 			info: { trigger, id: pageId }
@@ -91,12 +84,10 @@
 	}
 
 	function closeOptionsModal() {
-		// optionsModal.close()
 		selectedPage = null
 	}
 	function openOptionsModal(page: Page) {
 		selectedPage = page
-		// optionsModal.showModal()
 	}
 </script>
 
@@ -118,6 +109,7 @@
 			<div
 				class={`group focus:!outline-none z-0 h-fit relative ${page.isVisible ? 'block' : 'hidden'}`}
 				animate:flip={{ duration: flipDurationMs }}
+				style={selectedPage && selectedPage?.id !== page.id ? 'opacity:0.7;' : ''}
 			>
 				{#if page.isVisible}
 					<button
@@ -134,40 +126,12 @@
 		{/each}
 	</div>
 
-	<!-- <dialog
-		data-testid="card-options-mobile"
+	<Popover
 		id="card-options-mobile"
-		class="modal modal-bottom sm:modal-middle"
-		bind:this={optionsModal}
-	>
-		<div class="modal-box p-0">
-			{#if selectedPage}
-				<ul class="menu">
-					<PageCardOptions
-						doc={$docs[selectedPage.docId]}
-						page={selectedPage}
-						on:delete={closeOptionsModal}
-						on:preview={closeOptionsModal}
-					/>
-				</ul>
-			{/if}
-		</div>
-		<form method="dialog" class="modal-backdrop">
-			<button></button>
-		</form>
-	</dialog> -->
-
-	<div
-		bind:this={popover}
-		popover=""
 		data-testid="card-options-mobile"
-		id="card-options-mobile"
-		class="m-4 bg-transparent"
-		on:toggle={({ newState }) => {
-			if (newState === 'closed') {
-				selectedPage = null
-			}
-		}}
+		selectedItemId={selectedPage?.id}
+		itemsElements={optionButtons}
+		on:close={() => (selectedPage = null)}
 	>
 		{#if selectedPage}
 			<ul class="menu bg-base-100 shadow">
@@ -179,5 +143,5 @@
 				/>
 			</ul>
 		{/if}
-	</div>
+	</Popover>
 </div>
