@@ -3,12 +3,12 @@
 	import DraggableCards from '../DraggableCards.svelte'
 	import MergedDoc from './(MergedDoc)/MergedDoc.svelte'
 	import Preview from '../(PageCard)/Preview.svelte'
-	import { beforeNavigate } from '$app/navigation'
 	import Layout from '../Layout.svelte'
-	import { DocItem, DocItemOptions, PageLoadingState } from '$lib/ui'
+	import { PageLoadingState } from '$lib/ui'
 	import Merge from './(MergedDoc)/Merge.svelte'
 	import { LINKS, states } from '$lib/constants'
 	import PageCard from '../(PageCard)/PageCard.svelte'
+	import DocList from '../DocList.svelte'
 
 	// beforeNavigate(({ cancel }) => {
 	// 	if ($pages.length) {
@@ -56,16 +56,9 @@
 			<div class="divider divider-center opacity-80 text-sm hidden lg:flex">
 				Uploaded Docs ({Object.keys($docs).length})
 			</div>
-			<ul
-				class="w-full flex-auto pb-16 overflow-y-scroll divide-y lg:pb-4 lg:h-0"
-				data-testid="doc list"
-			>
-				{#each Object.values($docs) as doc}
-					<DocItem {doc}>
-						<DocItemOptions {doc} />
-					</DocItem>
-				{/each}
-			</ul>
+			<div class="w-full flex-auto pb-16 overflow-y-scroll lg:pb-4 lg:h-0">
+				<DocList withOptions />
+			</div>
 		</svelte:fragment>
 
 		<svelte:fragment slot="download">

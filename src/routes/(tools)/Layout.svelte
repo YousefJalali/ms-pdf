@@ -67,7 +67,7 @@
 			class="modal modal-bottom sm:modal-middle lg:hidden"
 			bind:this={optionsModal}
 		>
-			<div class="modal-box p-6">
+			<div class="modal-box p-6 flex flex-col">
 				<button class="btn btn-xs ml-auto flex w-fit mb-4" on:click={() => optionsModal.close()}>
 					✕
 				</button>

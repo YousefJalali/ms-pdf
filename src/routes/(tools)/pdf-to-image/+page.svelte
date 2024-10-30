@@ -2,7 +2,7 @@
 	import JSZip from 'jszip'
 	import { page } from '$app/stores'
 	import { docs, pages, thumbnails, uploadingDocs } from '$lib/stores'
-	import { DocItem, PageLoadingState } from '$lib/ui'
+	import { PageLoadingState } from '$lib/ui'
 	import { generateFileName, getPageAsBlob } from '$lib/utils'
 	import { writable } from 'svelte/store'
 	import { states } from '$lib/constants/'
@@ -10,6 +10,7 @@
 	import OtherTools from '../OtherTools.svelte'
 	import { afterNavigate } from '$app/navigation'
 	import type { CreateImage } from '$lib/types'
+	import DocList from '../DocList.svelte'
 
 	const defaultFileName = generateFileName('Converted')
 	const QUALITY_LABEL: { [ket: number]: string } = {
@@ -216,11 +217,9 @@
 			<div class="divider divider-center opacity-80 text-sm hidden lg:flex">
 				Uploaded Docs ({Object.keys($docs).length})
 			</div>
-			<ul class="w-full h-0 flex-auto p-0 overflow-y-scroll hidden lg:block" data-testid="doc list">
-				{#each Object.values($docs) as doc}
-					<DocItem {doc} />
-				{/each}
-			</ul>
+			<div class="w-full h-0 flex-auto p-0 overflow-y-scroll hidden lg:block">
+				<DocList />
+			</div>
 
 			<div class="divider divider-center opacity-80 text-sm hidden lg:flex">Download Options</div>
 			<div class="relative z-10 pb-4 space-y-4">

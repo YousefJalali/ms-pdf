@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { afterUpdate, createEventDispatcher, onMount } from 'svelte'
+	import { afterUpdate, createEventDispatcher } from 'svelte'
 
 	export let selectedItemId: any
 	export let itemsElements: { [cardId: string]: HTMLButtonElement } = {}
@@ -37,16 +37,15 @@
 		popover.hidePopover()
 		dispatch('close')
 	}
-</script>
 
-<svelte:window
-	bind:innerHeight={windowHeight}
-	on:scroll={() => {
+	export function scrollHandler() {
 		if (selectedItemId) {
 			selectedItemEleTop = itemsElements[selectedItemId].getBoundingClientRect().top
 		}
-	}}
-/>
+	}
+</script>
+
+<svelte:window bind:innerHeight={windowHeight} />
 
 <div
 	{...$$restProps}

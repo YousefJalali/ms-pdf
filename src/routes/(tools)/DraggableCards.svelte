@@ -6,6 +6,7 @@
 	import PageCardOptions from './(PageCard)/PageCardOptions.svelte'
 	import { more, Popover } from '$lib/ui'
 
+	let popoverRef: Popover
 	let selectedPage: Page | null = null
 	let optionButtons: { [cardId: string]: HTMLButtonElement } = {}
 
@@ -91,6 +92,14 @@
 	}
 </script>
 
+<svelte:window
+	on:scroll={() => {
+		if (popoverRef) {
+			popoverRef.scrollHandler()
+		}
+	}}
+/>
+
 <div
 	class="relative overflow-x-hidden border-0 lg:border lg:border-base-300 lg:rounded-box h-full overflow-y-scroll pb-16 lg:p-4"
 >
@@ -127,6 +136,7 @@
 	</div>
 
 	<Popover
+		bind:this={popoverRef}
 		id="card-options-mobile"
 		data-testid="card-options-mobile"
 		selectedItemId={selectedPage?.id}
