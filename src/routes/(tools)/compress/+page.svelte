@@ -1,7 +1,13 @@
 <script lang="ts">
+	import { goto } from '$app/navigation'
 	import { formatBytes } from '$lib/utils'
+	import { onMount } from 'svelte'
 	import { writable } from 'svelte/store'
 	// import { compressPdf } from '$lib/utils/compressPDF'
+
+	onMount(() => {
+		goto('/merge')
+	})
 
 	const result = writable<
 		{
