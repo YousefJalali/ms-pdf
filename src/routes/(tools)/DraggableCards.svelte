@@ -4,7 +4,19 @@
 	import { docs, pages } from '$lib/stores'
 	import type { Page } from '$lib/types'
 	import PageCardOptions from './(PageCard)/PageCardOptions.svelte'
-	import { moreVertical } from '$lib/ui'
+	import { more } from '$lib/ui'
+
+	let popover: HTMLElement
+	// let optionsModal: HTMLDialogElement
+	let selectedPage: Page | null = null
+	let optionButtons: { [cardId: string]: HTMLButtonElement } = {}
+	$: if (selectedPage) {
+		const { x, y, width } = optionButtons[selectedPage.id].getBoundingClientRect()
+		let padding = 16
+
+		popover.style.transform = `translate(${x - padding + width - 170}px, ${y - padding + 24}px)`
+		popover.showPopover()
+	}
 
 	function moveItem(arr: Page[], fromIndex: number, toIndex: number) {
 		var element = arr[fromIndex]
@@ -78,16 +90,13 @@
 		oldIndex = null
 	}
 
-	let optionsModal: HTMLDialogElement
-	let selectedPage: Page | null = null
-
 	function closeOptionsModal() {
-		optionsModal.close()
+		// optionsModal.close()
 		selectedPage = null
 	}
 	function openOptionsModal(page: Page) {
 		selectedPage = page
-		optionsModal.showModal()
+		// optionsModal.showModal()
 	}
 </script>
 
@@ -114,8 +123,9 @@
 					<button
 						class="btn btn-sm btn-ghost btn-circle bg-base-100 border border-base-300 absolute z-50 right-1 top-1 lg:hidden"
 						on:click={() => openOptionsModal(page)}
+						bind:this={optionButtons[page.id]}
 					>
-						{@html moreVertical}
+						{@html more}
 					</button>
 
 					<slot {page} {pageIndex} />
@@ -124,7 +134,7 @@
 		{/each}
 	</div>
 
-	<dialog
+	<!-- <dialog
 		data-testid="card-options-mobile"
 		id="card-options-mobile"
 		class="modal modal-bottom sm:modal-middle"
@@ -145,5 +155,29 @@
 		<form method="dialog" class="modal-backdrop">
 			<button></button>
 		</form>
-	</dialog>
+	</dialog> -->
+
+	<div
+		bind:this={popover}
+		popover=""
+		data-testid="card-options-mobile"
+		id="card-options-mobile"
+		class="m-4 bg-transparent"
+		on:toggle={({ newState }) => {
+			if (newState === 'closed') {
+				selectedPage = null
+			}
+		}}
+	>
+		{#if selectedPage}
+			<ul class="menu bg-base-100 shadow">
+				<PageCardOptions
+					doc={$docs[selectedPage.docId]}
+					page={selectedPage}
+					on:delete={closeOptionsModal}
+					on:preview={closeOptionsModal}
+				/>
+			</ul>
+		{/if}
+	</div>
 </div>
