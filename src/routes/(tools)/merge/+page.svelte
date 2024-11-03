@@ -56,7 +56,9 @@
 			<div class="divider divider-center opacity-80 text-sm hidden lg:flex">
 				Uploaded Docs ({Object.keys($docs).length})
 			</div>
-			<div class="w-full flex-auto pb-16 overflow-y-scroll lg:pb-4 lg:h-0">
+			<div
+				class="flex flex-col w-full overflow-hidden flex-auto [&>ul]:overflow-y-scroll [&>ul]:flex-1 lg:pb-4 lg:h-0"
+			>
 				<DocList withOptions />
 			</div>
 		</svelte:fragment>

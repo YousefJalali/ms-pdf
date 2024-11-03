@@ -74,7 +74,7 @@
 
 				<slot name="side" />
 
-				<div class="flex mt-12 w-full">
+				<div class="flex w-full">
 					<slot name="download" />
 				</div>
 			</div>
