@@ -18,7 +18,7 @@ test.describe('merge', () => {
 			.getByTestId('upload doc')
 			.setInputFiles([`./tests/${firstDoc}`, `./tests/${secondDoc}`])
 
-		docList = page.locator('[data-testid="side"]>[data-testid="doc list"]>li')
+		docList = page.locator('[data-testid="side"] [data-testid="doc list"]>li')
 		dropZone = page.getByTestId('drop zone')
 		pageStack = page.getByTestId('page stack')
 		cards = page.locator('[data-testid="drop zone"]>div')
@@ -70,7 +70,7 @@ test.describe('merge', () => {
 	})
 
 	test('show & hide pages from doc list', async ({ page }) => {
-		const dropdown = docList.nth(1).getByLabel('doc-options-dropdown')
+		const dropdown = page.getByLabel('doc-options-dropdown')
 
 		//third page should be hidden
 		await expect(cards.nth(2)).toBeHidden()
@@ -132,7 +132,7 @@ test.describe('merge', () => {
 
 		//delete second doc (2 pages)
 		await docList.nth(1).getByLabel('doc-options-btn').click()
-		await docList.nth(1).getByLabel('doc-options-dropdown').getByLabel('delete document').click()
+		await page.getByLabel('doc-options-dropdown').getByLabel('delete document').click()
 
 		await expect(cards).toHaveCount(1)
 	})
