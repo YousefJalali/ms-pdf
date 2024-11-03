@@ -14,8 +14,8 @@
 	$: if (popover && selectedItemId && selectedItemEleTop) {
 		const { x, y, width, top, height } = itemsElements[selectedItemId].getBoundingClientRect()
 		const padding = 16
-		const popoverHeight = popoverSize.height
-		const popoverWidth = popoverSize.width
+		const popoverHeight = popoverSize.height || 88
+		const popoverWidth = popoverSize.width || 192
 
 		const translateX = x - padding + width - popoverWidth
 		const translateY =
@@ -26,9 +26,11 @@
 	}
 
 	afterUpdate(() => {
-		const { height, width } = popover.getBoundingClientRect()
-		popoverSize.height = height
-		popoverSize.width = width
+		if (popover && !popoverSize.height) {
+			const { height, width } = popover.getBoundingClientRect()
+			popoverSize.height = height
+			popoverSize.width = width
+		}
 	})
 
 	const dispatch = createEventDispatcher()
