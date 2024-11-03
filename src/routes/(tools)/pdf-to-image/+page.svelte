@@ -178,7 +178,7 @@
 	<Layout>
 		<svelte:fragment slot="cards">
 			<div
-				class="h-full overflow-y-scroll grid auto-rows-min grid-cols-2 min-[460px]:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-6 gap-2 lg:gap-4 bg-base-100 lg:border lg:border-base-300 lg:rounded-box pb-8 lg:p-4"
+				class="h-full overflow-y-scroll grid auto-rows-min grid-cols-2 min-[460px]:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-6 gap-2 lg:gap-4 bg-base-300 pb-14 lg:p-4"
 			>
 				{#each Object.keys($thumbnails) as pageId}
 					<div

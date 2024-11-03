@@ -30,7 +30,7 @@
 		<Upload component={DnDFIleInput} {showPages} />
 	</div>
 {:else}
-	<div class="flex gap-3 w-full">
+	<div class="flex w-full">
 		<!-- Draggable Cards -->
 		<div
 			class="pb-10 lg:pb-0 lg:grow-[7] 2xl:grow-[7.5] lg:basis-0 lg:w-auto w-full h-[calc(100%-64px)] lg:h-full"

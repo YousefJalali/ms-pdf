@@ -21,7 +21,9 @@
 	}}
 >
 	{#each Object.values($docs) as doc}
-		<li class="relative group flex justify-between gap-2 py-3 px-1">
+		<li
+			class="relative group flex justify-between gap-2 py-3 px-1 hover:rounded-box hover:bg-base-300"
+		>
 			<div class="flex gap-2">
 				<span class="w-fit flex items-center justify-center [&_svg]:size-8">
 					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
