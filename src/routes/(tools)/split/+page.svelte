@@ -1,16 +1,15 @@
 <script lang="ts">
 	import JSZip from 'jszip'
-	import { page } from '$app/stores'
 	import { docs, pages, previews, thumbnails, uploadingDocs } from '$lib/stores'
 	import { arrowLongRight, PageLoadingState, plus, trash } from '$lib/ui'
 	import { generateFileName, getInputAsUint8Array } from '$lib/utils'
-	import { states } from '$lib/constants/'
 	import Layout from '../Layout.svelte'
 	import OtherTools from '../OtherTools.svelte'
 	import DraggableCards from '../DraggableCards.svelte'
 	import PageCard from '../(PageCard)/PageCard.svelte'
 	import Preview from '../(PageCard)/Preview.svelte'
 	import { PDFDocument } from 'pdf-lib'
+	import { t } from '$lib/i18n'
 
 	let splitType = $state('range')
 	let downloaded = $state(false)
@@ -215,13 +214,13 @@
 {#if downloading}
 	<PageLoadingState
 		loading
-		title={states[$page.url.pathname].downloading.title}
-		description={states[$page.url.pathname].downloading.description}
+		title={$t('split.downloading.title')}
+		description={$t('split.downloading.description')}
 	/>
 {:else if downloaded}
 	<PageLoadingState
-		title={states[$page.url.pathname].downloaded.title}
-		description={states[$page.url.pathname].downloaded.description}
+		title={$t('split.downloaded.title')}
+		description={$t('split.downloaded.description')}
 	>
 		<button class="btn btn-primary btn-outline btn-wide" onclick={reset}>Start Over</button>
 
@@ -230,8 +229,8 @@
 {:else if !Object.keys($thumbnails).length && $uploadingDocs}
 	<PageLoadingState
 		loading
-		title={states[$page.url.pathname].uploading.title}
-		description={states[$page.url.pathname].uploading.description}
+		title={$t('split.uploading.title')}
+		description={$t('split.uploading.description')}
 	/>
 {:else}
 	<Layout>

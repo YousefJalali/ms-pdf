@@ -1,2 +1,2 @@
 export * from './tools'
-export * from './states'
+export * from './translations'

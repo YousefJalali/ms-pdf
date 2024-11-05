@@ -1,16 +1,15 @@
 <script lang="ts">
 	import JSZip from 'jszip'
-	import { page } from '$app/stores'
 	import { docs, pages, thumbnails, uploadingDocs } from '$lib/stores'
 	import { PageLoadingState } from '$lib/ui'
 	import { generateFileName, getPageAsBlob } from '$lib/utils'
 	import { writable } from 'svelte/store'
-	import { states } from '$lib/constants/'
 	import Layout from '../Layout.svelte'
 	import OtherTools from '../OtherTools.svelte'
 	import { afterNavigate } from '$app/navigation'
 	import type { CreateImage } from '$lib/types'
 	import DocList from '../DocList.svelte'
+	import { t } from '$lib/i18n'
 
 	const defaultFileName = generateFileName('Converted')
 	const QUALITY_LABEL: { [ket: number]: string } = {
@@ -139,13 +138,13 @@
 {#if downloading}
 	<PageLoadingState
 		loading
-		title={states[$page.url.pathname].downloading.title}
-		description={states[$page.url.pathname].downloading.description}
+		title={$t('pdfToImage.downloading.title')}
+		description={$t('pdfToImage.downloading.description')}
 	/>
 {:else if downloaded}
 	<PageLoadingState
-		title={states[$page.url.pathname].downloaded.title}
-		description={states[$page.url.pathname].downloaded.description}
+		title={$t('pdfToImage.downloaded.title')}
+		description={$t('pdfToImage.downloaded.description')}
 	>
 		<button class="btn btn-primary btn-outline btn-wide" onclick={reset}>Start Over</button>
 
@@ -154,8 +153,8 @@
 {:else if !Object.keys($thumbnails).length && $uploadingDocs}
 	<PageLoadingState
 		loading
-		title={states[$page.url.pathname].uploading.title}
-		description={states[$page.url.pathname].uploading.description}
+		title={$t('pdfToImage.uploading.title')}
+		description={$t('pdfToImage.uploading.description')}
 	/>
 {:else}
 	<Layout>

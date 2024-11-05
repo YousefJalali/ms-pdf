@@ -1,4 +1,4 @@
-import { CompressIcon, ConvertToImageIcon, MergeIcon, SplitIcon } from '../ui'
+import { ConvertToImageIcon, MergeIcon, SplitIcon } from '../ui'
 
 export const MAX_FILE_UPLOAD = 30
 export const LINKS = {

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores'
-	import { LINKS, states } from '$lib/constants'
+	import { LINKS } from '$lib/constants'
+	import { t } from '$lib/i18n'
 
 	import { docs, uploadingDocs } from '$lib/stores'
 	import { DnDFIleInput, adjust, UploadButton } from '$lib/ui'
@@ -14,7 +15,12 @@
 
 	let { cards, side, download, cta }: Props = $props()
 
-	let path = $derived($page.url.pathname)
+	let path = $derived.by(() => {
+		if ($page.url.pathname.includes('merge')) return 'merge'
+		if ($page.url.pathname.includes('split')) return 'split'
+		if ($page.url.pathname.includes('image')) return 'pdfToImage'
+		if ($page.url.pathname.includes('compress')) return 'compress'
+	})
 	let showPages = $derived(path === LINKS.pdfToImage ? true : false)
 
 	let optionsModal: HTMLDialogElement | undefined = $state()
@@ -32,8 +38,8 @@
 {:else if !Object.keys($docs).length}
 	<div class="max-w-4xl mx-auto flex flex-col items-center justify-center">
 		<div class="mb-8 prose prose-sm lg:prose-lg max-w-none text-center">
-			<h1>{states[path].upload.title}</h1>
-			<p>{states[path].upload.description}</p>
+			<h1>{$t(`${path}.upload.title`)}</h1>
+			<p>{$t(`${path}.upload.description`)}</p>
 		</div>
 		<Upload component={DnDFIleInput} {showPages} />
 	</div>

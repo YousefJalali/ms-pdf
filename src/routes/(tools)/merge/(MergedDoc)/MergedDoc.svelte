@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { beforeNavigate } from '$app/navigation'
-	import { LINKS, states } from '$lib/constants'
+	import { t } from '$lib/i18n'
 	import { docs, mergedPdf, pages, previews, thumbnails } from '$lib/stores'
 	import { backIcon, downloadIcon, startOver } from '$lib/ui'
 	import OtherTools from '../../OtherTools.svelte'
@@ -47,16 +47,16 @@
 	class="flex flex-col justify-center items-center mx-auto max-w-full lg:max-w-xl text-center prose mt-6"
 >
 	{#if downloading}
-		<h1>{states[LINKS.merge].downloading.title}</h1>
-		<p>{states[LINKS.merge].downloading.description}</p>
+		<h1>{$t('merge.downloading.title')}</h1>
+		<p>{$t('merge.downloading.description')}</p>
 	{:else if downloaded}
-		<h1>{states[LINKS.merge].downloaded.title}</h1>
-		<p>{states[LINKS.merge].downloaded.description}</p>
+		<h1>{$t('merge.downloaded.title')}</h1>
+		<p>{$t('merge.downloaded.description')}</p>
 		<button class="btn btn-outline btn-wide" onclick={reset}>{@html startOver}Start Over</button>
 		<OtherTools />
 	{:else}
-		<h1>{states[LINKS.merge].merged.title}</h1>
-		<p>{states[LINKS.merge].merged.description}</p>
+		<h1>{$t('merge.merged.title')}</h1>
+		<p>{$t('merge.merged.description')}</p>
 		<div
 			data-testid="preview merged"
 			class="mx-auto border broder-base-300 w-[380px] max-w-full h-[480px] overflow-y-scroll [&>img]:mx-auto [&>img]:m-0 divide-y-2"
