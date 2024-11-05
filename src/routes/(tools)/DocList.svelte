@@ -4,6 +4,8 @@
 	import { more } from '$lib/ui'
 	import Popover from '$lib/ui/Popover.svelte'
 	import { formatBytes } from '$lib/utils'
+	import type { SvelteComponent } from 'svelte'
+	import type { HTMLAttributes } from 'svelte/elements'
 
 	interface Props {
 		withOptions?: boolean
@@ -11,7 +13,12 @@
 
 	let { withOptions = false }: Props = $props()
 
-	let popoverRef: any
+	let popoverRef:
+		| (SvelteComponent<Props & HTMLAttributes<HTMLDivElement>, any, any> & {
+				scrollHandler: () => void
+		  } & { $$bindings: '' })
+		| undefined = $state()
+
 	let selectedDoc: null | Doc = $state(null)
 	let docsEle: { [docId: string]: HTMLButtonElement } = $state({})
 </script>

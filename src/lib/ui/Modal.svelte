@@ -2,17 +2,17 @@
 	function closeHandler() {
 		if (dialog) {
 			dialog.close()
-			close()
+			onClose()
 		}
 	}
 
 	interface Props {
 		showModal: boolean
 		children?: import('svelte').Snippet
-		close: () => void
+		onClose: () => void
 	}
 
-	let { showModal = $bindable(), children, close }: Props = $props()
+	let { showModal = $bindable(), children, onClose }: Props = $props()
 
 	let dialog: HTMLDialogElement | undefined = $state()
 

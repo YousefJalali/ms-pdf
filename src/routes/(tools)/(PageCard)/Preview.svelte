@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Modal } from '$lib/ui'
-	import { previews, thumbnails, pageNum, pages, docs, previewModal } from '$lib/stores'
+	import { previews, pageNum, pages, docs, previewModal } from '$lib/stores'
 
 	let currentPageIndex = $derived($previewModal.currentPageIndex || 0)
 	let currentPageId = $derived($pages[currentPageIndex]?.pageId)
@@ -41,7 +41,7 @@
 	})
 </script>
 
-<Modal bind:showModal close={closeModal}>
+<Modal bind:showModal onClose={closeModal}>
 	<div class="absolute bottom-6 left-1/2 -translate-x-1/2 cursor-default z-10">
 		<div class="join shadow">
 			<button class="join-item btn" onclick={prev} disabled={currentPageIndex === 0}>«</button>

@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
 	import { goto } from '$app/navigation'
 	import { formatBytes } from '$lib/utils'
 	import { onMount } from 'svelte'
@@ -184,7 +184,6 @@
 			accept="application/pdf"
 		/>
 
-		<!-- <button class="btn" on:click={compress}>compress</button> -->
 		<button class="btn btn-primary" onclick={compressMultiple}>Compress</button>
 	</div>
 
@@ -195,7 +194,6 @@
 	{#if $result.length}
 		<div class="overflow-x-auto">
 			<table class="table">
-				<!-- head -->
 				<thead class="sticky top-0 bg-base-100">
 					<tr>
 						<th></th>
@@ -225,4 +223,4 @@
 			</table>
 		</div>
 	{/if}
-</div>
+</div> -->

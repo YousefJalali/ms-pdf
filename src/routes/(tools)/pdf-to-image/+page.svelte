@@ -19,8 +19,8 @@
 		75: 'High Quality',
 		100: 'Maximum Quality'
 	}
+	const IMAGE_FORMATS: ('jpeg' | 'webp' | 'png')[] = ['jpeg', 'png', 'webp']
 
-	let IMAGE_FORMATS: ('jpeg' | 'webp' | 'png')[] = ['jpeg', 'png', 'webp']
 	let quality = $state(75)
 	let imageFormat = $state(IMAGE_FORMATS[0])
 	let fileName = $state(defaultFileName)
@@ -41,7 +41,7 @@
 	}
 
 	let downloading = $state(false)
-	async function download() {
+	async function downloadHandler() {
 		downloading = true
 
 		let blobsPromise = []
@@ -126,21 +126,6 @@
 			thumbnails.create(obj)
 		}
 	})
-
-	// beforeNavigate(({ cancel }) => {
-	// 	if (Object.keys($docs).length) {
-	// 		if (
-	// 			!confirm(
-	// 				'Are you sure you want to leave this page? You have unsaved changes that will be lost.'
-	// 			)
-	// 		) {
-	// 			cancel()
-	// 		} else {
-	// 			docs.reset()
-	// 			reset()
-	// 		}
-	// 	}
-	// })
 </script>
 
 <svelte:head>
@@ -151,8 +136,6 @@
 	/>
 </svelte:head>
 
-<!-- <div class="flex gap-8 h-[calc(100vh-100px-32px-25px)]"></div> -->
-<!-- <div class="flex gap-8 lg:h-[calc(100vh-100px-32px-25px)] lg:overflow-hidden p-6 lg:p-0"> -->
 {#if downloading}
 	<PageLoadingState
 		loading
@@ -177,132 +160,126 @@
 {:else}
 	<Layout>
 		{#snippet cards()}
-							
-				<div
-					class="h-full overflow-y-scroll grid auto-rows-min grid-cols-2 min-[460px]:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-6 gap-2 lg:gap-4 bg-base-300 pb-14 lg:p-4"
-				>
-					{#each Object.keys($thumbnails) as pageId}
-						<div
-							class="relative h-fit bg-base-100 rounded-box py-3 border border-base-300"
-							style="opacity: {Object.keys($selected).length && !$selected[pageId] ? 0.5 : 1};"
-						>
-							<div class="absolute top-2 right-2">
-								<input
-									type="checkbox"
-									checked={$selected[pageId]}
-									class="checkbox checkbox-primary bg-base-100"
-									onchange={() => handleSelected(pageId)}
-								/>
-							</div>
-
-							<img
-								class="rounded-box w-[200px] h-[200px] object-scale-down"
-								src={URL.createObjectURL($thumbnails[pageId].src)}
-								alt={pageId}
+			<div
+				class="h-full overflow-y-scroll grid auto-rows-min grid-cols-2 min-[460px]:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-6 gap-2 lg:gap-4 bg-base-300 pb-14 lg:p-4"
+			>
+				{#each Object.keys($thumbnails) as pageId}
+					<div
+						class="relative h-fit bg-base-100 rounded-box py-3 border border-base-300"
+						style="opacity: {Object.keys($selected).length && !$selected[pageId] ? 0.5 : 1};"
+					>
+						<div class="absolute top-2 right-2">
+							<input
+								type="checkbox"
+								checked={$selected[pageId]}
+								class="checkbox checkbox-primary bg-base-100"
+								onchange={() => handleSelected(pageId)}
 							/>
+						</div>
 
-							<div
-								class="absolute bottom-3 left-1/2 -translate-x-1/2 flex py-0.5 px-2 rounded-btn"
-								style="background-color: {$docs[$thumbnails[pageId].docId].color};"
+						<img
+							class="rounded-box w-[200px] h-[200px] object-scale-down"
+							src={URL.createObjectURL($thumbnails[pageId].src)}
+							alt={pageId}
+						/>
+
+						<div
+							class="absolute bottom-3 left-1/2 -translate-x-1/2 flex py-0.5 px-2 rounded-btn"
+							style="background-color: {$docs[$thumbnails[pageId].docId].color};"
+						>
+							<span class="text-white relative text-xs"
+								>Page {$thumbnails[pageId].pageNumberInDoc}</span
 							>
-								<span class="text-white relative text-xs"
-									>Page {$thumbnails[pageId].pageNumberInDoc}</span
-								>
-							</div>
+						</div>
+					</div>
+				{/each}
+			</div>
+		{/snippet}
+
+		{#snippet side()}
+			<div class="divider divider-center opacity-80 text-sm hidden lg:flex">
+				Uploaded Docs ({Object.keys($docs).length})
+			</div>
+			<div class="w-full h-0 flex-auto p-0 overflow-y-scroll hidden lg:block">
+				<DocList />
+			</div>
+
+			<div class="divider divider-center opacity-80 text-sm hidden lg:flex">Download Options</div>
+			<div class="relative z-10 pb-4 space-y-4">
+				<!-- Quality -->
+				<div>
+					<span class="font-semibold text-xs mb-1 inline-block opacity-60 uppercase">Quality</span>
+					<input
+						bind:value={quality}
+						type="range"
+						min="25"
+						max="100"
+						class="range range-xs range-primary"
+						step="25"
+					/>
+					<div class="flex w-full justify-between text-xs">
+						<span></span>
+						<span></span>
+						<span></span>
+						<span></span>
+						<span>{QUALITY_LABEL[quality]}</span>
+					</div>
+				</div>
+
+				<!-- Format -->
+				<div>
+					<span class="font-semibold text-xs mb-1 inline-block opacity-60 uppercase">type</span>
+					{#each IMAGE_FORMATS as format}
+						<div class="form-control">
+							<label class="label cursor-pointer">
+								<span class="label-text uppercase">{format}</span>
+								<input
+									type="radio"
+									class="radio checked:bg-primary"
+									bind:group={imageFormat}
+									value={format}
+									checked={format === imageFormat}
+								/>
+							</label>
 						</div>
 					{/each}
 				</div>
-			
-							{/snippet}
 
-		{#snippet side()}
-							
-				<div class="divider divider-center opacity-80 text-sm hidden lg:flex">
-					Uploaded Docs ({Object.keys($docs).length})
-				</div>
-				<div class="w-full h-0 flex-auto p-0 overflow-y-scroll hidden lg:block">
-					<DocList />
-				</div>
-
-				<div class="divider divider-center opacity-80 text-sm hidden lg:flex">Download Options</div>
-				<div class="relative z-10 pb-4 space-y-4">
-					<!-- Quality -->
-					<div>
-						<span class="font-semibold text-xs mb-1 inline-block opacity-60 uppercase">Quality</span>
+				<!-- File Name -->
+				<div>
+					<span class="font-semibold text-xs mb-1 inline-block opacity-60 uppercase">File Name</span
+					>
+					<div class="w-full text-sm flex items-center gap-2">
 						<input
-							bind:value={quality}
-							type="range"
-							min="25"
-							max="100"
-							class="range range-xs range-primary"
-							step="25"
+							class="input input-bordered input-sm w-full"
+							bind:value={fileName}
+							onblur={() => !fileName.length && (fileName = defaultFileName)}
+							maxlength="100"
+							type="url"
 						/>
-						<div class="flex w-full justify-between text-xs">
-							<span></span>
-							<span></span>
-							<span></span>
-							<span></span>
-							<span>{QUALITY_LABEL[quality]}</span>
-						</div>
+						.{Object.keys($selected).length === 1 ? imageFormat : 'zip'}
 					</div>
-
-					<!-- Format -->
-					<div>
-						<span class="font-semibold text-xs mb-1 inline-block opacity-60 uppercase">type</span>
-						{#each IMAGE_FORMATS as format}
-							<div class="form-control">
-								<label class="label cursor-pointer">
-									<span class="label-text uppercase">{format}</span>
-									<input
-										type="radio"
-										class="radio checked:bg-primary"
-										bind:group={imageFormat}
-										value={format}
-										checked={format === imageFormat}
-									/>
-								</label>
-							</div>
-						{/each}
-					</div>
-
-					<!-- File Name -->
-					<div>
-						<span class="font-semibold text-xs mb-1 inline-block opacity-60 uppercase">File Name</span
-						>
-						<div class="w-full text-sm flex items-center gap-2">
-							<input
-								class="input input-bordered input-sm w-full"
-								bind:value={fileName}
-								onblur={() => !fileName.length && (fileName = defaultFileName)}
-								maxlength="100"
-								type="url"
-							/>
-							.{Object.keys($selected).length === 1 ? imageFormat : 'zip'}
-						</div>
-						<div class="label">
-							<span class="label-text-alt">{`Avoid using: < > : " / \ | ? *`}</span>
-						</div>
+					<div class="label">
+						<span class="label-text-alt">{`Avoid using: < > : " / \ | ? *`}</span>
 					</div>
 				</div>
-			
-							{/snippet}
+			</div>
+		{/snippet}
 
 		{#snippet cta()}
-								Convert
-							{/snippet}
+			Convert
+		{/snippet}
 
 		{#snippet download()}
-							
-				<button class="btn btn-primary flex-1" onclick={download}>
-					{#if downloading}
-						<span class="loading loading-spinner"></span>
-					{/if}
-					Download
-					{Object.keys($selected).length
-						? `Selected (${Object.keys($selected).length})`
-						: `All (${Object.keys($thumbnails).length} images)`}
-				</button>
-			
-							{/snippet}
+			<button class="btn btn-primary flex-1" onclick={downloadHandler}>
+				{#if downloading}
+					<span class="loading loading-spinner"></span>
+				{/if}
+				Download
+				{Object.keys($selected).length
+					? `Selected (${Object.keys($selected).length})`
+					: `All (${Object.keys($thumbnails).length} images)`}
+			</button>
+		{/snippet}
 	</Layout>
 {/if}
