@@ -9,7 +9,7 @@
 		})
 	}
 
-	let toolsSection: HTMLElement
+	let toolsSection: HTMLElement = $state()
 </script>
 
 <!-- Landing Page -->
@@ -23,7 +23,7 @@
 				masterpiece or break them apart with pinpoint accuracy. Turn your PDF tasks into a breeze
 				and unleash your productivity!
 			</p>
-			<button class="btn btn-primary" on:click={scrollToBottom}>Get Started</button>
+			<button class="btn btn-primary" onclick={scrollToBottom}>Get Started</button>
 		</div>
 	</section>
 

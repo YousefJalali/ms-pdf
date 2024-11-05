@@ -4,8 +4,12 @@
 	import type { Doc, Page } from '$lib/types'
 	import { rotate, trash, zoom } from '$lib/ui'
 
-	export let doc: Doc
-	export let page: Page
+	interface Props {
+		doc: Doc;
+		page: Page;
+	}
+
+	let { doc, page }: Props = $props();
 	// export let pageIndex: number
 
 	const dispatch = createEventDispatcher()
@@ -55,7 +59,7 @@
 		<button
 			data-testid={dataTestId}
 			aria-label={label}
-			on:click={action}
+			onclick={action}
 			class="absolute inset-0 z-50"
 		>
 		</button>

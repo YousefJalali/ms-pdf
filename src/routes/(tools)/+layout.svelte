@@ -1,7 +1,12 @@
 <script lang="ts">
 	import Nav from './Nav.svelte'
+	interface Props {
+		children?: import('svelte').Snippet;
+	}
 
-	let drawer: HTMLDivElement
+	let { children }: Props = $props();
+
+	let drawer: HTMLDivElement = $state()
 </script>
 
 <div class="drawer lg:drawer-open flex-1 lg:min-h-0">
@@ -10,7 +15,7 @@
 	<!-- main content -->
 	<div class="drawer-content flex-1 lg:min-h-0 flex flex-col bg-base-300">
 		<div class="flex flex-1 lg:min-h-0 gap-8 px-6 lg:p-0">
-			<slot />
+			{@render children?.()}
 		</div>
 	</div>
 

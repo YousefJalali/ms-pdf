@@ -73,7 +73,7 @@
 </script>
 
 <button
-	on:click={merge}
+	onclick={merge}
 	class="btn btn-primary flex-1"
 	disabled={$pages.length < 2 || $mergedPdf.loading}
 >

@@ -5,10 +5,15 @@
 	import type { Page } from '$lib/types'
 	import PageCardOptions from './(PageCard)/PageCardOptions.svelte'
 	import { more, Popover } from '$lib/ui'
+	interface Props {
+		children?: import('svelte').Snippet<[any]>;
+	}
 
-	let popoverRef: Popover
-	let selectedPage: Page | null = null
-	let optionButtons: { [cardId: string]: HTMLButtonElement } = {}
+	let { children }: Props = $props();
+
+	let popoverRef: Popover = $state()
+	let selectedPage: Page | null = $state(null)
+	let optionButtons: { [cardId: string]: HTMLButtonElement } = $state({})
 
 	function moveItem(arr: Page[], fromIndex: number, toIndex: number) {
 		var element = arr[fromIndex]
@@ -93,7 +98,7 @@
 </script>
 
 <svelte:window
-	on:scroll={() => {
+	onscroll={() => {
 		if (popoverRef) {
 			popoverRef.scrollHandler()
 		}
@@ -110,8 +115,8 @@
 			flipDurationMs,
 			dropTargetStyle: {}
 		}}
-		on:consider={handleDndConsider}
-		on:finalize={handleDndFinalize}
+		onconsider={handleDndConsider}
+		onfinalize={handleDndFinalize}
 		data-testid="drop zone"
 	>
 		{#each $pages as page, pageIndex (page.id)}
@@ -123,13 +128,13 @@
 				{#if page.isVisible}
 					<button
 						class="btn btn-sm btn-ghost btn-circle bg-base-100 border border-base-300 absolute z-50 right-1 top-1 lg:hidden"
-						on:click={() => openOptionsModal(page)}
+						onclick={() => openOptionsModal(page)}
 						bind:this={optionButtons[page.id]}
 					>
 						{@html more}
 					</button>
 
-					<slot {page} {pageIndex} />
+					{@render children?.({ page, pageIndex, })}
 				{/if}
 			</div>
 		{/each}

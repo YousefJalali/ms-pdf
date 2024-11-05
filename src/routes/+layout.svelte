@@ -2,6 +2,11 @@
 	import '../app.css'
 	import Alert from '$lib/ui/Alert.svelte'
 	import { blankPage, drawer, moon, sun } from '$lib/ui'
+	interface Props {
+		children?: import('svelte').Snippet;
+	}
+
+	let { children }: Props = $props();
 </script>
 
 <svelte:head>
@@ -40,7 +45,7 @@
 	</header>
 
 	<!-- main content -->
-	<slot />
+	{@render children?.()}
 
 	<Alert />
 

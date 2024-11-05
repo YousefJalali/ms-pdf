@@ -1,10 +1,12 @@
 <script lang="ts">
 	import { rotationStyle } from '$lib/utils'
 
-	export let largeImage
-	export let smallImage
-	export let page
-	export let docName
+	let {
+		largeImage,
+		smallImage,
+		page,
+		docName
+	} = $props();
 </script>
 
 <div class="h-[450px] flex justify-center items-center">

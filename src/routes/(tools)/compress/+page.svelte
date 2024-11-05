@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { goto } from '$app/navigation'
 	import { formatBytes } from '$lib/utils'
 	import { onMount } from 'svelte'
@@ -20,17 +22,19 @@
 		}[]
 	>([])
 
-	let loading = false
+	let loading = $state(false)
 
-	let files: FileList
+	let files: FileList = $state()
 	let doc: File[] = []
 
-	$: if (files) {
-		for (const file of files) {
-			console.log(`${file.name}: ${file.size} bytes`)
-			doc.push(file)
+	run(() => {
+		if (files) {
+			for (const file of files) {
+				console.log(`${file.name}: ${file.size} bytes`)
+				doc.push(file)
+			}
 		}
-	}
+	});
 
 	function slugify(title: string) {
 		return title
@@ -183,7 +187,7 @@
 		/>
 
 		<!-- <button class="btn" on:click={compress}>compress</button> -->
-		<button class="btn btn-primary" on:click={compressMultiple}>Compress</button>
+		<button class="btn btn-primary" onclick={compressMultiple}>Compress</button>
 	</div>
 
 	{#if loading}
@@ -213,7 +217,7 @@
 							<td>{formatBytes(newSize)}</td>
 							<td>{(100 - (newSize * 100) / initialSize).toFixed(1)}</td>
 							<td>
-								<button class="link link-sm" on:click={() => downloadCompressed(link, name)}>
+								<button class="link link-sm" onclick={() => downloadCompressed(link, name)}>
 									link
 								</button>
 							</td>

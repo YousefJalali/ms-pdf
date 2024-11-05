@@ -1,4 +1,7 @@
 <script lang="ts">
+	import { run, self, createBubbler, stopPropagation } from 'svelte/legacy';
+
+	const bubble = createBubbler();
 	import { createEventDispatcher } from 'svelte'
 
 	const dispatch = createEventDispatcher()
@@ -8,28 +11,35 @@
 		dispatch('close')
 	}
 
-	export let showModal: boolean
+	interface Props {
+		showModal: boolean;
+		children?: import('svelte').Snippet;
+	}
 
-	let dialog: HTMLDialogElement
+	let { showModal = $bindable(), children }: Props = $props();
 
-	$: if (dialog && showModal) dialog.showModal()
+	let dialog: HTMLDialogElement = $state()
+
+	run(() => {
+		if (dialog && showModal) dialog.showModal()
+	});
 </script>
 
 {#if showModal}
-	<!-- svelte-ignore a11y-click-events-have-key-events a11y-no-noninteractive-element-interactions -->
+	<!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_noninteractive_element_interactions -->
 	<dialog
 		class="modal"
 		bind:this={dialog}
-		on:close={() => (showModal = false)}
-		on:click|self={closeHandler}
+		onclose={() => (showModal = false)}
+		onclick={self(closeHandler)}
 	>
-		<!-- svelte-ignore a11y-no-static-element-interactions -->
-		<div on:click|stopPropagation class="modal-box overflow-hidden transform-none">
+		<!-- svelte-ignore a11y_no_static_element_interactions -->
+		<div onclick={stopPropagation(bubble('click'))} class="modal-box overflow-hidden transform-none">
 			<div class="sticky right-0 top-0 flex justify-end h-0 z-10">
-				<button class="btn btn-sm btn-circle shadow" on:click={closeHandler}>✕</button>
+				<button class="btn btn-sm btn-circle shadow" onclick={closeHandler}>✕</button>
 			</div>
-			<slot />
-			<!-- svelte-ignore a11y-autofocus -->
+			{@render children?.()}
+			<!-- svelte-ignore a11y_autofocus -->
 		</div>
 	</dialog>
 {/if}

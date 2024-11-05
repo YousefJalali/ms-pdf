@@ -1,7 +1,11 @@
 <script lang="ts">
 	import { plus } from './icons'
 
-	export let files: FileList | null
+	interface Props {
+		files: FileList | null;
+	}
+
+	let { files = $bindable() }: Props = $props();
 </script>
 
 <label for="file-input-button">

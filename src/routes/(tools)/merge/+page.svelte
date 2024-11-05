@@ -43,28 +43,36 @@
 	<MergedDoc />
 {:else}
 	<Layout>
-		<svelte:fragment slot="cards">
-			<DraggableCards let:page let:pageIndex>
-				<PageCard {page} />
-			</DraggableCards>
-			{#if Object.keys($previews).length && $pages.length}
-				<Preview />
-			{/if}
-		</svelte:fragment>
+		{#snippet cards()}
+					
+				<DraggableCards  >
+					{#snippet children({ page, pageIndex })}
+										<PageCard {page} />
+														{/snippet}
+								</DraggableCards>
+				{#if Object.keys($previews).length && $pages.length}
+					<Preview />
+				{/if}
+			
+					{/snippet}
 
-		<svelte:fragment slot="side">
-			<div class="divider divider-center opacity-80 text-sm hidden lg:flex">
-				Uploaded Docs ({Object.keys($docs).length})
-			</div>
-			<div
-				class="flex flex-col w-full overflow-hidden flex-auto [&>ul]:overflow-y-scroll [&>ul]:flex-1 lg:pb-4 lg:h-0"
-			>
-				<DocList withOptions />
-			</div>
-		</svelte:fragment>
+		{#snippet side()}
+					
+				<div class="divider divider-center opacity-80 text-sm hidden lg:flex">
+					Uploaded Docs ({Object.keys($docs).length})
+				</div>
+				<div
+					class="flex flex-col w-full overflow-hidden flex-auto [&>ul]:overflow-y-scroll [&>ul]:flex-1 lg:pb-4 lg:h-0"
+				>
+					<DocList withOptions />
+				</div>
+			
+					{/snippet}
 
-		<svelte:fragment slot="download">
-			<Merge />
-		</svelte:fragment>
+		{#snippet download()}
+					
+				<Merge />
+			
+					{/snippet}
 	</Layout>
 {/if}

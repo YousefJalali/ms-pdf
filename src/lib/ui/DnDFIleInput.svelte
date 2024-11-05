@@ -1,9 +1,13 @@
 <script lang="ts">
 	import { upload } from './icons'
 
-	export let files: FileList | null
+	interface Props {
+		files: FileList | null;
+	}
 
-	let style = ''
+	let { files = $bindable() }: Props = $props();
+
+	let style = $state('')
 
 	function dragOverHandler(ev: DragEvent) {
 		// Prevent default behavior (Prevent file from being opened)
@@ -24,12 +28,12 @@
 	}
 </script>
 
-<!-- svelte-ignore a11y-no-static-element-interactions -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
 	class="flex items-center justify-center w-full border-2 border-base-200 border-dashed rounded-box overflow-hidden {style}"
-	on:dragover={dragOverHandler}
-	on:drop={dropHandler}
-	on:dragleave={() => (style = '')}
+	ondragover={dragOverHandler}
+	ondrop={dropHandler}
+	ondragleave={() => (style = '')}
 >
 	<label
 		data-testid="upload doc"

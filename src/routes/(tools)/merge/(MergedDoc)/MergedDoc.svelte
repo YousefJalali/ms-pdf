@@ -6,8 +6,8 @@
 	import OtherTools from '../../OtherTools.svelte'
 	import MergedDocPreview from './MergedDocPreview.svelte'
 
-	let downloaded = false
-	let downloading = false
+	let downloaded = $state(false)
+	let downloading = $state(false)
 
 	async function downloadPdf() {
 		if (!$mergedPdf.src) return
@@ -52,7 +52,7 @@
 	{:else if downloaded}
 		<h1>{states[LINKS.merge].downloaded.title}</h1>
 		<p>{states[LINKS.merge].downloaded.description}</p>
-		<button class="btn btn-outline btn-wide" on:click={reset}>{@html startOver}Start Over</button>
+		<button class="btn btn-outline btn-wide" onclick={reset}>{@html startOver}Start Over</button>
 		<OtherTools />
 	{:else}
 		<h1>{states[LINKS.merge].merged.title}</h1>
@@ -73,10 +73,10 @@
 
 		<p>When you're ready, click the button to download your new document.</p>
 		<div class="flex w-fit mx-auto gap-4">
-			<button class="btn btn-outline" on:click={() => mergedPdf.reset()}
+			<button class="btn btn-outline" onclick={() => mergedPdf.reset()}
 				>{@html backIcon}<span class="hidden lg:inline-block">Back to Editing</span></button
 			>
-			<button class="btn btn-primary btn-wide" on:click={downloadPdf}
+			<button class="btn btn-primary btn-wide" onclick={downloadPdf}
 				>Download {@html downloadIcon}</button
 			>
 		</div>

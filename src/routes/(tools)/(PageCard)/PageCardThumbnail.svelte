@@ -3,9 +3,13 @@
 	import { docs, thumbnails } from '$lib/stores'
 	import { rotationStyle } from '$lib/utils'
 
-	export let page: Page
+	interface Props {
+		page: Page;
+	}
 
-	$: thumbnail = $thumbnails[page.pageId]?.src
+	let { page }: Props = $props();
+
+	let thumbnail = $derived($thumbnails[page.pageId]?.src)
 </script>
 
 {#if thumbnail}

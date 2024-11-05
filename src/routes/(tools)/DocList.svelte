@@ -5,16 +5,20 @@
 	import Popover from '$lib/ui/Popover.svelte'
 	import { formatBytes } from '$lib/utils'
 
-	export let withOptions = false
+	interface Props {
+		withOptions?: boolean;
+	}
 
-	let popoverRef: Popover
-	let selectedDoc: null | Doc = null
-	let docsEle: { [docId: string]: HTMLButtonElement } = {}
+	let { withOptions = false }: Props = $props();
+
+	let popoverRef: Popover = $state()
+	let selectedDoc: null | Doc = $state(null)
+	let docsEle: { [docId: string]: HTMLButtonElement } = $state({})
 </script>
 
 <ul
 	data-testid="doc list"
-	on:scroll={() => {
+	onscroll={() => {
 		if (popoverRef && withOptions) {
 			popoverRef.scrollHandler()
 		}
@@ -47,7 +51,7 @@
 				<button
 					aria-label="doc-options-btn"
 					class="btn btn-circle btn-sm btn-ghost"
-					on:click={() => (selectedDoc = doc)}
+					onclick={() => (selectedDoc = doc)}
 					bind:this={docsEle[doc.docId]}
 				>
 					{@html more}
@@ -78,7 +82,7 @@
 							type="checkbox"
 							class="toggle toggle-primary toggle-sm"
 							checked={selectedDoc.showPages || selectedDoc.pageCount <= 1}
-							on:change={() => {
+							onchange={() => {
 								if (selectedDoc) {
 									docs.toggleShowPages(selectedDoc.docId)
 								}
@@ -92,7 +96,7 @@
 						aria-label="delete document"
 						class="text-error"
 						href={null}
-						on:click={() => {
+						onclick={() => {
 							if (selectedDoc) {
 								docs.deleteDoc(selectedDoc.docId)
 							}
