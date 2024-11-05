@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import { Modal } from '$lib/ui'
 	import { previews, thumbnails, pageNum, pages, docs, previewModal } from '$lib/stores'
 
@@ -22,17 +20,17 @@
 		transform = {}
 	}
 
-	let showModal;
-	run(() => {
+	let showModal = $state(false)
+	$effect(() => {
 		showModal = !!Object.keys($previews).length && $previewModal.isModalVisible
-	});
+	})
 
 	let pageNumber = $derived(String($pageNum[currentPageId]).split(',')[0])
 
-	let imgContainer: HTMLDivElement = $state()
+	let imgContainer: HTMLDivElement | undefined = $state()
 
 	let transform: { [pageId: string]: string } = $state({})
-	run(() => {
+	$effect(() => {
 		if (showModal && imgContainer && currentPage && $previews[currentPageId]?.src) {
 			if (((currentPage.initialRotation + (currentPage.rotationDegree || 0)) / 90) % 2 !== 0) {
 				let { height, width } = imgContainer.getBoundingClientRect()
@@ -40,20 +38,18 @@
 					`transform: rotate(${currentPage.rotationDegree}deg) scale(${(width / height) * 0.95}) translateX(-50%)`
 			}
 		}
-	});
+	})
 </script>
 
-<Modal bind:showModal on:close={closeModal}>
+<Modal bind:showModal close={closeModal}>
 	<div class="absolute bottom-6 left-1/2 -translate-x-1/2 cursor-default z-10">
 		<div class="join shadow">
 			<button class="join-item btn" onclick={prev} disabled={currentPageIndex === 0}>«</button>
 			<div class="join-item btn pointer-events-none">
 				Page {pageNumber}
 			</div>
-			<button
-				class="join-item btn"
-				onclick={next}
-				disabled={currentPageIndex === $pages.length - 1}>»</button
+			<button class="join-item btn" onclick={next} disabled={currentPageIndex === $pages.length - 1}
+				>»</button
 			>
 		</div>
 	</div>

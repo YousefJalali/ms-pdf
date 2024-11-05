@@ -1,12 +1,15 @@
 <script lang="ts">
 	import { rotationStyle } from '$lib/utils'
+	import type { Page } from '$lib/types'
 
-	let {
-		largeImage,
-		smallImage,
-		page,
-		docName
-	} = $props();
+	interface Props {
+		largeImage: Blob
+		smallImage: Blob
+		docName: string
+		page: Page
+	}
+
+	let { largeImage, smallImage, page, docName }: Props = $props()
 </script>
 
 <div class="h-[450px] flex justify-center items-center">

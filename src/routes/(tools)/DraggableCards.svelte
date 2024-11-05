@@ -6,12 +6,12 @@
 	import PageCardOptions from './(PageCard)/PageCardOptions.svelte'
 	import { more, Popover } from '$lib/ui'
 	interface Props {
-		children?: import('svelte').Snippet<[any]>;
+		children?: import('svelte').Snippet<[any]>
 	}
 
-	let { children }: Props = $props();
+	let { children }: Props = $props()
 
-	let popoverRef: Popover = $state()
+	let popoverRef: any
 	let selectedPage: Page | null = $state(null)
 	let optionButtons: { [cardId: string]: HTMLButtonElement } = $state({})
 
@@ -134,7 +134,7 @@
 						{@html more}
 					</button>
 
-					{@render children?.({ page, pageIndex, })}
+					{@render children?.({ page, pageIndex })}
 				{/if}
 			</div>
 		{/each}
@@ -146,15 +146,15 @@
 		data-testid="card-options-mobile"
 		selectedItemId={selectedPage?.id}
 		itemsElements={optionButtons}
-		on:close={() => (selectedPage = null)}
+		onClose={() => (selectedPage = null)}
 	>
 		{#if selectedPage}
 			<ul class="menu bg-base-100 shadow">
 				<PageCardOptions
 					doc={$docs[selectedPage.docId]}
 					page={selectedPage}
-					on:delete={closeOptionsModal}
-					on:preview={closeOptionsModal}
+					onDelete={closeOptionsModal}
+					onPreview={closeOptionsModal}
 				/>
 			</ul>
 		{/if}

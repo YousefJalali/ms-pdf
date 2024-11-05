@@ -9,7 +9,7 @@
 		})
 	}
 
-	let toolsSection: HTMLElement = $state()
+	let toolsSection: HTMLElement
 </script>
 
 <!-- Landing Page -->

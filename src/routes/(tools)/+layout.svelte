@@ -1,12 +1,12 @@
 <script lang="ts">
 	import Nav from './Nav.svelte'
 	interface Props {
-		children?: import('svelte').Snippet;
+		children?: import('svelte').Snippet
 	}
 
-	let { children }: Props = $props();
+	let { children }: Props = $props()
 
-	let drawer: HTMLDivElement = $state()
+	let drawer: HTMLDivElement | undefined = $state()
 </script>
 
 <div class="drawer lg:drawer-open flex-1 lg:min-h-0">

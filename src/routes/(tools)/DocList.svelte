@@ -6,12 +6,12 @@
 	import { formatBytes } from '$lib/utils'
 
 	interface Props {
-		withOptions?: boolean;
+		withOptions?: boolean
 	}
 
-	let { withOptions = false }: Props = $props();
+	let { withOptions = false }: Props = $props()
 
-	let popoverRef: Popover = $state()
+	let popoverRef: any
 	let selectedDoc: null | Doc = $state(null)
 	let docsEle: { [docId: string]: HTMLButtonElement } = $state({})
 </script>
@@ -68,7 +68,7 @@
 		data-testid="doc-options"
 		selectedItemId={selectedDoc?.docId}
 		itemsElements={docsEle}
-		on:close={() => (selectedDoc = null)}
+		onClose={() => (selectedDoc = null)}
 	>
 		{#if selectedDoc}
 			<ul

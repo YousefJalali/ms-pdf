@@ -1,8 +1,8 @@
-<script>
+<script lang="ts">
 	import { page } from '$app/stores'
 	import { TOOLS } from '$lib/constants'
 
-	let { drawer } = $props();
+	let { drawer }: { drawer: HTMLDivElement } = $props()
 </script>
 
 <ul class="menu bg-base-100 xl:min-w-64 w-[70vw] md:w-64 lg:w-fit p-0 py-6 gap-2">

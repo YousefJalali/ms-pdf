@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import { goto } from '$app/navigation'
 	import { formatBytes } from '$lib/utils'
 	import { onMount } from 'svelte'
@@ -24,17 +22,17 @@
 
 	let loading = $state(false)
 
-	let files: FileList = $state()
+	let files: FileList | undefined = $state()
 	let doc: File[] = []
 
-	run(() => {
+	$effect(() => {
 		if (files) {
 			for (const file of files) {
 				console.log(`${file.name}: ${file.size} bytes`)
 				doc.push(file)
 			}
 		}
-	});
+	})
 
 	function slugify(title: string) {
 		return title

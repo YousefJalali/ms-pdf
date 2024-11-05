@@ -1,28 +1,24 @@
 <script lang="ts">
-	import { run, self, createBubbler, stopPropagation } from 'svelte/legacy';
-
-	const bubble = createBubbler();
-	import { createEventDispatcher } from 'svelte'
-
-	const dispatch = createEventDispatcher()
-
 	function closeHandler() {
-		dialog.close()
-		dispatch('close')
+		if (dialog) {
+			dialog.close()
+			close()
+		}
 	}
 
 	interface Props {
-		showModal: boolean;
-		children?: import('svelte').Snippet;
+		showModal: boolean
+		children?: import('svelte').Snippet
+		close: () => void
 	}
 
-	let { showModal = $bindable(), children }: Props = $props();
+	let { showModal = $bindable(), children, close }: Props = $props()
 
-	let dialog: HTMLDialogElement = $state()
+	let dialog: HTMLDialogElement | undefined = $state()
 
-	run(() => {
+	$effect(() => {
 		if (dialog && showModal) dialog.showModal()
-	});
+	})
 </script>
 
 {#if showModal}
@@ -31,10 +27,15 @@
 		class="modal"
 		bind:this={dialog}
 		onclose={() => (showModal = false)}
-		onclick={self(closeHandler)}
+		onclick={closeHandler}
 	>
 		<!-- svelte-ignore a11y_no_static_element_interactions -->
-		<div onclick={stopPropagation(bubble('click'))} class="modal-box overflow-hidden transform-none">
+		<div
+			onclick={(e) => {
+				e.stopPropagation()
+			}}
+			class="modal-box overflow-hidden transform-none"
+		>
 			<div class="sticky right-0 top-0 flex justify-end h-0 z-10">
 				<button class="btn btn-sm btn-circle shadow" onclick={closeHandler}>✕</button>
 			</div>

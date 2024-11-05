@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import JSZip from 'jszip'
 	import { page } from '$app/stores'
 	import { docs, pages, previews, thumbnails, uploadingDocs } from '$lib/stores'
@@ -20,22 +18,22 @@
 	let rangeFrom = $state(1)
 	let rangeTo = $state(1)
 	let displayRanges: number[][] = $state([])
-	run(() => {
+	$effect(() => {
 		displayRanges = Object.keys(ranges).map((from, i, arr) => {
 			return [+from + 1, +arr[i + 1] || $pages.length]
 		})
-	});
+	})
 
-	run(() => {
+	$effect(() => {
 		if ($pages.length && !ranges[0]) {
 			ranges[0] = $pages[0].pageId
 		}
-	});
+	})
 
 	//add range if new doc is added
 	let docCount = $state(0)
 	let docsLength = $derived(Object.keys($docs).length)
-	run(() => {
+	$effect(() => {
 		if (docsLength > docCount && docsLength > 1) {
 			let lastDoc = $docs[Object.keys($docs)[docsLength - 1]]
 			const index = $pages.length - lastDoc.pageCount
@@ -44,7 +42,7 @@
 
 			docCount = docsLength
 		}
-	});
+	})
 
 	function addRange() {
 		let from = { [rangeFrom - 1]: $pages[rangeFrom - 1].pageId }
@@ -238,108 +236,102 @@
 {:else}
 	<Layout>
 		{#snippet cards()}
-							
-				<DraggableCards  >
-					{#snippet children({ page, pageIndex })}
-												<PageCard {page} />
-																{/snippet}
-										</DraggableCards>
-				{#if Object.keys($previews).length && $pages.length}
-					<Preview />
-				{/if}
-			
-							{/snippet}
+			<DraggableCards>
+				{#snippet children({ page, pageIndex })}
+					<PageCard {page} />
+				{/snippet}
+			</DraggableCards>
+			{#if Object.keys($previews).length && $pages.length}
+				<Preview />
+			{/if}
+		{/snippet}
 
 		{#snippet side()}
-							
-				<div class="bg-base-200 p-1.5 h-fit my-4 rounded-btn">
-					<div class="flex gap-1">
-						{#each ['range', 'all'] as split}
-							<input
-								class="btn btn-sm btn-ghost text-primary flex-1 whitespace-nowrap"
-								type="radio"
-								aria-label={split === 'range' ? 'Split By Range' : 'Split All'}
-								bind:group={splitType}
-								onchange={splitTypeHandler}
-								value={split}
-							/>
-						{/each}
-					</div>
+			<div class="bg-base-200 p-1.5 h-fit my-4 rounded-btn">
+				<div class="flex gap-1">
+					{#each ['range', 'all'] as split}
+						<input
+							class="btn btn-sm btn-ghost text-primary flex-1 whitespace-nowrap"
+							type="radio"
+							aria-label={split === 'range' ? 'Split By Range' : 'Split All'}
+							bind:group={splitType}
+							onchange={splitTypeHandler}
+							value={split}
+						/>
+					{/each}
+				</div>
+			</div>
+
+			<p class="text-sm opacity-80 text-center py-8 lg:p-4">
+				{#if splitType === 'all'}
+					{description['all']}
+				{:else}
+					{description['range']}
+				{/if}
+			</p>
+
+			{#if splitType === 'range'}
+				<div class="flex items-center gap-2 mt-8 w-full">
+					<input
+						type="number"
+						min={1}
+						max={$pages.length}
+						class="input input-sm input-bordered w-full text-[1rem]"
+						placeholder="From"
+						bind:value={rangeFrom}
+						onblur={adjustRangeTo}
+					/>
+
+					<div>{@html arrowLongRight}</div>
+					<input
+						type="number"
+						min={1}
+						max={$pages.length}
+						class="input input-sm input-bordered w-full text-[1rem]"
+						placeholder="To"
+						bind:value={rangeTo}
+						onblur={adjustRangeTo}
+					/>
+					<button class="btn btn-sm btn-primary btn-outline [&>svg]:size-5" onclick={addRange}
+						>{@html plus}Range</button
+					>
 				</div>
 
-				<p class="text-sm opacity-80 text-center py-8 lg:p-4">
-					{#if splitType === 'all'}
-						{description['all']}
-					{:else}
-						{description['range']}
-					{/if}
-				</p>
+				<ul class="my-4 space-y-2 w-full flex-auto p-0 overflow-y-scroll lg:h-0">
+					{#each displayRanges as range, index}
+						<li class="flex justify-between items-center bg-base-200 rounded-box p-2">
+							<span class="font-semibold text-sm flex items-center gap-4">
+								Page {range[0]}
+								<span class="opacity-60 font-normal">{@html arrowLongRight} </span>
+								Page {range[1]}
+							</span>
 
-				{#if splitType === 'range'}
-					<div class="flex items-center gap-2 mt-8 w-full">
-						<input
-							type="number"
-							min={1}
-							max={$pages.length}
-							class="input input-sm input-bordered w-full text-[1rem]"
-							placeholder="From"
-							bind:value={rangeFrom}
-							onblur={adjustRangeTo}
-						/>
-
-						<div>{@html arrowLongRight}</div>
-						<input
-							type="number"
-							min={1}
-							max={$pages.length}
-							class="input input-sm input-bordered w-full text-[1rem]"
-							placeholder="To"
-							bind:value={rangeTo}
-							onblur={adjustRangeTo}
-						/>
-						<button class="btn btn-sm btn-primary btn-outline [&>svg]:size-5" onclick={addRange}
-							>{@html plus}Range</button
-						>
-					</div>
-
-					<ul class="my-4 space-y-2 w-full flex-auto p-0 overflow-y-scroll lg:h-0">
-						{#each displayRanges as range, index}
-							<li class="flex justify-between items-center bg-base-200 rounded-box p-2">
-								<span class="font-semibold text-sm flex items-center gap-4">
-									Page {range[0]}
-									<span class="opacity-60 font-normal">{@html arrowLongRight} </span>
-									Page {range[1]}
-								</span>
-
-								{#if index > 0}
-									<button class="link link-sm text-error" onclick={() => deleteRange(range[0] - 1)}>
-										{@html trash}
-									</button>
-								{/if}
-							</li>
-						{/each}
-					</ul>
-				{/if}
-			
-							{/snippet}
+							{#if index > 0}
+								<button class="link link-sm text-error" onclick={() => deleteRange(range[0] - 1)}>
+									{@html trash}
+								</button>
+							{/if}
+						</li>
+					{/each}
+				</ul>
+			{/if}
+		{/snippet}
 
 		{#snippet cta()}
-								Split
-							{/snippet}
+			Split
+		{/snippet}
 
 		{#snippet download()}
-							
-				<button class="btn btn-primary flex-1" onclick={split}>
-					{#if downloading}
-						<span class="loading loading-spinner"></span>
-					{/if}
-					Download {splitType === 'all'
-						? `(${$pages.length} PDFs)`
-						: Object.keys(ranges).length > 1
-							? `(${Object.keys(ranges).length} PDFs)`
-							: '(1 PDF)'}
-				</button>
-			
-							{/snippet}
+			<button class="btn btn-primary flex-1" onclick={split}>
+				{#if downloading}
+					<span class="loading loading-spinner"></span>
+				{/if}
+				Download {splitType === 'all'
+					? `(${$pages.length} PDFs)`
+					: Object.keys(ranges).length > 1
+						? `(${Object.keys(ranges).length} PDFs)`
+						: '(1 PDF)'}
+			</button>
+		{/snippet}
 	</Layout>
 {/if}

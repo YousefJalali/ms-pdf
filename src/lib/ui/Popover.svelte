@@ -1,32 +1,49 @@
-<!-- @migration-task Error while migrating Svelte code: Can't migrate code with afterUpdate. Please migrate by hand. -->
 <script lang="ts">
-	import { afterUpdate, createEventDispatcher } from 'svelte'
+	import type { HTMLAttributes } from 'svelte/elements'
 
-	export let selectedItemId: any
-	export let itemsElements: { [cardId: string]: HTMLButtonElement } = {}
+	interface Props {
+		selectedItemId: any
+		itemsElements: { [cardId: string]: HTMLButtonElement }
+		onClose: () => void
+		children?: import('svelte').Snippet
+		// popover: HTMLDivElement
+	}
 
-	let windowHeight: number
-	let popover: HTMLElement
-	let selectedItemEleTop = 1
-	const popoverSize = {
+	let popover: HTMLDivElement
+	let {
+		selectedItemId,
+		itemsElements,
+		children,
+		onClose,
+		// popover = $bindable(),
+		...rest
+	}: Props & HTMLAttributes<HTMLDivElement> = $props()
+
+	let windowHeight: number | undefined = $state()
+	// let popover: HTMLElement
+	let selectedItemEleTop = $state(1)
+	const popoverSize = $state({
 		height: 0,
 		width: 0
-	}
-	$: if (popover && selectedItemId && selectedItemEleTop) {
-		const { x, y, width, top, height } = itemsElements[selectedItemId].getBoundingClientRect()
-		const padding = 16
-		const popoverHeight = popoverSize.height || 88
-		const popoverWidth = popoverSize.width || 192
+	})
 
-		const translateX = x - padding + width - popoverWidth
-		const translateY =
-			top + popoverHeight + 16 > windowHeight ? y - padding - popoverHeight : y - padding + height
+	$effect(() => {
+		if (popover && selectedItemId && selectedItemEleTop && windowHeight) {
+			const { x, y, width, top, height } = itemsElements[selectedItemId].getBoundingClientRect()
+			const padding = 16
+			const popoverHeight = popoverSize.height || 88
+			const popoverWidth = popoverSize.width || 192
 
-		popover.style.transform = `translate(${translateX}px, ${translateY}px)`
-		popover.showPopover()
-	}
+			const translateX = x - padding + width - popoverWidth
+			const translateY =
+				top + popoverHeight + 16 > windowHeight ? y - padding - popoverHeight : y - padding + height
 
-	afterUpdate(() => {
+			popover.style.transform = `translate(${translateX}px, ${translateY}px)`
+			popover.showPopover()
+		}
+	})
+
+	$effect.pre(() => {
 		if (popover && !popoverSize.height) {
 			const { height, width } = popover.getBoundingClientRect()
 			popoverSize.height = height
@@ -34,11 +51,9 @@
 		}
 	})
 
-	const dispatch = createEventDispatcher()
-
 	function closeHandler() {
 		popover.hidePopover()
-		dispatch('close')
+		onClose()
 	}
 
 	export function scrollHandler() {
@@ -51,17 +66,17 @@
 <svelte:window bind:innerHeight={windowHeight} />
 
 <div
-	{...$$restProps}
+	{...rest}
 	bind:this={popover}
 	popover=""
 	class="m-4 bg-transparent transition ease-in-out duration-[30ms]"
-	on:toggle={({ newState }) => {
+	ontoggle={({ newState }) => {
 		if (newState === 'closed') {
 			closeHandler()
 		}
 	}}
 >
 	{#if selectedItemId}
-		<slot />
+		{@render children?.()}
 	{/if}
 </div>

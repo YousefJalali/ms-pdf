@@ -2,10 +2,10 @@
 	import { upload } from './icons'
 
 	interface Props {
-		files: FileList | null;
+		files: FileList | null
 	}
 
-	let { files = $bindable() }: Props = $props();
+	let { files = $bindable() }: Props = $props()
 
 	let style = $state('')
 

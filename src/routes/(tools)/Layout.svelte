@@ -6,23 +6,18 @@
 	import { DnDFIleInput, adjust, UploadButton } from '$lib/ui'
 	import Upload from './Upload.svelte'
 	interface Props {
-		cards?: import('svelte').Snippet;
-		side?: import('svelte').Snippet;
-		download?: import('svelte').Snippet;
-		cta?: import('svelte').Snippet;
+		cards?: import('svelte').Snippet
+		side?: import('svelte').Snippet
+		download?: import('svelte').Snippet
+		cta?: import('svelte').Snippet
 	}
 
-	let {
-		cards,
-		side,
-		download,
-		cta
-	}: Props = $props();
+	let { cards, side, download, cta }: Props = $props()
 
 	let path = $derived($page.url.pathname)
 	let showPages = $derived(path === LINKS.pdfToImage ? true : false)
 
-	let optionsModal: HTMLDialogElement = $state()
+	let optionsModal: HTMLDialogElement
 </script>
 
 {#if !Object.keys($docs).length && $uploadingDocs}
