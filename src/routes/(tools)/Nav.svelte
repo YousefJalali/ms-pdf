@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores'
 	import { TOOLS } from '$lib/constants'
+	import { locale, locales } from '$lib/i18n'
 
 	let { drawer }: { drawer: HTMLDivElement } = $props()
 </script>
@@ -23,3 +24,21 @@
 		</li>
 	{/each}
 </ul>
+
+<p>
+	<select
+		bind:value={$locale}
+		onchange={() => {
+			console.log('clicked')
+			if ($locale === 'ar') {
+				document.documentElement.setAttribute('dir', 'rtl')
+			} else {
+				document.documentElement.setAttribute('dir', 'ltr')
+			}
+		}}
+	>
+		{#each locales as l}
+			<option value={l}>{l}</option>
+		{/each}
+	</select>
+</p>

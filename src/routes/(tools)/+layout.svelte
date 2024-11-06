@@ -32,7 +32,7 @@
 
 		<!-- Show Nav as fixed layer on md and lg screens -->
 		<div
-			class="shadow-xl hidden xl:!hidden lg:group-has-[:hover]:flex fixed top-0 left-0 h-full flex-col bg-base-100 z-50 [&_.title]:inline-block"
+			class="shadow-xl hidden xl:!hidden lg:group-has-[:hover]:flex fixed top-0 ltr:left-0 rtl:right-0 h-full flex-col bg-base-100 z-50 [&_.title]:inline-block"
 		>
 			<div class="flex-1 h-0 overflow-y-scroll">
 				<div class="flex-1"><a class="btn btn-ghost btn-square" href="/">LOGO</a></div>
