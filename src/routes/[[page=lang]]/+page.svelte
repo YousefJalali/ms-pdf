@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { TOOLS } from '$lib/constants'
+	import { locale } from '$lib/i18n'
 
 	function scrollToBottom() {
 		if (!window || !toolsSection) return
@@ -32,7 +33,10 @@
 
 		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
 			{#each TOOLS as tool}
-				<a href={tool.link} class="flex-1 border rounded-box p-4 lg:p-6 hover:bg-base-200">
+				<a
+					href={`${$locale}/${tool.link}`}
+					class="flex-1 border rounded-box p-4 lg:p-6 hover:bg-base-200"
+				>
 					<div class="flex lg:flex-col lg:items-start items-center gap-4 mb-3">
 						<span>{@html tool.icon}</span>
 						<h3 class="font-bold text-lg">{tool.name}</h3>

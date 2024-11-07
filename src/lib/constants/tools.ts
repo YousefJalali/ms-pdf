@@ -2,10 +2,10 @@ import { ConvertToImageIcon, MergeIcon, SplitIcon } from '../ui'
 
 export const MAX_FILE_UPLOAD = 30
 export const LINKS = {
-	merge: '/merge',
-	split: '/split',
-	pdfToImage: '/pdf-to-image',
-	compress: '/compress'
+	merge: 'merge',
+	split: 'split',
+	pdfToImage: 'pdf-to-image',
+	compress: 'compress'
 }
 export const TOOLS = [
 	{

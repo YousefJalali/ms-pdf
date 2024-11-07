@@ -108,5 +108,60 @@ export const translations = {
 		'split.downloaded.title': '✅ التنزيل مكتمل!',
 		'split.downloaded.description':
 			'تم تنزيل ملفات PDF المقسمة بنجاح. شكرًا لاستخدامك خدمتنا! إذا كان لديك أي مستندات أخرى لتقسيمها، فلا تتردد في تقسيم المزيد من ملفات PDF في أي وقت.'
+	},
+	fil: {
+		'pdfToImage.upload.title': 'I-convert ang Iyong mga PDF sa Mga Larawan nang Madali!',
+		'pdfToImage.upload.description':
+			'Mabilis na gawing mga de-kalidad na larawan ang iyong mga PDF file. Mag-upload lamang ng iyong mga dokumento sa ibaba, at madaling i-convert ang mga indibidwal na pahina o buong PDF sa ilang click lamang!',
+		'pdfToImage.uploading.title': 'Ina-upload ang Iyong mga PDF...',
+		'pdfToImage.uploading.description':
+			'Ina-upload ang iyong mga PDF. Mangyaring maghintay ng kaunti habang ligtas naming inililipat ang iyong mga dokumento. Kapag tapos na ang pag-upload, maaari mo nang i-convert ang mga ito sa de-kalidad na mga JPG na imahe.',
+		'pdfToImage.merged.title': '🎉 Nai-merge na ang Iyong mga PDF!',
+		'pdfToImage.merged.description':
+			'Matagumpay na naipagsama ang iyong mga PDF file sa isang dokumento. Maaari mong i-preview ang na-merge na PDF sa ibaba.',
+		'pdfToImage.downloading.title': '⏳ Inihahanda ang Iyong Link para I-download...',
+		'pdfToImage.downloading.description':
+			'Mangyaring maghintay ng ilang sandali habang kino-convert namin ang iyong PDF sa mga larawan. Ito ay magtatagal lamang ng ilang segundo.',
+		'pdfToImage.downloaded.title': 'Woohoo! Matagumpay na Na-download! 🎉',
+		'pdfToImage.downloaded.description':
+			'Matagumpay na na-download ang iyong mga imahe. Salamat sa paggamit ng aming serbisyo! Kung mayroon ka pang ibang dokumento na gustong i-convert, huwag mag-atubiling',
+
+		'merge.upload.title': 'I-merge ang Iyong mga PDF nang Walang Hirap!',
+		'merge.upload.description':
+			'Madaling pagsamahin ang iyong mga PDF file sa isang buo at cohesive na dokumento. Mag-upload lamang ng iyong mga file sa ibaba. Maaari kang pumili ng maraming file nang sabay-sabay para sa mabilis at episyenteng pag-merge!',
+		'merge.uploading.title': 'Ina-upload ang Iyong mga PDF...',
+		'merge.uploading.description':
+			'Ina-upload ang iyong mga PDF. Mangyaring maghintay ng kaunti habang ligtas naming inililipat ang iyong mga dokumento. Kapag tapos na ang pag-upload, maaari mo na silang i-merge.',
+		'merge.merging.title': 'Pinagsasama ang Iyong mga PDF...',
+		'merge.merging.description':
+			'Kasulukuyang pinagsasama-sama ang iyong mga PDF file sa isang dokumento. Mangyaring maghintay habang natatapos ang proseso.',
+		'merge.merged.title': '🎉 Nai-merge na ang Iyong mga PDF!',
+		'merge.merged.description':
+			'Matagumpay na naipagsama ang iyong mga PDF file sa isang dokumento. Maaari mong i-preview ang na-merge na PDF sa ibaba.',
+		'merge.downloading.title': '⏳ Inihahanda ang Iyong Link para I-download...',
+		'merge.downloading.description':
+			'Mangyaring maghintay ng ilang sandali habang ginagawa namin ang download link para sa iyong na-merge na PDF. Ito ay magtatagal lamang ng ilang segundo.',
+		'merge.downloaded.title': '✅ Kumpleto na ang Pag-download!',
+		'merge.downloaded.description':
+			'Matagumpay na na-download ang iyong na-merge na PDF. Salamat sa paggamit ng aming serbisyo! Kung mayroon ka pang ibang dokumento na gustong pagsamahin, huwag mag-atubiling mag-merge ng mas maraming PDF anumang oras.',
+
+		'split.upload.title': 'Ihiwalay ang Iyong PDF nang Madali!',
+		'split.upload.description':
+			'Mabilis na ihiwalay ang iyong PDF sa maraming mga file nang walang kahirap-hirap. Mag-upload lamang ng iyong PDF sa ibaba upang magsimula. Piliing ihiwalay ang lahat ng mga pahina o tukuyin ang mga partikular na saklaw ng pahina upang makuha ang mga seksyong kailangan mo. Makuha ang tumpak, organisado, at madaling pamahalaang mga file sa ilang click lamang.',
+		'split.uploading.title': 'Ina-upload ang Iyong PDF...',
+		'split.uploading.description':
+			'Ina-upload ang iyong PDF. Mangyaring maghintay ng kaunti habang ligtas naming inililipat ang iyong dokumento. Kapag tapos na ang pag-upload, maaari mo na itong ihiwalay.',
+		'split.splitting.title': 'Inihihiwalay ang Iyong PDF...',
+		'split.splitting.description':
+			'Kasalukuyang inihihiwalay ang iyong PDF file sa maraming dokumento. Mangyaring maghintay habang natatapos ang proseso.',
+		'split.split.title': '🎉 Naihiwalay na ang Iyong PDF!',
+		'split.split.description':
+			'Matagumpay na naihiwalay ang iyong PDF file sa maraming dokumento. Maaari mong i-preview ang na-split na mga PDF sa ibaba.',
+		'split.downloading.title': '⏳ Inihahanda ang Iyong Mga Link para I-download...',
+		'split.downloading.description':
+			'Mangyaring maghintay ng ilang sandali habang ginagawa namin ang mga download link para sa iyong mga na-split na PDF. Ito ay magtatagal lamang ng ilang segundo.',
+		'split.downloaded.title': '✅ Kumpleto na ang Pag-download!',
+		'split.downloaded.description':
+			'Matagumpay na na-download ang iyong mga na-split na PDF. Salamat sa paggamit ng aming serbisyo! Kung mayroon ka pang ibang dokumento na gustong ihiwalay, huwag mag-atubiling mag-split ng mas maraming PDF anumang oras.'
 	}
 }
