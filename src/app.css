@@ -15,3 +15,13 @@ h2,
 h3 {
 	@apply font-heading;
 }
+
+:root[dir='rtl'] body {
+	@apply font-arabic;
+}
+
+:root[dir='rtl'] h1,
+:root[dir='rtl'] h2,
+:root[dir='rtl'] h3 {
+	@apply font-arabic;
+}

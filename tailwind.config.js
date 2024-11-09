@@ -5,7 +5,8 @@ export default {
 		extend: {
 			fontFamily: {
 				heading: ['Montserrat', 'system-ui'],
-				body: ['Lato', 'system-ui']
+				body: ['Lato', 'system-ui'],
+				arabic: ['Noto Kufi Arabic']
 			}
 		}
 	},
