@@ -1,11 +1,10 @@
 <script lang="ts">
-	import { upload } from './icons'
-
 	interface Props {
 		files: FileList | null
+		placeholder: import('svelte').Snippet
 	}
 
-	let { files = $bindable() }: Props = $props()
+	let { files = $bindable(), placeholder }: Props = $props()
 
 	let style = $state('')
 
@@ -43,11 +42,7 @@
 		<div
 			class="prose flex flex-col items-center justify-center pt-5 pb-6 [&>svg]:stroke-neutral-content"
 		>
-			{@html upload}
-			<p class="mb-2 text-sm">
-				<span class="font-semibold">Click to upload</span> or drag and drop
-			</p>
-			<p class="text-xs">Supported format: <strong>PDF</strong></p>
+			{@render placeholder?.()}
 		</div>
 		<input
 			bind:files

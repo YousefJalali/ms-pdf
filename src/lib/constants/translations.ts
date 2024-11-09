@@ -52,116 +52,118 @@ export const translations = {
 			'Please wait a moment while we generate the download links for your split PDFs. This should only take a few seconds.',
 		'split.downloaded.title': '✅ Download Complete!',
 		'split.downloaded.description':
-			'Your split PDFs have been successfully downloaded. Thank you for using our service! If you have any other documents to split, feel free to split more PDFs anytime.'
+			'Your split PDFs have been successfully downloaded. Thank you for using our service! If you have any other documents to split, feel free to split more PDFs anytime.',
+		'Merge PDF': 'Merge PDF',
+		'Split PDF': 'Split PDF',
+		'PDF to Image': 'PDF to Image',
+		'click to upload': 'Click to upload',
+		'or drag and drop': 'or drag and drop',
+		'supported format': 'Supported format',
+		'btn.merge': 'Merge',
+		'btn.split': 'Split',
+		'btn.add.files': 'Add Files',
+		'btn.split.all': 'Split All',
+		'btn.split.by.range': 'Split By Range',
+		'btn.range': 'Range',
+		'label.uploaded.docs': 'Uploaded Docs',
+		'label.download.options': 'Download Options',
+		'split.by.range.desc':
+			'Specify the page ranges you want to split. Enter the start and end page numbers to extract specific sections of your PDF.',
+		'split.all.desc':
+			'Split your PDF into individual pages, creating a separate file for each page. Ideal for when you need to extract every page separately.',
+		pages: 'Pages',
+		page: 'Page',
+		MB: 'MB',
+		quality: 'Quality',
+		type: 'Type',
+		'file.name': 'File Name',
+		'avoid.using': 'Avoid Using',
+		images: 'images',
+		'download.all': 'Download All',
+		download: 'Download'
 	},
 	ar: {
 		'pdfToImage.upload.title': 'حوّل ملفات PDF الخاصة بك إلى صور بسهولة!',
 		'pdfToImage.upload.description':
-			'قم بتحويل ملفات PDF الخاصة بك إلى صور عالية الجودة بسرعة. ببساطة، قم بتحميل مستنداتك أدناه، وقم بتحويل الصفحات الفردية أو ملفات PDF بالكامل في بضع نقرات!',
-		'pdfToImage.uploading.title': 'جاري تحميل ملفات PDF الخاصة بك...',
+			'حوّل ملفات PDF إلى صور عالية الجودة بسرعة. قم بتحميل المستندات أدناه، واختر صفحات فردية أو المستند بأكمله للتحويل بنقرات قليلة!',
+		'pdfToImage.uploading.title': 'يتم تحميل ملفات PDF الخاصة بك...',
 		'pdfToImage.uploading.description':
-			'يتم تحميل ملفات PDF الخاصة بك. يرجى الانتظار قليلاً بينما نقوم بنقل مستنداتك بأمان. بمجرد اكتمال التحميل، ستكون قادرًا على تحويلها إلى صور JPG عالية الجودة.',
-		'pdfToImage.merged.title': '🎉 لقد تم دمج ملفات PDF الخاصة بك!',
+			'جاري تحميل ملفات PDF الخاصة بك. يرجى الانتظار قليلاً بينما نقوم بنقل مستنداتك بأمان. بمجرد اكتمال التحميل، ستتمكن من تحويلها إلى صور JPG عالية الجودة.',
+		'pdfToImage.merged.title': '🎉 تم دمج ملفات PDF الخاصة بك بنجاح!',
 		'pdfToImage.merged.description':
 			'تم دمج ملفات PDF الخاصة بك بنجاح في مستند واحد. يمكنك معاينة ملف PDF المدمج أدناه.',
-		'pdfToImage.downloading.title': '⏳ جارٍ إعداد رابط التنزيل الخاص بك...',
+		'pdfToImage.downloading.title': '⏳ جاري تحضير رابط التنزيل...',
 		'pdfToImage.downloading.description':
-			'يرجى الانتظار قليلاً بينما نقوم بتحويل ملف PDF الخاص بك إلى صور. يجب أن يستغرق ذلك بضع ثوانٍ فقط.',
+			'يرجى الانتظار قليلاً أثناء تحويل PDF الخاص بك إلى صور. لن يستغرق ذلك سوى بضع ثوانٍ.',
 		'pdfToImage.downloaded.title': 'رائع! تم التنزيل بنجاح! 🎉',
 		'pdfToImage.downloaded.description':
-			'تم تنزيل صورك بنجاح. شكرًا لاستخدامك خدمتنا! إذا كان لديك أي مستندات أخرى لتحويلها، فلا تتردد في القيام بذلك.',
+			'تم تنزيل الصور بنجاح. شكرًا لاستخدامك خدمتنا! إذا كان لديك مستندات أخرى للتحويل، فلا تتردد في',
 
 		'merge.upload.title': 'ادمج ملفات PDF الخاصة بك بسهولة!',
 		'merge.upload.description':
-			'قم بدمج ملفات PDF الخاصة بك بسهولة في مستند واحد متماسك. ببساطة قم بتحميل ملفاتك أدناه. يمكنك اختيار تحميل عدة ملفات مرة واحدة للدمج بسرعة وكفاءة!',
-		'merge.uploading.title': 'جاري تحميل ملفات PDF الخاصة بك...',
+			'ادمج ملفات PDF الخاصة بك في مستند واحد بسهولة. قم بتحميل ملفاتك أدناه. يمكنك تحديد ملفات متعددة لدمج سريع وفعال!',
+		'merge.uploading.title': 'يتم تحميل ملفات PDF الخاصة بك...',
 		'merge.uploading.description':
-			'يتم تحميل ملفات PDF الخاصة بك. يرجى الانتظار قليلاً بينما نقوم بنقل مستنداتك بأمان. بمجرد اكتمال التحميل، ستكون قادرًا على دمجها.',
-		'merge.merging.title': 'جارٍ دمج ملفات PDF الخاصة بك...',
+			'جاري تحميل ملفات PDF الخاصة بك. يرجى الانتظار قليلاً بينما نقوم بنقل مستنداتك بأمان. بمجرد اكتمال التحميل، ستتمكن من دمجها.',
+		'merge.merging.title': 'يتم دمج ملفات PDF الخاصة بك...',
 		'merge.merging.description':
-			'يتم حاليًا دمج ملفات PDF الخاصة بك في مستند واحد. قد يستغرق ذلك بعض الوقت. يرجى الانتظار حتى تكتمل العملية.',
-		'merge.merged.title': '🎉 لقد تم دمج ملفات PDF الخاصة بك!',
+			'يتم حاليًا دمج ملفات PDF الخاصة بك في مستند واحد. قد يستغرق ذلك لحظة. يرجى الانتظار حتى اكتمال العملية.',
+		'merge.merged.title': '🎉 تم دمج ملفات PDF الخاصة بك بنجاح!',
 		'merge.merged.description':
 			'تم دمج ملفات PDF الخاصة بك بنجاح في مستند واحد. يمكنك معاينة ملف PDF المدمج أدناه.',
-		'merge.downloading.title': '⏳ جارٍ إعداد رابط التنزيل الخاص بك...',
+		'merge.downloading.title': '⏳ جاري تحضير رابط التنزيل...',
 		'merge.downloading.description':
-			'يرجى الانتظار قليلاً بينما نقوم بإنشاء رابط التنزيل لملف PDF المدمج الخاص بك. يجب أن يستغرق ذلك بضع ثوانٍ فقط.',
-		'merge.downloaded.title': '✅ التنزيل مكتمل!',
+			'يرجى الانتظار قليلاً أثناء تحضير رابط التنزيل لملف PDF المدمج. لن يستغرق ذلك سوى بضع ثوانٍ.',
+		'merge.downloaded.title': '✅ تم اكتمال التنزيل!',
 		'merge.downloaded.description':
-			'تم تنزيل ملف PDF المدمج بنجاح. شكرًا لاستخدامك خدمتنا! إذا كان لديك أي مستندات أخرى لدمجها، فلا تتردد في دمج المزيد من ملفات PDF في أي وقت.',
+			'تم تنزيل ملف PDF المدمج بنجاح. شكرًا لاستخدامك خدمتنا! إذا كان لديك مستندات أخرى للدمج، فلا تتردد في دمج المزيد من ملفات PDF في أي وقت.',
 
-		'split.upload.title': 'قم بتقسيم ملف PDF الخاص بك بسهولة!',
+		'split.upload.title': 'قسّم ملفات PDF بسهولة!',
 		'split.upload.description':
-			'قم بفصل ملف PDF الخاص بك إلى عدة ملفات بسهولة. ببساطة، قم بتحميل ملف PDF الخاص بك أدناه للبدء. اختر تقسيم جميع الصفحات أو حدد نطاقات صفحات مخصصة لاستخراج الأقسام التي تحتاجها. احصل على ملفات دقيقة ومنظمة وسهلة الإدارة في بضع نقرات فقط.',
-		'split.uploading.title': 'جاري تحميل ملف PDF الخاص بك...',
+			'قسّم ملف PDF الخاص بك إلى عدة ملفات بسهولة. قم بتحميل PDF أدناه للبدء. اختر تقسيم جميع الصفحات أو حدد نطاقات صفحات مخصصة لاستخراج الأجزاء التي تحتاجها. احصل على ملفات دقيقة ومنظمة وسهلة الإدارة بنقرات قليلة.',
+		'split.uploading.title': 'يتم تحميل ملف PDF الخاص بك...',
 		'split.uploading.description':
-			'يتم تحميل ملف PDF الخاص بك. يرجى الانتظار قليلاً بينما نقوم بنقل مستندك بأمان. بمجرد اكتمال التحميل، ستكون قادرًا على تقسيمه.',
-		'split.splitting.title': 'جارٍ تقسيم ملف PDF الخاص بك...',
+			'جاري تحميل ملف PDF الخاص بك. يرجى الانتظار قليلاً بينما نقوم بنقل مستندك بأمان. بمجرد اكتمال التحميل، ستتمكن من تقسيمه.',
+		'split.splitting.title': 'يتم تقسيم ملف PDF الخاص بك...',
 		'split.splitting.description':
-			'يتم حاليًا تقسيم ملف PDF الخاص بك إلى مستندات متعددة. قد يستغرق ذلك بعض الوقت. يرجى الانتظار حتى تكتمل العملية.',
-		'split.split.title': '🎉 لقد تم تقسيم ملف PDF الخاص بك!',
+			'يتم حاليًا تقسيم ملف PDF الخاص بك إلى عدة مستندات. قد يستغرق ذلك لحظة. يرجى الانتظار حتى اكتمال العملية.',
+		'split.split.title': '🎉 تم تقسيم ملف PDF الخاص بك!',
 		'split.split.description':
-			'تم تقسيم ملف PDF الخاص بك بنجاح إلى مستندات متعددة. يمكنك معاينة ملفات PDF المقسمة أدناه.',
-		'split.downloading.title': '⏳ جارٍ إعداد روابط التنزيل الخاصة بك...',
+			'تم تقسيم ملف PDF الخاص بك بنجاح إلى عدة مستندات. يمكنك معاينة ملفات PDF المقسمة أدناه.',
+		'split.downloading.title': '⏳ جاري تحضير روابط التنزيل...',
 		'split.downloading.description':
-			'يرجى الانتظار قليلاً بينما نقوم بإنشاء روابط التنزيل لملفات PDF المقسمة الخاصة بك. يجب أن يستغرق ذلك بضع ثوانٍ فقط.',
-		'split.downloaded.title': '✅ التنزيل مكتمل!',
+			'يرجى الانتظار قليلاً أثناء تحضير روابط التنزيل لملفات PDF المقسمة. لن يستغرق ذلك سوى بضع ثوانٍ.',
+		'split.downloaded.title': '✅ تم اكتمال التنزيل!',
 		'split.downloaded.description':
-			'تم تنزيل ملفات PDF المقسمة بنجاح. شكرًا لاستخدامك خدمتنا! إذا كان لديك أي مستندات أخرى لتقسيمها، فلا تتردد في تقسيم المزيد من ملفات PDF في أي وقت.'
-	},
-	fil: {
-		'pdfToImage.upload.title': 'I-convert ang Iyong mga PDF sa Mga Larawan nang Madali!',
-		'pdfToImage.upload.description':
-			'Mabilis na gawing mga de-kalidad na larawan ang iyong mga PDF file. Mag-upload lamang ng iyong mga dokumento sa ibaba, at madaling i-convert ang mga indibidwal na pahina o buong PDF sa ilang click lamang!',
-		'pdfToImage.uploading.title': 'Ina-upload ang Iyong mga PDF...',
-		'pdfToImage.uploading.description':
-			'Ina-upload ang iyong mga PDF. Mangyaring maghintay ng kaunti habang ligtas naming inililipat ang iyong mga dokumento. Kapag tapos na ang pag-upload, maaari mo nang i-convert ang mga ito sa de-kalidad na mga JPG na imahe.',
-		'pdfToImage.merged.title': '🎉 Nai-merge na ang Iyong mga PDF!',
-		'pdfToImage.merged.description':
-			'Matagumpay na naipagsama ang iyong mga PDF file sa isang dokumento. Maaari mong i-preview ang na-merge na PDF sa ibaba.',
-		'pdfToImage.downloading.title': '⏳ Inihahanda ang Iyong Link para I-download...',
-		'pdfToImage.downloading.description':
-			'Mangyaring maghintay ng ilang sandali habang kino-convert namin ang iyong PDF sa mga larawan. Ito ay magtatagal lamang ng ilang segundo.',
-		'pdfToImage.downloaded.title': 'Woohoo! Matagumpay na Na-download! 🎉',
-		'pdfToImage.downloaded.description':
-			'Matagumpay na na-download ang iyong mga imahe. Salamat sa paggamit ng aming serbisyo! Kung mayroon ka pang ibang dokumento na gustong i-convert, huwag mag-atubiling',
+			'تم تنزيل ملفات PDF المقسمة بنجاح. شكرًا لاستخدامك خدمتنا! إذا كان لديك مستندات أخرى للتقسيم، فلا تتردد في تقسيم المزيد من ملفات PDF في أي وقت.',
 
-		'merge.upload.title': 'I-merge ang Iyong mga PDF nang Walang Hirap!',
-		'merge.upload.description':
-			'Madaling pagsamahin ang iyong mga PDF file sa isang buo at cohesive na dokumento. Mag-upload lamang ng iyong mga file sa ibaba. Maaari kang pumili ng maraming file nang sabay-sabay para sa mabilis at episyenteng pag-merge!',
-		'merge.uploading.title': 'Ina-upload ang Iyong mga PDF...',
-		'merge.uploading.description':
-			'Ina-upload ang iyong mga PDF. Mangyaring maghintay ng kaunti habang ligtas naming inililipat ang iyong mga dokumento. Kapag tapos na ang pag-upload, maaari mo na silang i-merge.',
-		'merge.merging.title': 'Pinagsasama ang Iyong mga PDF...',
-		'merge.merging.description':
-			'Kasulukuyang pinagsasama-sama ang iyong mga PDF file sa isang dokumento. Mangyaring maghintay habang natatapos ang proseso.',
-		'merge.merged.title': '🎉 Nai-merge na ang Iyong mga PDF!',
-		'merge.merged.description':
-			'Matagumpay na naipagsama ang iyong mga PDF file sa isang dokumento. Maaari mong i-preview ang na-merge na PDF sa ibaba.',
-		'merge.downloading.title': '⏳ Inihahanda ang Iyong Link para I-download...',
-		'merge.downloading.description':
-			'Mangyaring maghintay ng ilang sandali habang ginagawa namin ang download link para sa iyong na-merge na PDF. Ito ay magtatagal lamang ng ilang segundo.',
-		'merge.downloaded.title': '✅ Kumpleto na ang Pag-download!',
-		'merge.downloaded.description':
-			'Matagumpay na na-download ang iyong na-merge na PDF. Salamat sa paggamit ng aming serbisyo! Kung mayroon ka pang ibang dokumento na gustong pagsamahin, huwag mag-atubiling mag-merge ng mas maraming PDF anumang oras.',
-
-		'split.upload.title': 'Ihiwalay ang Iyong PDF nang Madali!',
-		'split.upload.description':
-			'Mabilis na ihiwalay ang iyong PDF sa maraming mga file nang walang kahirap-hirap. Mag-upload lamang ng iyong PDF sa ibaba upang magsimula. Piliing ihiwalay ang lahat ng mga pahina o tukuyin ang mga partikular na saklaw ng pahina upang makuha ang mga seksyong kailangan mo. Makuha ang tumpak, organisado, at madaling pamahalaang mga file sa ilang click lamang.',
-		'split.uploading.title': 'Ina-upload ang Iyong PDF...',
-		'split.uploading.description':
-			'Ina-upload ang iyong PDF. Mangyaring maghintay ng kaunti habang ligtas naming inililipat ang iyong dokumento. Kapag tapos na ang pag-upload, maaari mo na itong ihiwalay.',
-		'split.splitting.title': 'Inihihiwalay ang Iyong PDF...',
-		'split.splitting.description':
-			'Kasalukuyang inihihiwalay ang iyong PDF file sa maraming dokumento. Mangyaring maghintay habang natatapos ang proseso.',
-		'split.split.title': '🎉 Naihiwalay na ang Iyong PDF!',
-		'split.split.description':
-			'Matagumpay na naihiwalay ang iyong PDF file sa maraming dokumento. Maaari mong i-preview ang na-split na mga PDF sa ibaba.',
-		'split.downloading.title': '⏳ Inihahanda ang Iyong Mga Link para I-download...',
-		'split.downloading.description':
-			'Mangyaring maghintay ng ilang sandali habang ginagawa namin ang mga download link para sa iyong mga na-split na PDF. Ito ay magtatagal lamang ng ilang segundo.',
-		'split.downloaded.title': '✅ Kumpleto na ang Pag-download!',
-		'split.downloaded.description':
-			'Matagumpay na na-download ang iyong mga na-split na PDF. Salamat sa paggamit ng aming serbisyo! Kung mayroon ka pang ibang dokumento na gustong ihiwalay, huwag mag-atubiling mag-split ng mas maraming PDF anumang oras.'
+		'Merge PDF': 'دمج PDF',
+		'Split PDF': 'تقسيم PDF',
+		'PDF to Image': 'PDF إلى صورة',
+		'click to upload': 'انقر لتحميل',
+		'or drag and drop': 'أو قم بالسحب والإفلات',
+		'supported format': 'تنسيق مدعوم',
+		'btn.merge': 'دمج',
+		'btn.split': 'تقسيم',
+		'btn.add.files': 'إضافة ملفات',
+		'btn.split.all': 'تقسيم الكل',
+		'btn.split.by.range': 'تقسيم حسب النطاق',
+		'btn.range': 'نطاق',
+		'label.uploaded.docs': 'الوثائق المحملة',
+		'label.download.options': 'خيارات التنزيل',
+		'split.by.range.desc':
+			'حدد نطاقات الصفحات التي ترغب في تقسيمها. أدخل أرقام الصفحات لبدء ونهاية لاستخراج الأجزاء المحددة من ملف PDF الخاص بك.',
+		'split.all.desc':
+			'قسّم ملف PDF إلى صفحات فردية، مع إنشاء ملف منفصل لكل صفحة. مثالي عندما تحتاج إلى استخراج كل صفحة بشكل منفصل.',
+		pages: 'الصفحات',
+		page: 'صفحة',
+		MB: 'ميغابايت',
+		quality: 'الجودة',
+		type: 'النوع',
+		'file.name': 'اسم الملف',
+		'avoid.using': 'تجنب الاستخدام',
+		images: 'صور',
+		'download.all': 'تنزيل الكل',
+		download: 'تنزيل'
 	}
 }

@@ -4,7 +4,7 @@
 	import { t } from '$lib/i18n'
 
 	import { docs, uploadingDocs } from '$lib/stores'
-	import { DnDFIleInput, adjust, UploadButton } from '$lib/ui'
+	import { DnDFIleInput, adjust, UploadButton, upload } from '$lib/ui'
 	import Upload from './Upload.svelte'
 	interface Props {
 		cards?: import('svelte').Snippet
@@ -26,6 +26,15 @@
 	let optionsModal: HTMLDialogElement | undefined = $state()
 </script>
 
+{#snippet placeholder()}
+	{@html upload}
+	<p class="mb-2 text-sm">
+		<span class="font-semibold">{$t('click to upload')}</span>
+		{$t('or drag and drop')}
+	</p>
+	<p class="text-xs">{$t('supported format')}: <strong>PDF</strong></p>
+{/snippet}
+
 {#if !Object.keys($docs).length && $uploadingDocs}
 	<div class="prose max-w-4xl mx-auto flex flex-col items-center justify-center text-center">
 		<span class="loading loading-ring loading-lg mb-4"></span>
@@ -41,7 +50,7 @@
 			<h1>{$t(`${path}.upload.title`)}</h1>
 			<p>{$t(`${path}.upload.description`)}</p>
 		</div>
-		<Upload component={DnDFIleInput} {showPages} />
+		<Upload component={DnDFIleInput} {showPages} {placeholder} />
 	</div>
 {:else}
 	<div class="flex w-full">

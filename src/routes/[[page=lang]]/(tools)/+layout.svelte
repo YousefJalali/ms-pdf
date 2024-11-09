@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { locale, locales, setLang, langNames } from '$lib/i18n'
+	import { locale, locales, setLang, langNames, type Lang } from '$lib/i18n'
 	import Nav from './Nav.svelte'
 
 	interface Props {
@@ -12,8 +12,9 @@
 
 	let langPopover: HTMLDivElement
 
-	function showPopover(e) {
-		const { x, y, height } = e.target.getBoundingClientRect()
+	function showPopover(e: MouseEvent) {
+		if (!e.target) return
+		const { x, y, height } = (e.target as HTMLButtonElement).getBoundingClientRect()
 
 		langPopover.style.left = `${x}px`
 		langPopover.style.bottom = `${16 + height}px`
@@ -23,13 +24,15 @@
 </script>
 
 {#snippet nav()}
-	<div class="flex flex-col flex-1 h-0 overflow-y-scroll [&>div]:w-fit">
+	<div class="flex flex-col flex-1 h-0 overflow-y-scroll [&>div]:w-fit scroll-p-0">
 		<div>
 			<a class="btn btn-ghost btn-square" href="/">LOGO</a>
 		</div>
 
 		<div class="flex-1">
-			<Nav {drawer} />
+			{#if drawer}
+				<Nav {drawer} />
+			{/if}
 		</div>
 
 		<button class="btn btn-sm px-1 ltr:ml-3 rtl:mr-3 mb-4 w-fit uppercase" onclick={showPopover}>
@@ -75,7 +78,7 @@
 
 <div bind:this={langPopover} popover="" class="m-0 p-0 top-auto shadow-xl">
 	<ul class="menu">
-		{#each locales as l}
+		{#each locales as Lang[] as l}
 			<li>
 				<button
 					onclick={() => {

@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { goto } from '$app/navigation'
 	import { page } from '$app/stores'
 	import { TOOLS } from '$lib/constants'
+	import { t } from '$lib/i18n'
 
 	let { drawer }: { drawer: HTMLDivElement } = $props()
 </script>
@@ -18,7 +18,8 @@
 				<span class="[&_*]:fill-neutral dark:[&_>*]:fill-neutral-content [&_svg]:size-5"
 					>{@html tool.icon}</span
 				>
-				<span data-title class="title lg:hidden xl:inline-block whitespace-nowrap">{tool.name}</span
+				<span data-title class="title lg:hidden xl:inline-block whitespace-nowrap"
+					>{$t(tool.name)}</span
 				>
 			</a>
 		</li>

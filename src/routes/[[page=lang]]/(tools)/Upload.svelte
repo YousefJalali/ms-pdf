@@ -1,13 +1,15 @@
 <script lang="ts">
 	import { MAX_FILE_UPLOAD } from '$lib/constants'
 	import { alerts, docs } from '$lib/stores'
+	import type { Snippet } from 'svelte'
 
 	interface Props {
 		component: any
 		showPages?: boolean
+		placeholder?: Snippet
 	}
 
-	let { component, showPages = false }: Props = $props()
+	let { component, showPages = false, placeholder }: Props = $props()
 
 	let files: FileList | null | undefined = $state()
 	const maxFileReached = () =>
@@ -37,4 +39,4 @@
 	const SvelteComponent = $derived(component)
 </script>
 
-<SvelteComponent bind:files />
+<SvelteComponent bind:files {placeholder} />

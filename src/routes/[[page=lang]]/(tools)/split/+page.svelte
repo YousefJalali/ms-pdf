@@ -183,9 +183,8 @@
 	}
 
 	const description = {
-		all: 'Split your PDF into individual pages, creating a separate file for each page. Ideal for when you need to extract every page separately.',
-		range:
-			'Specify the page ranges you want to split. Enter the start and end page numbers to extract specific sections of your PDF. '
+		all: $t('split.all.desc'),
+		range: $t('split.by.range.desc')
 	}
 
 	function adjustRangeTo() {
@@ -252,7 +251,7 @@
 						<input
 							class="btn btn-sm btn-ghost text-primary flex-1 whitespace-nowrap"
 							type="radio"
-							aria-label={split === 'range' ? 'Split By Range' : 'Split All'}
+							aria-label={split === 'range' ? $t('btn.split.by.range') : $t('btn.split.all')}
 							bind:group={splitType}
 							onchange={splitTypeHandler}
 							value={split}
@@ -292,7 +291,7 @@
 						onblur={adjustRangeTo}
 					/>
 					<button class="btn btn-sm btn-primary btn-outline [&>svg]:size-5" onclick={addRange}
-						>{@html plus}Range</button
+						>{@html plus}{$t('btn.range')}</button
 					>
 				</div>
 
@@ -300,9 +299,11 @@
 					{#each displayRanges as range, index}
 						<li class="flex justify-between items-center bg-base-200 rounded-box p-2">
 							<span class="font-semibold text-sm flex items-center gap-4">
-								Page {range[0]}
+								{$t('page')}
+								{range[0]}
 								<span class="opacity-60 font-normal">{@html arrowLongRight} </span>
-								Page {range[1]}
+								{$t('page')}
+								{range[1]}
 							</span>
 
 							{#if index > 0}
@@ -317,7 +318,7 @@
 		{/snippet}
 
 		{#snippet cta()}
-			Split
+			{$t('btn.split')}
 		{/snippet}
 
 		{#snippet download()}
@@ -325,7 +326,8 @@
 				{#if downloading}
 					<span class="loading loading-spinner"></span>
 				{/if}
-				Download {splitType === 'all'
+				{$t('download')}
+				{splitType === 'all'
 					? `(${$pages.length} PDFs)`
 					: Object.keys(ranges).length > 1
 						? `(${Object.keys(ranges).length} PDFs)`
