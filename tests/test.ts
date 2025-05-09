@@ -1,5 +1,44 @@
 import { expect, test, type Locator } from '@playwright/test'
 
+test.describe('split', () => {
+	let firstDoc = 'one_page.pdf'
+	let secondDoc = 'two_pages.pdf'
+
+	let side: Locator
+	let dropZone: Locator
+	let pageStack: Locator
+	let cards: Locator
+	let cardsPreview: Locator
+	let cardsRotate: Locator
+	let cardsDelete: Locator
+
+	test.beforeEach(async ({ page }) => {
+		await page.goto('/split')
+		await page
+			.getByTestId('upload doc')
+			.setInputFiles([`./tests/${firstDoc}`, `./tests/${secondDoc}`])
+
+		side = page.locator('[data-testid="side"]')
+		dropZone = page.getByTestId('drop zone')
+		pageStack = page.getByTestId('page stack')
+		cards = page.locator('[data-testid="drop zone"]>div')
+		cardsPreview = page.getByTestId('card-preview')
+		cardsRotate = page.getByTestId('card-rotate')
+		cardsDelete = page.getByTestId('card-delete')
+	})
+
+	test('doc name should be in the drop zone after upload', async ({ page }) => {
+		await expect(dropZone).toBeVisible()
+		await expect(dropZone).toContainText(firstDoc)
+		await expect(dropZone).toContainText(secondDoc)
+	})
+
+	test('range radio buttons should be visible', async ({ page }) => {
+		await expect(side).toBeVisible()
+		await expect(side.getByLabel('Split By Range')).toBeVisible()
+	})
+})
+
 test.describe('merge', () => {
 	let firstDoc = 'one_page.pdf'
 	let secondDoc = 'two_pages.pdf'
