@@ -41,6 +41,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"bits-ui": "^1.4.7",
 		"jszip": "^3.10.1",
 		"lucide-svelte": "^0.509.0",
 		"pdf-lib": "^1.17.1",
