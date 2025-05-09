@@ -1,4 +1,4 @@
-import { ConvertToImageIcon, MergeIcon, SplitIcon } from '../ui'
+import { CompressIcon, ConvertToImageIcon, MergeIcon, SplitIcon } from '../ui'
 
 export const MAX_FILE_UPLOAD = 30
 export const LINKS = {
@@ -25,12 +25,12 @@ export const TOOLS = [
 		link: LINKS.pdfToImage,
 		icon: ConvertToImageIcon,
 		description: 'Easily convert a large PDF into individual images'
+	},
+	{
+		name: 'Compress PDF',
+		link: LINKS.compress,
+		icon: CompressIcon,
+		description:
+			'Effortlessly compress your PDF files to reduce their size without compromising quality'
 	}
-	// {
-	// 	name: 'Compress PDF',
-	// 	link: LINKS.compress,
-	// 	icon: CompressIcon,
-	// 	description:
-	// 		'Effortlessly compress your PDF files to reduce their size without compromising quality'
-	// }
 ]
