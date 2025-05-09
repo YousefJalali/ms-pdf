@@ -10,13 +10,23 @@
 	import Preview from '../(PageCard)/Preview.svelte'
 	import { PDFDocument } from 'pdf-lib'
 	import { t } from '$lib/i18n'
+	import DocList from '../DocList.svelte'
+
+	const description = {
+		all: $t('split.all.desc'),
+		range: $t('split.by.range.desc')
+	}
 
 	let splitType = $state('range')
+	let downloading = $state(false)
 	let downloaded = $state(false)
 	let ranges: { [pageIndex: number]: string } = $state({})
 	let rangeFrom = $state(1)
 	let rangeTo = $state(1)
 	let displayRanges: number[][] = $state([])
+	let docCount = $state(0)
+	let docsLength = $derived(Object.keys($docs).length)
+
 	$effect(() => {
 		displayRanges = Object.keys(ranges).map((from, i, arr) => {
 			return [+from + 1, +arr[i + 1] || $pages.length]
@@ -30,14 +40,38 @@
 	})
 
 	//add range if new doc is added
-	let docCount = $state(0)
-	let docsLength = $derived(Object.keys($docs).length)
 	$effect(() => {
 		if (docsLength > docCount && docsLength > 1) {
 			let lastDoc = $docs[Object.keys($docs)[docsLength - 1]]
 			const index = $pages.length - lastDoc.pageCount
 
 			ranges[index] = $pages[index].pageId
+
+			docCount = docsLength
+		}
+	})
+
+	// delete range if doc is removed
+	$effect(() => {
+		if (ranges[0] && docCount > docsLength) {
+			let pageExist = false
+			for (let pageId of Object.values(ranges)) {
+				$pages.forEach((p) => {
+					if (pageId === p.pageId) {
+						pageExist = true
+					}
+				})
+				if (!pageExist) {
+					for (let [key, val] of Object.entries(ranges)) {
+						if (val === pageId) {
+							delete ranges[key]
+						}
+						console.log(key, val)
+					}
+					console.log('page removed', pageId, ranges, $pages)
+				}
+				pageExist = false
+			}
 
 			docCount = docsLength
 		}
@@ -75,7 +109,6 @@
 		pages.hideAll(ranges)
 	}
 
-	let downloading = $state(false)
 	async function download(blobs: Blob[]) {
 		let blob: Blob | null = null
 
@@ -182,11 +215,6 @@
 		}
 	}
 
-	const description = {
-		all: $t('split.all.desc'),
-		range: $t('split.by.range.desc')
-	}
-
 	function adjustRangeTo() {
 		if (rangeTo < rangeFrom) rangeTo = rangeFrom
 	}
@@ -245,76 +273,15 @@
 		{/snippet}
 
 		{#snippet side()}
-			<div class="bg-base-200 p-1.5 h-fit my-4 rounded-btn">
-				<div class="flex gap-1">
-					{#each ['range', 'all'] as split}
-						<input
-							class="btn btn-sm btn-ghost text-primary flex-1 whitespace-nowrap"
-							type="radio"
-							aria-label={split === 'range' ? $t('btn.split.by.range') : $t('btn.split.all')}
-							bind:group={splitType}
-							onchange={splitTypeHandler}
-							value={split}
-						/>
-					{/each}
-				</div>
-			</div>
-
-			<p class="text-sm opacity-80 text-center py-8 lg:p-4">
-				{#if splitType === 'all'}
-					{description['all']}
-				{:else}
-					{description['range']}
-				{/if}
-			</p>
-
-			{#if splitType === 'range'}
-				<div class="flex items-center gap-2 mt-8 w-full">
-					<input
-						type="number"
-						min={1}
-						max={$pages.length}
-						class="input input-sm input-bordered w-full text-[1rem]"
-						placeholder="From"
-						bind:value={rangeFrom}
-						onblur={adjustRangeTo}
-					/>
-
-					<div>{@html arrowLongRight}</div>
-					<input
-						type="number"
-						min={1}
-						max={$pages.length}
-						class="input input-sm input-bordered w-full text-[1rem]"
-						placeholder="To"
-						bind:value={rangeTo}
-						onblur={adjustRangeTo}
-					/>
-					<button class="btn btn-sm btn-primary btn-outline [&>svg]:size-5" onclick={addRange}
-						>{@html plus}{$t('btn.range')}</button
-					>
-				</div>
-
-				<ul class="my-4 space-y-2 w-full flex-auto p-0 overflow-y-scroll lg:h-0">
-					{#each displayRanges as range, index}
-						<li class="flex justify-between items-center bg-base-200 rounded-box p-2">
-							<span class="font-semibold text-sm flex items-center gap-4">
-								{$t('page')}
-								{range[0]}
-								<span class="opacity-60 font-normal">{@html arrowLongRight} </span>
-								{$t('page')}
-								{range[1]}
-							</span>
-
-							{#if index > 0}
-								<button class="link link-sm text-error" onclick={() => deleteRange(range[0] - 1)}>
-									{@html trash}
-								</button>
-							{/if}
-						</li>
-					{/each}
-				</ul>
-			{/if}
+			<DocList withOptions>
+				{#snippet moreOptions()}
+					<li>
+						<a aria-label="split document" href={null} onclick={() => console.log('split')}>
+							Split Document
+						</a>
+					</li>
+				{/snippet}
+			</DocList>
 		{/snippet}
 
 		{#snippet cta()}
@@ -336,3 +303,78 @@
 		{/snippet}
 	</Layout>
 {/if}
+
+<!-- ['range', 'all'] -->
+<!-- <div class="bg-base-200 p-1.5 h-fit my-4 rounded-btn">
+	<div class="flex gap-1">
+		{#each ['range', 'all'] as split}
+			<input
+				class="btn btn-sm btn-ghost text-primary flex-1 whitespace-nowrap"
+				type="radio"
+				aria-label={split === 'range' ? $t('btn.split.by.range') : $t('btn.split.all')}
+				bind:group={splitType}
+				onchange={splitTypeHandler}
+				value={split}
+			/>
+		{/each}
+	</div>
+</div> -->
+
+<!-- descriptions -->
+<!-- <p class="text-sm opacity-80 text-center py-8 lg:p-4">
+	{#if splitType === 'all'}
+		{description['all']}
+	{:else}
+		{description['range']}
+	{/if}
+</p> -->
+
+<!-- {#if splitType === 'range'} -->
+<!-- add range -->
+<!-- <div class="flex items-center gap-2 mt-8 w-full">
+		<input
+			type="number"
+			min={1}
+			max={$pages.length}
+			class="input input-sm input-bordered w-full text-[1rem]"
+			placeholder="From"
+			bind:value={rangeFrom}
+			onblur={adjustRangeTo}
+		/>
+
+		<div>{@html arrowLongRight}</div>
+		<input
+			type="number"
+			min={1}
+			max={$pages.length}
+			class="input input-sm input-bordered w-full text-[1rem]"
+			placeholder="To"
+			bind:value={rangeTo}
+			onblur={adjustRangeTo}
+		/>
+		<button class="btn btn-sm btn-primary btn-outline [&>svg]:size-5" onclick={addRange}
+			>{@html plus}{$t('btn.range')}</button
+		>
+	</div> -->
+
+<!-- range list -->
+<!-- <ul class="my-4 space-y-2 w-full flex-auto p-0 overflow-y-scroll lg:h-0">
+		{#each displayRanges as range, index}
+			<li class="flex justify-between items-center bg-base-200 rounded-box p-2">
+				<span class="font-semibold text-sm flex items-center gap-4">
+					{$t('page')}
+					{range[0]}
+					<span class="opacity-60 font-normal">{@html arrowLongRight} </span>
+					{$t('page')}
+					{range[1]}
+				</span>
+
+				{#if index > 0}
+					<button class="link link-sm text-error" onclick={() => deleteRange(range[0] - 1)}>
+						{@html trash}
+					</button>
+				{/if}
+			</li>
+		{/each}
+	</ul>
+{/if} -->
