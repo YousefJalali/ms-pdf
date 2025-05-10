@@ -14,7 +14,6 @@
 	import { Textarea } from '$lib/components/ui/textarea'
 	import { Alert, AlertDescription, AlertTitle } from '$lib/components/ui/alert'
 	import { AlertCircle, Menu, ChevronsDown } from 'lucide-svelte'
-	import * as Select from '$lib/components/ui/select/index.js'
 	import { Separator } from '$lib/components/ui/separator'
 	import {
 		Sheet,
@@ -452,7 +451,7 @@
 		<h2 class="text-3xl md:text-4xl text-center font-bold">Common Questions</h2>
 	</div>
 
-	<Accordion class="w-full">
+	<Accordion type="single" class="w-full">
 		{#each FAQList as { question, answer, value }}
 			<AccordionItem {value}>
 				<AccordionTrigger class="text-left">

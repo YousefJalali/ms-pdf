@@ -2,13 +2,13 @@
 	import { docs, mergedPdf, pages, previews } from '$lib/stores'
 	import { t } from '$lib/i18n'
 	import { PageLoadingState } from '$lib/ui'
-	import DocList from '../DocList.svelte'
-	import DraggableCards from '../DraggableCards.svelte'
-	import Layout from '../Layout.svelte'
+	import DocList from '../(components)/DocList.svelte'
+	import DraggableCards from '../(components)/DraggableCards.svelte'
+	import Layout from '../(components)/Layout.svelte'
 	import MergedDoc from './(MergedDoc)/MergedDoc.svelte'
 	import Merge from './(MergedDoc)/Merge.svelte'
-	import Preview from '../(PageCard)/Preview.svelte'
-	import PageCard from '../(PageCard)/PageCard.svelte'
+	import Preview from '../(components)/(PageCard)/Preview.svelte'
+	import PageCard from '../(components)/(PageCard)/PageCard.svelte'
 </script>
 
 <svelte:head>

@@ -4,11 +4,11 @@
 	import { PageLoadingState } from '$lib/ui'
 	import { generateFileName, getPageAsBlob } from '$lib/utils'
 	import { writable } from 'svelte/store'
-	import Layout from '../Layout.svelte'
-	import OtherTools from '../OtherTools.svelte'
+	import Layout from '../(components)/Layout.svelte'
+	import OtherTools from '../(components)/OtherTools.svelte'
 	import { afterNavigate } from '$app/navigation'
 	import type { CreateImage } from '$lib/types'
-	import DocList from '../DocList.svelte'
+	import DocList from '../(components)/DocList.svelte'
 	import { t } from '$lib/i18n'
 
 	const defaultFileName = generateFileName('Converted')

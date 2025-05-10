@@ -3,7 +3,7 @@
 	import { t } from '$lib/i18n'
 	import { docs, mergedPdf, pages, previews, thumbnails } from '$lib/stores'
 	import { backIcon, downloadIcon, startOver } from '$lib/ui'
-	import OtherTools from '../../OtherTools.svelte'
+	import OtherTools from '../../(components)/OtherTools.svelte'
 	import MergedDocPreview from './MergedDocPreview.svelte'
 
 	let downloaded = $state(false)
