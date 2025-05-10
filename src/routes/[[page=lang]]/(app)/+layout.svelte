@@ -1,6 +1,11 @@
 <script lang="ts">
+	import * as Resizable from '$lib/components/ui/resizable'
 	import { locale, locales, setLang, langNames, type Lang } from '$lib/i18n'
-	import Nav from './Nav.svelte'
+	import Nav from './(components)/Nav.svelte'
+	import { Button } from '$lib/components/ui/button'
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js'
+	import { ChevronDownIcon, ChevronsDown, Languages } from 'lucide-svelte'
+	import { page } from '$app/state'
 
 	interface Props {
 		children?: import('svelte').Snippet
@@ -8,85 +13,87 @@
 
 	let { children }: Props = $props()
 
-	let drawer: HTMLDivElement | undefined = $state()
+	let defaultLayout = [265, 440, 655]
+	let defaultCollapsed = false
 
-	let langPopover: HTMLDivElement
+	let isCollapsed = $state(defaultCollapsed)
 
-	function showPopover(e: MouseEvent) {
-		if (!e.target) return
-		const { x, y, height } = (e.target as HTMLButtonElement).getBoundingClientRect()
+	function onLayoutChange(sizes: number[]) {
+		document.cookie = `PaneForge:layout=${JSON.stringify(sizes)}`
+	}
 
-		langPopover.style.left = `${x}px`
-		langPopover.style.bottom = `${16 + height}px`
+	function onCollapse() {
+		isCollapsed = true
+		document.cookie = `PaneForge:collapsed=${true}`
+	}
 
-		langPopover.showPopover()
+	function onExpand() {
+		isCollapsed = false
+		document.cookie = `PaneForge:collapsed=${false}`
 	}
 </script>
 
-{#snippet nav()}
-	<div class="flex flex-col flex-1 h-0 overflow-y-scroll [&>div]:w-fit scroll-p-0">
-		<div>
-			<a class="btn btn-ghost btn-square" href="/">LOGO</a>
-		</div>
+<Resizable.PaneGroup
+	direction="horizontal"
+	{onLayoutChange}
+	class="h-screen w-screen items-stretch "
+>
+	<Resizable.Pane
+		defaultSize={defaultLayout[0]}
+		collapsedSize={4}
+		collapsible
+		minSize={15}
+		maxSize={20}
+		{onCollapse}
+		{onExpand}
+	>
+		{@render nav()}
+	</Resizable.Pane>
 
-		<div class="flex-1">
-			{#if drawer}
-				<Nav {drawer} />
-			{/if}
-		</div>
+	<Resizable.Handle withHandle />
 
-		<button class="btn btn-sm px-1 ltr:ml-3 rtl:mr-3 mb-4 w-fit uppercase" onclick={showPopover}>
-			{$locale}
-			<svg
-				width="12px"
-				height="12px"
-				class="hidden h-2 w-2 fill-current opacity-60 sm:inline-block"
-				xmlns="http://www.w3.org/2000/svg"
-				viewBox="0 0 2048 2048"
-				><path d="M1799 349l242 241-1017 1017L7 590l242-241 775 775 775-775z"></path></svg
-			>
-		</button>
-	</div>
-{/snippet}
-
-<div class="drawer lg:drawer-open flex-1 lg:min-h-0">
-	<input id="nav-drawer" type="checkbox" class="drawer-toggle" bind:this={drawer} />
-
-	<!-- main content -->
-	<div class="drawer-content flex-1 lg:min-h-0 flex flex-col bg-base-300">
-		<div class="flex flex-1 lg:min-h-0 gap-8 px-6 lg:p-0">
+	<Resizable.Pane defaultSize={defaultLayout[2]}>
+		<div class="flex h-full items-center justify-center p-6">
 			{@render children?.()}
 		</div>
-	</div>
+	</Resizable.Pane>
+</Resizable.PaneGroup>
 
-	<!-- nav -->
-	<div class="group drawer-side z-50 h-full">
-		<label for="nav-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
+{#snippet nav()}
+	<div class="flex flex-col justify-between h-full">
+		<div>
+			<div class="my-4 p-2 flex items-center">
+				<ChevronsDown
+					class="bg-gradient-to-tr from-primary via-primary/70 to-primary rounded-lg w-9 h-9 border text-white"
+				/>
+				{#if !isCollapsed}
+					<a class="btn btn-ghost btn-square ml-2 font-bold" href="/">PDF Daddy</a>
+				{/if}
+			</div>
 
-		<div class="flex flex-col bg-base-100 h-full">
-			{@render nav()}
+			<Nav {isCollapsed} />
 		</div>
 
-		<!-- Show Nav as fixed layer on md and lg screens -->
-		<div
-			class="shadow-xl hidden xl:!hidden lg:group-has-[:hover]:flex fixed top-0 ltr:left-0 rtl:right-0 h-full flex-col bg-base-100 z-50 [&_.title]:inline-block"
-		>
-			{@render nav()}
-		</div>
+		<DropdownMenu.Root>
+			<DropdownMenu.Trigger asChild let:builder>
+				<Button builders={[builder]} variant="outline" class="w-fit m-2 gap-2 text-xl p-2">
+					{$locale === 'ar' ? '🇸🇦' : '🇺🇸'}
+					{#if !isCollapsed}
+						<ChevronDownIcon class="h-4 w-4 opacity-50" />
+					{/if}
+				</Button>
+			</DropdownMenu.Trigger>
+			<DropdownMenu.Content align="end">
+				{#each locales as Lang[] as l}
+					<DropdownMenu.Item
+						onclick={() => {
+							setLang(l)
+						}}
+					>
+						{langNames[l].nativeName}</DropdownMenu.Item
+					>
+				{/each}
+			</DropdownMenu.Content>
+		</DropdownMenu.Root>
 	</div>
-</div>
-
-<div bind:this={langPopover} popover="" class="m-0 p-0 top-auto shadow-xl">
-	<ul class="menu">
-		{#each locales as Lang[] as l}
-			<li>
-				<button
-					onclick={() => {
-						setLang(l)
-						langPopover.hidePopover()
-					}}>{langNames[l].nativeName}</button
-				>
-			</li>
-		{/each}
-	</ul>
-</div>
+{/snippet}

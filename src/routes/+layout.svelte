@@ -22,8 +22,10 @@
 </svelte:head>
 
 <!-- main content -->
-{@render children?.()}
-<Alert />
+<div class="h-screen">
+	{@render children?.()}
+	<Alert />
+</div>
 
 <!-- <div class="flex flex-col h-screen"> -->
 <!-- <header class="navbar lg:hidden w-full px-4 lg:px-6 lg:h-[64px]">
