@@ -10,6 +10,7 @@
 	import type { CreateImage } from '$lib/types'
 	import DocList from '../(components)/DocList.svelte'
 	import { t } from '$lib/i18n'
+	import { Separator } from '$lib/components/ui/separator'
 
 	const defaultFileName = generateFileName('Converted')
 	const QUALITY_LABEL: { [ket: number]: string } = {
@@ -196,9 +197,12 @@
 		{/snippet}
 
 		{#snippet side()}
-			<div class="divider divider-center opacity-80 text-sm hidden lg:flex">
+			<div class="font-semibold text-sm">
 				Uploaded Docs ({Object.keys($docs).length})
 			</div>
+
+			<Separator orientation="horizontal" class="my-2" />
+
 			<div class="w-full h-0 flex-auto p-0 overflow-y-scroll hidden lg:block">
 				<DocList />
 			</div>

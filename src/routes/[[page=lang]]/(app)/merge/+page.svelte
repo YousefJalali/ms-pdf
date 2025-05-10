@@ -9,6 +9,7 @@
 	import Merge from './(MergedDoc)/Merge.svelte'
 	import Preview from '../(components)/(PageCard)/Preview.svelte'
 	import PageCard from '../(components)/(PageCard)/PageCard.svelte'
+	import { Separator } from '$lib/components/ui/separator'
 </script>
 
 <svelte:head>
@@ -41,9 +42,12 @@
 		{/snippet}
 
 		{#snippet side()}
-			<div class="divider divider-center opacity-80 text-sm hidden lg:flex">
+			<div class="font-semibold text-sm">
 				Uploaded Docs ({Object.keys($docs).length})
 			</div>
+
+			<Separator orientation="horizontal" class="my-2" />
+
 			<div
 				class="flex flex-col w-full overflow-hidden flex-auto [&>ul]:overflow-y-scroll [&>ul]:flex-1 lg:pb-4 lg:h-0"
 			>
