@@ -1,15 +1,19 @@
 <script lang="ts">
-	import { plus } from './icons'
+	import Button from '$lib/components/ui/button/button.svelte'
+	import { Plus } from 'lucide-svelte'
 
 	interface Props {
-		files: FileList | null;
+		files: FileList | null
 	}
 
-	let { files = $bindable() }: Props = $props();
+	let { files = $bindable() }: Props = $props()
 </script>
 
 <label for="file-input-button">
-	<div class="btn btn-sm lg:btn-md w-full">{@html plus}Add Files</div>
+	<Button variant="outline" class="gap-2 w-full">
+		<Plus />
+		Add more Files
+	</Button>
 	<input
 		bind:files
 		type="file"

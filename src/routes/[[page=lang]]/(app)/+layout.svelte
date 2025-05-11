@@ -4,8 +4,8 @@
 	import Nav from './(components)/Nav.svelte'
 	import { Button } from '$lib/components/ui/button'
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js'
-	import { ChevronDownIcon, ChevronsDown, Languages } from 'lucide-svelte'
-	import { page } from '$app/state'
+	import { ChevronDownIcon, ChevronsDown, Languages, PanelLeft } from 'lucide-svelte'
+	import * as Sheet from '$lib/components/ui/sheet/index.js'
 
 	interface Props {
 		children?: import('svelte').Snippet
@@ -33,19 +33,44 @@
 	}
 </script>
 
+<!-- mobile header -->
+<header
+	class="sm:hidden bg-background sticky top-0 z-30 flex h-14 items-center gap-4 border-b px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6"
+>
+	<Sheet.Root>
+		<Sheet.Trigger asChild let:builder>
+			<div class="flex items-center justify-between w-full">
+				<Button builders={[builder]} size="icon" variant="outline">
+					<PanelLeft class="h-5 w-5" />
+					<span class="sr-only">Toggle Menu</span>
+				</Button>
+
+				{@render logo()}
+
+				<div></div>
+			</div>
+		</Sheet.Trigger>
+
+		<Sheet.Content side="left" class="max-w-xs px-2">
+			{@render nav()}
+		</Sheet.Content>
+	</Sheet.Root>
+</header>
+
 <Resizable.PaneGroup
 	direction="horizontal"
 	{onLayoutChange}
-	class="h-screen w-screen items-stretch "
+	class="h-screen w-screen items-stretch"
 >
 	<Resizable.Pane
 		defaultSize={defaultLayout[0]}
-		collapsedSize={4}
+		collapsedSize={6}
 		collapsible
 		minSize={15}
 		maxSize={20}
 		{onCollapse}
 		{onExpand}
+		class="hidden sm:block"
 	>
 		{@render nav()}
 	</Resizable.Pane>
@@ -53,24 +78,27 @@
 	<Resizable.Handle withHandle />
 
 	<Resizable.Pane defaultSize={defaultLayout[2]}>
-		<div class="flex h-full items-center justify-center p-6">
+		<div class="flex h-full items-center justify-center">
 			{@render children?.()}
 		</div>
 	</Resizable.Pane>
 </Resizable.PaneGroup>
 
+{#snippet logo()}
+	<div class="my-4 p-2 flex items-center">
+		<ChevronsDown
+			class="bg-gradient-to-tr from-primary via-primary/70 to-primary rounded-lg size-6 lg:size-9 border text-white"
+		/>
+		{#if !isCollapsed}
+			<a class="btn btn-ghost btn-square ml-2 font-bold" href="/">PDF Daddy</a>
+		{/if}
+	</div>
+{/snippet}
+
 {#snippet nav()}
 	<div class="flex flex-col justify-between h-full">
 		<div>
-			<div class="my-4 p-2 flex items-center">
-				<ChevronsDown
-					class="bg-gradient-to-tr from-primary via-primary/70 to-primary rounded-lg w-9 h-9 border text-white"
-				/>
-				{#if !isCollapsed}
-					<a class="btn btn-ghost btn-square ml-2 font-bold" href="/">PDF Daddy</a>
-				{/if}
-			</div>
-
+			{@render logo()}
 			<Nav {isCollapsed} />
 		</div>
 

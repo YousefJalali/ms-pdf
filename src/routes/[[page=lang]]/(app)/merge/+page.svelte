@@ -48,11 +48,7 @@
 
 			<Separator orientation="horizontal" class="my-2" />
 
-			<div
-				class="flex flex-col w-full overflow-hidden flex-auto [&>ul]:overflow-y-scroll [&>ul]:flex-1 lg:pb-4 lg:h-0"
-			>
-				<DocList withOptions />
-			</div>
+			<DocList withOptions />
 		{/snippet}
 
 		{#snippet download()}

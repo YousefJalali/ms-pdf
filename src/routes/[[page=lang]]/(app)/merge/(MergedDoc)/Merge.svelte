@@ -1,8 +1,11 @@
 <script lang="ts">
+	import { Button } from '$lib/components/ui/button'
 	import { docs, mergedPdf, pages, previews } from '$lib/stores'
 	import type { CreateImage } from '$lib/types'
 	import { getInputAsUint8Array } from '$lib/utils'
+	import { Merge } from 'lucide-svelte'
 	import { degrees, PDFDocument } from 'pdf-lib'
+	import { Reload } from 'svelte-radix'
 
 	async function merge() {
 		mergedPdf.setLoading(true)
@@ -72,14 +75,12 @@
 	}
 </script>
 
-<button
-	onclick={merge}
-	class="btn btn-primary flex-1"
-	disabled={$pages.length < 2 || $mergedPdf.loading}
->
+<Button class="w-full" onclick={merge} disabled={$pages.length < 2 || $mergedPdf.loading}>
 	{#if $mergedPdf.loading}
-		<span class="loading loading-spinner"></span>Merging...
+		<Reload class="mr-2 h-4 w-4 animate-spin" />
+		Merging...
 	{:else}
+		<Merge class="mr-2 h-4 w-4" />
 		Merge
 	{/if}
-</button>
+</Button>

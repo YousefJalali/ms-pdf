@@ -1,10 +1,12 @@
 <script lang="ts">
-	import { page } from '$app/stores'
+	import { page } from '$app/state'
 	import { LINKS } from '$lib/constants'
 	import { t } from '$lib/i18n'
+	import * as Sheet from '$lib/components/ui/sheet'
 
 	import { docs, uploadingDocs } from '$lib/stores'
 	import { DnDFIleInput, adjust, UploadButton, upload } from '$lib/ui'
+	import { LoaderCircle, SlidersHorizontal } from 'lucide-svelte'
 	import Upload from './Upload.svelte'
 	interface Props {
 		cards?: import('svelte').Snippet
@@ -16,10 +18,10 @@
 	let { cards, side, download, cta }: Props = $props()
 
 	let path = $derived.by(() => {
-		if ($page.url.pathname.includes('merge')) return 'merge'
-		if ($page.url.pathname.includes('split')) return 'split'
-		if ($page.url.pathname.includes('image')) return 'pdfToImage'
-		if ($page.url.pathname.includes('compress')) return 'compress'
+		if (page.url.pathname.includes('merge')) return 'merge'
+		if (page.url.pathname.includes('split')) return 'split'
+		if (page.url.pathname.includes('image')) return 'pdfToImage'
+		if (page.url.pathname.includes('compress')) return 'compress'
 	})
 	let showPages = $derived(path === LINKS.pdfToImage ? true : false)
 
@@ -37,34 +39,38 @@
 
 {#if !Object.keys($docs).length && $uploadingDocs}
 	<div class="prose max-w-4xl mx-auto flex flex-col items-center justify-center text-center">
-		<span class="loading loading-ring loading-lg mb-4"></span>
-		<h1>Uploading Your PDFs...</h1>
-		<p>
+		<LoaderCircle class="animate-spin size-10 opacity-60 text-primary" />
+		<h1 class="font-semibold tracking-tight text-3xl my-3">Uploading Your PDFs...</h1>
+		<p class="text-muted-foreground text-sm">
 			Your PDFs are being uploaded. Please wait a moment while we securely transfer your documents.
 			Once the upload is complete, you will be able to merge them.
 		</p>
 	</div>
 {:else if !Object.keys($docs).length}
 	<div class="max-w-4xl mx-auto flex flex-col items-center justify-center">
-		<div class="mb-8 prose prose-sm lg:prose-lg max-w-none text-center">
-			<h1>{$t(`${path}.upload.title`)}</h1>
-			<p>{$t(`${path}.upload.description`)}</p>
+		<div class="mb-8 max-w-none text-center">
+			<h1 class="font-semibold tracking-tight text-3xl mb-3">{$t(`${path}.upload.title`)}</h1>
+			<p class="text-muted-foreground text-sm">{$t(`${path}.upload.description`)}</p>
 		</div>
 		<Upload component={DnDFIleInput} {showPages} {placeholder} />
 	</div>
 {:else}
-	<div class="flex w-full">
+	<div class="flex h-full w-full">
 		<!-- Draggable Cards -->
 		<div
 			class="pb-10 lg:pb-0 lg:grow-[7] 2xl:grow-[7.5] lg:basis-0 lg:w-auto w-full h-[calc(100%-64px)] lg:h-full"
 		>
+			<!-- mobile header -->
 			<div
-				class="sticky top-0 z-50 bg-base-300 flex items-center gap-4 justify-between sm:justify-start w-full h-[64px] lg:hidden"
+				class="lg:hidden sticky top-0 z-50 flex items-center gap-4 justify-between sm:justify-start w-full h-[64px] px-4"
 			>
 				<Upload component={UploadButton} {showPages} />
-				<button class="btn btn-sm btn-square" onclick={() => optionsModal?.showModal()}>
-					{@html adjust}
-				</button>
+				<Sheet.Root>
+					<Sheet.Trigger><SlidersHorizontal class="size-5" /></Sheet.Trigger>
+					<Sheet.Content>
+						{@render side?.()}
+					</Sheet.Content>
+				</Sheet.Root>
 			</div>
 
 			{@render cards?.()}
@@ -72,39 +78,19 @@
 
 		<!-- Side Tools -->
 		<div
-			class="hidden lg:flex lg:grow-[3] 2xl:grow-[2.5] lg:basis-0 lg:w-auto w-full border border-base-300 bg-base-100 flex-col p-4 fixed bottom-0 left-0 max-h-[80vh] lg:max-h-none z-20 lg:relative"
+			class="hidden border-l lg:flex lg:grow-[3] 2xl:grow-[2.5] lg:basis-0 lg:w-auto w-full flex-col p-4 fixed bottom-0 left-0 max-h-[80vh] lg:max-h-none z-20 lg:relative"
 			data-testid="side"
 		>
-			<div class="mb-4">
+			<div class="mb-6">
 				<Upload component={UploadButton} {showPages} />
 			</div>
+
 			{@render side?.()}
 
 			<div class="flex gap-2 mt-auto">
 				{@render download?.()}
 			</div>
 		</div>
-
-		<dialog
-			id="mobile-tools-side-modal"
-			class="modal modal-bottom sm:modal-middle lg:hidden"
-			bind:this={optionsModal}
-		>
-			<div class="modal-box p-6 flex flex-col">
-				<button class="btn btn-xs ml-auto flex w-fit mb-4" onclick={() => optionsModal?.close()}>
-					✕
-				</button>
-
-				{@render side?.()}
-
-				<div class="flex w-full">
-					{@render download?.()}
-				</div>
-			</div>
-			<form method="dialog" class="modal-backdrop">
-				<button aria-label="close dialog"></button>
-			</form>
-		</dialog>
 
 		<div
 			class="flex mt-2 gap-2 fixed bottom-0 pb-6 left-1/2 -translate-x-1/2 w-full max-w-2xl px-6 lg:hidden bg-gradient-to-t from-base-100 sm:from-transparent"

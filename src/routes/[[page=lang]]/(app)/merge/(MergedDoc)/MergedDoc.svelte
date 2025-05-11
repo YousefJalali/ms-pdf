@@ -1,8 +1,10 @@
 <script lang="ts">
 	import { beforeNavigate } from '$app/navigation'
+	import { Button } from '$lib/components/ui/button'
 	import { t } from '$lib/i18n'
 	import { docs, mergedPdf, pages, previews, thumbnails } from '$lib/stores'
-	import { backIcon, downloadIcon, startOver } from '$lib/ui'
+	import { startOver } from '$lib/ui'
+	import { ArrowLeft, Download } from 'lucide-svelte'
 	import OtherTools from '../../(components)/OtherTools.svelte'
 	import MergedDocPreview from './MergedDocPreview.svelte'
 
@@ -47,19 +49,19 @@
 	class="flex flex-col justify-center items-center mx-auto max-w-full lg:max-w-xl text-center prose mt-6"
 >
 	{#if downloading}
-		<h1>{$t('merge.downloading.title')}</h1>
-		<p>{$t('merge.downloading.description')}</p>
+		<h1 class="font-semibold tracking-tight text-3xl my-3">{$t('merge.downloading.title')}</h1>
+		<p class="text-muted-foreground text-sm">{$t('merge.downloading.description')}</p>
 	{:else if downloaded}
-		<h1>{$t('merge.downloaded.title')}</h1>
-		<p>{$t('merge.downloaded.description')}</p>
+		<h1 class="font-semibold tracking-tight text-3xl my-3">{$t('merge.downloaded.title')}</h1>
+		<p class="text-muted-foreground text-sm">{$t('merge.downloaded.description')}</p>
 		<button class="btn btn-outline btn-wide" onclick={reset}>{@html startOver}Start Over</button>
 		<OtherTools />
 	{:else}
-		<h1>{$t('merge.merged.title')}</h1>
-		<p>{$t('merge.merged.description')}</p>
+		<h1 class="font-semibold tracking-tight text-3xl my-3">{$t('merge.merged.title')}</h1>
+		<p class="text-muted-foreground text-sm">{$t('merge.merged.description')}</p>
 		<div
 			data-testid="preview merged"
-			class="mx-auto border broder-base-300 w-[380px] max-w-full h-[480px] overflow-y-scroll [&>img]:mx-auto [&>img]:m-0 divide-y-2"
+			class="my-8 mx-auto border broder-base-300 w-[380px] max-w-full h-[480px] overflow-y-scroll [&>img]:mx-auto [&>img]:m-0 divide-y-2"
 		>
 			{#each $pages as page}
 				<MergedDocPreview
@@ -71,14 +73,15 @@
 			{/each}
 		</div>
 
-		<p>When you're ready, click the button to download your new document.</p>
-		<div class="flex w-fit mx-auto gap-4">
-			<button class="btn btn-outline" onclick={() => mergedPdf.reset()}
-				>{@html backIcon}<span class="hidden lg:inline-block">Back to Editing</span></button
+		<p class="text-muted-foreground text-sm">
+			When you're ready, click the button to download your new document.
+		</p>
+		<div class="flex w-fit mx-auto gap-4 mt-6">
+			<Button class="gap-2" variant="outline" onclick={() => mergedPdf.reset()}>
+				<ArrowLeft class="h-4 w-4" />
+				<span class="hidden lg:inline-block">Back to Editing</span></Button
 			>
-			<button class="btn btn-primary btn-wide" onclick={downloadPdf}
-				>Download {@html downloadIcon}</button
-			>
+			<Button onclick={downloadPdf}>Download <Download class="ml-2 h-4 w-4" /></Button>
 		</div>
 	{/if}
 </div>

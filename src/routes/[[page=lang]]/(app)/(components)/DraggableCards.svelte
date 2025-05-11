@@ -106,9 +106,7 @@
 	}}
 />
 
-<div
-	class="relative overflow-x-hidden border-0 lg:border lg:border-base-300 lg:rounded-box h-full overflow-y-scroll pb-16 lg:p-4"
->
+<div class="relative overflow-x-hidden lg:rounded-box h-full overflow-y-scroll p-4">
 	<div
 		class="grid grid-cols-2 min-[460px]:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-6 gap-4"
 		use:dndzone={{
