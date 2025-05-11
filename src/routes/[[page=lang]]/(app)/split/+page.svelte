@@ -10,6 +10,13 @@
 	import Preview from '../(components)/(PageCard)/Preview.svelte'
 	import { PDFDocument } from 'pdf-lib'
 	import { t } from '$lib/i18n'
+	import { Button } from '$lib/components/ui/button'
+	import { Reload } from 'svelte-radix'
+	import * as Tabs from '$lib/components/ui/tabs/index.js'
+	import * as Table from '$lib/components/ui/table/index.js'
+	import { ArrowRight, Plus, Trash } from 'lucide-svelte'
+	import { Label } from '$lib/components/ui/label'
+	import { Input } from '$lib/components/ui/input'
 
 	let splitType = $state('range')
 	let downloaded = $state(false)
@@ -19,6 +26,7 @@
 	let displayRanges: number[][] = $state([])
 	$effect(() => {
 		displayRanges = Object.keys(ranges).map((from, i, arr) => {
+			console.log(ranges)
 			return [+from + 1, +arr[i + 1] || $pages.length]
 		})
 	})
@@ -245,76 +253,105 @@
 		{/snippet}
 
 		{#snippet side()}
-			<div class="bg-base-200 p-1.5 h-fit my-4 rounded-btn">
-				<div class="flex gap-1">
-					{#each ['range', 'all'] as split}
-						<input
-							class="btn btn-sm btn-ghost text-primary flex-1 whitespace-nowrap"
-							type="radio"
-							aria-label={split === 'range' ? $t('btn.split.by.range') : $t('btn.split.all')}
-							bind:group={splitType}
-							onchange={splitTypeHandler}
-							value={split}
-						/>
-					{/each}
-				</div>
-			</div>
+			<Tabs.Root value="range" class="w-full">
+				<Tabs.List class="grid w-full grid-cols-2">
+					<Tabs.Trigger value="range">Range</Tabs.Trigger>
+					<Tabs.Trigger value="all">All</Tabs.Trigger>
+				</Tabs.List>
+				<Tabs.Content value="range">
+					<p class="text-sm opacity-80 text-center py-8 lg:p-4">
+						{description['range']}
+					</p>
 
-			<p class="text-sm opacity-80 text-center py-8 lg:p-4">
-				{#if splitType === 'all'}
-					{description['all']}
-				{:else}
-					{description['range']}
-				{/if}
-			</p>
+					<Table.Root>
+						<Table.Header>
+							<Table.Row>
+								<Table.Head>From</Table.Head>
+								<Table.Head></Table.Head>
+								<Table.Head>To</Table.Head>
+								<Table.Head></Table.Head>
+							</Table.Row>
+						</Table.Header>
+						<Table.Body>
+							<Table.Row>
+								<Table.Cell class="w-[200px]">
+									<Label for="from" class="sr-only">From</Label>
+									<Input
+										id="from"
+										type="number"
+										min={1}
+										max={$pages.length}
+										bind:value={rangeFrom}
+										onblur={adjustRangeTo}
+									/>
+								</Table.Cell>
 
-			{#if splitType === 'range'}
-				<div class="flex items-center gap-2 mt-8 w-full">
-					<input
-						type="number"
-						min={1}
-						max={$pages.length}
-						class="input input-sm input-bordered w-full text-[1rem]"
-						placeholder="From"
-						bind:value={rangeFrom}
-						onblur={adjustRangeTo}
-					/>
+								<Table.Cell class="font-semibold">-</Table.Cell>
 
-					<div>{@html arrowLongRight}</div>
-					<input
-						type="number"
-						min={1}
-						max={$pages.length}
-						class="input input-sm input-bordered w-full text-[1rem]"
-						placeholder="To"
-						bind:value={rangeTo}
-						onblur={adjustRangeTo}
-					/>
-					<button class="btn btn-sm btn-primary btn-outline [&>svg]:size-5" onclick={addRange}
-						>{@html plus}{$t('btn.range')}</button
-					>
-				</div>
+								<Table.Cell class="w-[200px]">
+									<Label for="to" class="sr-only">To</Label>
+									<Input
+										id="to"
+										type="number"
+										min={1}
+										max={$pages.length}
+										bind:value={rangeTo}
+										onblur={adjustRangeTo}
+									/>
+								</Table.Cell>
 
-				<ul class="my-4 space-y-2 w-full flex-auto p-0 overflow-y-scroll lg:h-0">
-					{#each displayRanges as range, index}
-						<li class="flex justify-between items-center bg-base-200 rounded-box p-2">
-							<span class="font-semibold text-sm flex items-center gap-4">
-								{$t('page')}
-								{range[0]}
-								<span class="opacity-60 font-normal">{@html arrowLongRight} </span>
-								{$t('page')}
-								{range[1]}
-							</span>
+								<Table.Cell>
+									<Button variant="secondary" onclick={addRange} class="w-full">
+										<Plus class="size-4" />
+										<span class="md:hidden ml-2">
+											{$t('btn.range')}
+										</span>
+									</Button>
+								</Table.Cell>
+							</Table.Row>
+						</Table.Body>
+					</Table.Root>
 
-							{#if index > 0}
-								<button class="link link-sm text-error" onclick={() => deleteRange(range[0] - 1)}>
-									{@html trash}
-								</button>
-							{/if}
-						</li>
-					{/each}
-				</ul>
-			{/if}
+					<Table.Root>
+						<Table.Body>
+							{#each displayRanges as range, index}
+								<Table.Row>
+									<Table.Cell class="w-[200px]">
+										{$t('page')}
+										{range[0]}
+									</Table.Cell>
+
+									<Table.Cell class="font-semibold"
+										><ArrowRight class="size-4 opacity-40" /></Table.Cell
+									>
+
+									<Table.Cell class="w-[200px]">
+										{$t('page')}
+										{range[1]}
+									</Table.Cell>
+
+									<Table.Cell>
+										<Button
+											variant="ghost"
+											onclick={() => deleteRange(range[0] - 1)}
+											class="w-full text-red-500 disabled:text-gray-400"
+											disabled={index === 0}
+										>
+											<Trash class="size-4 " />
+										</Button>
+									</Table.Cell>
+								</Table.Row>
+							{/each}
+						</Table.Body>
+					</Table.Root>
+				</Tabs.Content>
+
+				<Tabs.Content value="all">
+					<p class="text-sm opacity-80 text-center py-8 lg:p-4">
+						{description['all']}
+					</p>
+				</Tabs.Content>
+			</Tabs.Root>
 		{/snippet}
 
 		{#snippet cta()}
@@ -322,9 +359,9 @@
 		{/snippet}
 
 		{#snippet download()}
-			<button class="btn btn-primary flex-1" onclick={split}>
+			<Button onclick={split} class="w-full">
 				{#if downloading}
-					<span class="loading loading-spinner"></span>
+					<Reload class="mr-2 h-4 w-4 animate-spin" />
 				{/if}
 				{$t('download')}
 				{splitType === 'all'
@@ -332,7 +369,7 @@
 					: Object.keys(ranges).length > 1
 						? `(${Object.keys(ranges).length} PDFs)`
 						: '(1 PDF)'}
-			</button>
+			</Button>
 		{/snippet}
 	</Layout>
 {/if}
