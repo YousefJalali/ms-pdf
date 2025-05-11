@@ -11,6 +11,13 @@
 	import DocList from '../(components)/DocList.svelte'
 	import { t } from '$lib/i18n'
 	import { Separator } from '$lib/components/ui/separator'
+	import { Slider } from '$lib/components/ui/slider'
+	import Label from '$lib/components/ui/label/label.svelte'
+	import * as RadioGroup from '$lib/components/ui/radio-group'
+	import Input from '$lib/components/ui/input/input.svelte'
+	import { Button } from '$lib/components/ui/button'
+	import { Reload } from 'svelte-radix'
+	import { ScrollArea } from '$lib/components/ui/scroll-area'
 
 	const defaultFileName = generateFileName('Converted')
 	const QUALITY_LABEL: { [ket: number]: string } = {
@@ -21,7 +28,7 @@
 	}
 	const IMAGE_FORMATS: ('jpeg' | 'webp' | 'png')[] = ['jpeg', 'png', 'webp']
 
-	let quality = $state(75)
+	let quality = $state([75])
 	let imageFormat = $state(IMAGE_FORMATS[0])
 	let fileName = $state(defaultFileName)
 	let downloaded = $state(false)
@@ -53,7 +60,7 @@
 
 				let pagePdf = doc.pagesPdfProxy[pageId]
 				docNames.push(doc.name.split('.')[0])
-				blobsPromise.push(getPageAsBlob(pagePdf, (quality * 4) / 100, imageFormat))
+				blobsPromise.push(getPageAsBlob(pagePdf, (quality[0] * 4) / 100, imageFormat))
 			}
 		}
 
@@ -103,7 +110,7 @@
 	function reset() {
 		// files = null
 		downloading = false
-		quality = 75
+		quality = [75]
 		imageFormat = IMAGE_FORMATS[0]
 		selected.set({})
 		fileName = generateFileName('Converted')
@@ -201,72 +208,69 @@
 				Uploaded Docs ({Object.keys($docs).length})
 			</div>
 
-			<Separator orientation="horizontal" class="my-2" />
-
-			<div class="w-full h-0 flex-auto p-0 overflow-y-scroll hidden lg:block">
+			<ScrollArea>
 				<DocList />
-			</div>
+			</ScrollArea>
 
-			<div class="divider divider-center opacity-80 text-sm hidden lg:flex">Download Options</div>
-			<div class="relative z-10 pb-4 space-y-4">
-				<!-- Quality -->
+			<fieldset class="grid gap-6 rounded-lg border p-4 mt-4">
+				<legend class="-ml-1 px-1 text-sm font-medium">Download Options</legend>
+
 				<div>
-					<span class="font-semibold text-xs mb-1 inline-block opacity-60 uppercase">Quality</span>
-					<input
-						bind:value={quality}
-						type="range"
-						min="25"
-						max="100"
-						class="range range-xs range-primary"
-						step="25"
-					/>
-					<div class="flex w-full justify-between text-xs">
-						<span></span>
-						<span></span>
-						<span></span>
-						<span></span>
-						<span>{QUALITY_LABEL[quality]}</span>
+					<div class="flex items-center justify-between mb-3">
+						<Label for="quality">Quality</Label>
+						<span
+							class="text-muted-foreground hover:border-border w-12 rounded-md border border-transparent px-2 py-0.5 text-right text-sm"
+						>
+							{quality[0]}%
+						</span>
 					</div>
+					<Slider id="quality" bind:value={quality} min={25} max={100} step={25} />
+					<span
+						class="text-muted-foreground text-xs font-normal leading-snug ml-auto block w-fit mt-2"
+						>{QUALITY_LABEL[quality[0]]}
+					</span>
 				</div>
 
-				<!-- Format -->
+				<Separator />
+
 				<div>
-					<span class="font-semibold text-xs mb-1 inline-block opacity-60 uppercase">type</span>
-					{#each IMAGE_FORMATS as format}
-						<div class="form-control">
-							<label class="label cursor-pointer">
-								<span class="label-text uppercase">{format}</span>
-								<input
-									type="radio"
-									class="radio checked:bg-primary"
-									bind:group={imageFormat}
-									value={format}
-									checked={format === imageFormat}
-								/>
-							</label>
-						</div>
-					{/each}
+					<Label for="format" class="mb-3">Format</Label>
+
+					<RadioGroup.Root id="format" bind:value={imageFormat} class="grid grid-cols-3 gap-4 mt-3">
+						{#each IMAGE_FORMATS as format}
+							<Label
+								for={format}
+								class="uppercase border-muted bg-popover hover:bg-accent hover:text-accent-foreground [&:has([data-state=checked])]:border-primary flex flex-col items-center justify-between rounded-md border-2 p-4"
+							>
+								<RadioGroup.Item value={format} id={format} class="sr-only" aria-label={format} />
+
+								.{format}
+							</Label>
+						{/each}
+					</RadioGroup.Root>
 				</div>
 
-				<!-- File Name -->
+				<Separator />
+
 				<div>
-					<span class="font-semibold text-xs mb-1 inline-block opacity-60 uppercase">File Name</span
-					>
-					<div class="w-full text-sm flex items-center gap-2">
-						<input
-							class="input input-bordered input-sm w-full"
+					<Label for="file-name">File Name</Label>
+
+					<div class="w-full text-sm flex items-center gap-2 mt-3">
+						<Input
+							id="file-name"
 							bind:value={fileName}
 							onblur={() => !fileName.length && (fileName = defaultFileName)}
-							maxlength="100"
+							maxlength={100}
 							type="url"
 						/>
 						.{Object.keys($selected).length === 1 ? imageFormat : 'zip'}
 					</div>
-					<div class="label">
-						<span class="label-text-alt">{`Avoid using: < > : " / \ | ? *`}</span>
-					</div>
+
+					<span class="text-muted-foreground text-xs font-normal leading-snug"
+						>{`Avoid using: < > : " / \ | ? *`}</span
+					>
 				</div>
-			</div>
+			</fieldset>
 		{/snippet}
 
 		{#snippet cta()}
@@ -274,15 +278,15 @@
 		{/snippet}
 
 		{#snippet download()}
-			<button class="btn btn-primary flex-1" onclick={downloadHandler}>
+			<Button class="w-full mt-4" onclick={downloadHandler}>
 				{#if downloading}
-					<span class="loading loading-spinner"></span>
+					<Reload class="mr-2 h-4 w-4 animate-spin" />
 				{/if}
 				Download
 				{Object.keys($selected).length
 					? `Selected (${Object.keys($selected).length})`
 					: `All (${Object.keys($thumbnails).length} images)`}
-			</button>
+			</Button>
 		{/snippet}
 	</Layout>
 {/if}

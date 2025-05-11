@@ -10,6 +10,7 @@
 	import Preview from '../(components)/(PageCard)/Preview.svelte'
 	import PageCard from '../(components)/(PageCard)/PageCard.svelte'
 	import { Separator } from '$lib/components/ui/separator'
+	import ScrollArea from '$lib/components/ui/scroll-area/scroll-area.svelte'
 </script>
 
 <svelte:head>
@@ -46,9 +47,9 @@
 				Uploaded Docs ({Object.keys($docs).length})
 			</div>
 
-			<Separator orientation="horizontal" class="my-2" />
-
-			<DocList withOptions />
+			<ScrollArea class="my-2">
+				<DocList withOptions />
+			</ScrollArea>
 		{/snippet}
 
 		{#snippet download()}

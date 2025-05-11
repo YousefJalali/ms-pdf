@@ -8,6 +8,7 @@
 	import { DnDFIleInput, adjust, UploadButton, upload } from '$lib/ui'
 	import { LoaderCircle, SlidersHorizontal } from 'lucide-svelte'
 	import Upload from './Upload.svelte'
+	import ScrollArea from '$lib/components/ui/scroll-area/scroll-area.svelte'
 	interface Props {
 		cards?: import('svelte').Snippet
 		side?: import('svelte').Snippet
@@ -65,9 +66,13 @@
 				class="lg:hidden sticky top-0 z-50 flex items-center gap-4 justify-between sm:justify-start w-full h-[64px] px-4"
 			>
 				<Upload component={UploadButton} {showPages} />
+
 				<Sheet.Root>
-					<Sheet.Trigger><SlidersHorizontal class="size-5" /></Sheet.Trigger>
-					<Sheet.Content>
+					<Sheet.Trigger>
+						<SlidersHorizontal class="size-5" />
+					</Sheet.Trigger>
+
+					<Sheet.Content class="flex flex-col">
 						{@render side?.()}
 					</Sheet.Content>
 				</Sheet.Root>

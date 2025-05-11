@@ -26,9 +26,9 @@
 					/>
 				</svg>
 			</span>
-			<div class="grid gap-1">
-				<p class="text-sm font-medium leading-relaxed">{doc.name}</p>
-				<p class="text-muted-foreground text-sm">
+			<div class="grid gap-0.5">
+				<p class="text-sm font-medium leading-normal line-clamp-2">{doc.name}</p>
+				<p class="text-muted-foreground text-xs">
 					{doc.pageCount} page{doc.pageCount > 1 ? 's' : ''} - {formatBytes(doc.size)}
 				</p>
 			</div>
