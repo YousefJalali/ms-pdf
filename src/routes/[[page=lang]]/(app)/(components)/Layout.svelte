@@ -9,6 +9,7 @@
 	import { LoaderCircle, SlidersHorizontal } from 'lucide-svelte'
 	import Upload from './Upload.svelte'
 	import ScrollArea from '$lib/components/ui/scroll-area/scroll-area.svelte'
+	import { Button } from '$lib/components/ui/button'
 	interface Props {
 		cards?: import('svelte').Snippet
 		side?: import('svelte').Snippet
@@ -39,7 +40,7 @@
 {/snippet}
 
 {#if !Object.keys($docs).length && $uploadingDocs}
-	<div class="prose max-w-4xl mx-auto flex flex-col items-center justify-center text-center">
+	<div class="prose max-w-4xl mx-auto flex flex-col items-center justify-center text-center px-4">
 		<LoaderCircle class="animate-spin size-10 opacity-60 text-primary" />
 		<h1 class="font-semibold tracking-tight text-3xl my-3">Uploading Your PDFs...</h1>
 		<p class="text-muted-foreground text-sm">
@@ -48,7 +49,7 @@
 		</p>
 	</div>
 {:else if !Object.keys($docs).length}
-	<div class="max-w-4xl mx-auto flex flex-col items-center justify-center">
+	<div class="max-w-4xl mx-auto flex flex-col items-center justify-center px-4">
 		<div class="mb-8 max-w-none text-center">
 			<h1 class="font-semibold tracking-tight text-3xl mb-3">{$t(`${path}.upload.title`)}</h1>
 			<p class="text-muted-foreground text-sm">{$t(`${path}.upload.description`)}</p>
@@ -63,19 +64,25 @@
 		>
 			<!-- mobile header -->
 			<div
-				class="lg:hidden sticky top-0 z-50 flex items-center gap-4 justify-between sm:justify-start w-full h-[64px] px-4"
+				class="lg:hidden sticky top-0 z-50 flex items-center gap-4 justify-between sm:justify-start w-full p-4"
 			>
 				<Upload component={UploadButton} {showPages} />
 
 				<Sheet.Root>
 					<Sheet.Trigger>
-						<SlidersHorizontal class="size-5" />
+						<Button variant="outline">
+							<SlidersHorizontal class="size-5" /></Button
+						>
 					</Sheet.Trigger>
 
 					<Sheet.Content class="flex flex-col">
 						{@render side?.()}
 					</Sheet.Content>
 				</Sheet.Root>
+
+				<div class="hidden sm:flex lg:hidden ml-auto">
+					{@render download?.()}
+				</div>
 			</div>
 
 			{@render cards?.()}
@@ -101,11 +108,21 @@
 			class="flex mt-2 gap-2 fixed bottom-0 pb-6 left-1/2 -translate-x-1/2 w-full max-w-2xl px-6 lg:hidden bg-gradient-to-t from-base-100 sm:from-transparent"
 		>
 			{#if cta}
-				<button class="btn btn-primary flex-1 shadow-md" onclick={() => optionsModal?.showModal()}>
-					{@render cta?.()}
-				</button>
+				<Sheet.Root>
+					<Sheet.Trigger class="w-full">
+						<Button class="w-full">
+							{@render cta?.()}
+						</Button>
+					</Sheet.Trigger>
+
+					<Sheet.Content class="flex flex-col">
+						{@render side?.()}
+					</Sheet.Content>
+				</Sheet.Root>
 			{:else}
-				{@render download?.()}
+				<div class="w-full sm:hidden">
+					{@render download?.()}
+				</div>
 			{/if}
 		</div>
 	</div>
