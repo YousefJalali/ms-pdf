@@ -5,6 +5,9 @@
 	import type { Page } from '$lib/types'
 	import PageCardOptions from './(PageCard)/PageCardOptions.svelte'
 	import { more, Popover } from '$lib/ui'
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js'
+	import { Button } from '$lib/components/ui/button'
+	import { Ellipsis } from 'lucide-svelte'
 
 	interface Props {
 		children?: import('svelte').Snippet<[any]>
@@ -125,13 +128,34 @@
 				style={selectedPage && selectedPage?.id !== page.id ? 'opacity:0.7;' : ''}
 			>
 				{#if page.isVisible}
-					<button
+					<DropdownMenu.Root>
+						<DropdownMenu.Trigger asChild let:builder>
+							<Button
+								builders={[builder]}
+								size="icon"
+								variant="outline"
+								class="h-8 w-8 absolute z-50 right-2 top-2 lg:hidden rounded-lg"
+							>
+								<Ellipsis class="h-4 w-4" />
+								<span class="sr-only">More</span>
+							</Button>
+						</DropdownMenu.Trigger>
+						<DropdownMenu.Content align="end">
+							<PageCardOptions
+								doc={$docs[page.docId]}
+								{page}
+								onDelete={closeOptionsModal}
+								onPreview={closeOptionsModal}
+							/>
+						</DropdownMenu.Content>
+					</DropdownMenu.Root>
+					<!-- <button
 						class="btn btn-sm btn-ghost btn-circle bg-base-100 border border-base-300 absolute z-50 right-1 top-1 lg:hidden"
 						onclick={() => openOptionsModal(page)}
 						bind:this={optionButtons[page.id]}
 					>
 						{@html more}
-					</button>
+					</button> -->
 
 					{@render children?.({ page, pageIndex })}
 				{/if}

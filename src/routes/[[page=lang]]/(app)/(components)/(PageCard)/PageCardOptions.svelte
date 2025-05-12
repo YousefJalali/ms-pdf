@@ -1,9 +1,13 @@
 <script lang="ts">
 	import { pages, previewModal } from '$lib/stores'
 	import type { Doc, Page } from '$lib/types'
-	import { rotate, trash, zoom } from '$lib/ui'
+	import * as Tooltip from '$lib/components/ui/tooltip/index.js'
+	import { RotateCwSquare, Trash, ZoomIn } from 'lucide-svelte'
+	import { Button } from '$lib/components/ui/button'
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js'
 
 	interface Props {
+		variant?: 'menubar'
 		doc: Doc
 		page: Page
 		onDelete?: () => void
@@ -11,7 +15,7 @@
 		onRotate?: () => void
 	}
 
-	let { doc, page, onDelete, onPreview, onRotate }: Props = $props()
+	let { variant, doc, page, onDelete, onPreview, onRotate }: Props = $props()
 
 	function deleteHandler() {
 		pages.deletePage(page.pageId)
@@ -31,21 +35,21 @@
 	const actions = [
 		{
 			label: 'preview',
-			icon: zoom,
+			Icon: ZoomIn,
 			action: previewHandler,
 			dataTip: 'Preview',
 			dataTestId: 'card-preview'
 		},
 		{
 			label: 'rotate',
-			icon: rotate,
+			Icon: RotateCwSquare,
 			action: rotateHandler,
 			dataTip: doc.pageCount <= 1 || doc.showPages ? 'Rotate Page' : 'Rotate Document',
 			dataTestId: 'card-rotate'
 		},
 		{
 			label: 'delete',
-			icon: trash,
+			Icon: Trash,
 			action: deleteHandler,
 			dataTip: doc.pageCount <= 1 || doc.showPages ? 'Delete Page' : 'Delete Document',
 			dataTestId: 'card-delete'
@@ -53,8 +57,25 @@
 	]
 </script>
 
-{#each actions as { label, action, icon, dataTip, dataTestId }}
-	<li class="relative {label === 'delete' ? 'text-error' : ''} ">
+{#if variant === 'menubar'}
+	{#each actions as { label, action, Icon, dataTip, dataTestId }}
+		<Tooltip.Root>
+			<Tooltip.Trigger asChild let:builder>
+				<Button
+					builders={[builder]}
+					variant="outline"
+					size="icon"
+					aria-label={label}
+					data-testid={dataTestId}
+					onclick={action}
+				>
+					<Icon class="size-4 {label === 'delete' ? 'text-red-500' : ''}" />
+					<span class="sr-only">{label}</span>
+				</Button>
+			</Tooltip.Trigger>
+			<Tooltip.Content side="bottom">{dataTip}</Tooltip.Content>
+		</Tooltip.Root>
+		<!-- <li class="relative {label === 'delete' ? 'text-error' : ''} ">
 		<button
 			data-testid={dataTestId}
 			aria-label={label}
@@ -68,5 +89,18 @@
 			</div>
 			<span class="lg:hidden whitespace-nowrap">{dataTip}</span>
 		</a>
-	</li>
-{/each}
+	</li> -->
+	{/each}
+{:else}
+	{#each actions as { label, action, Icon, dataTip, dataTestId }}
+		<DropdownMenu.Item
+			aria-label={label}
+			data-testid={dataTestId}
+			onclick={action}
+			class={label === 'delete' ? 'text-red-500' : ''}
+		>
+			<Icon class="size-4 mr-2" />
+			{dataTip}
+		</DropdownMenu.Item>
+	{/each}
+{/if}
