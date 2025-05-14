@@ -29,7 +29,7 @@
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
-	class="flex items-center justify-center w-full border-2 border-base-200 border-dashed rounded-box overflow-hidden {style}"
+	class="flex items-center justify-center w-full rounded-2xl border-2 border-dashed rounded-box overflow-hidden {style}"
 	ondragover={dragOverHandler}
 	ondrop={dropHandler}
 	ondragleave={() => (style = '')}
@@ -37,11 +37,9 @@
 	<label
 		data-testid="upload doc"
 		for="dropzone-file"
-		class="flex flex-col items-center justify-center w-full h-64 cursor-pointer bg-base-200"
+		class="flex flex-col items-center justify-center w-full h-64 cursor-pointer bg-muted"
 	>
-		<div
-			class="prose flex flex-col items-center justify-center pt-5 pb-6 [&>svg]:stroke-neutral-content"
-		>
+		<div class="prose flex flex-col items-center justify-center">
 			{@render placeholder?.()}
 		</div>
 		<input

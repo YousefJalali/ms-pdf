@@ -5,10 +5,9 @@
 	import * as Sheet from '$lib/components/ui/sheet'
 
 	import { docs, uploadingDocs } from '$lib/stores'
-	import { DnDFIleInput, adjust, UploadButton, upload } from '$lib/ui'
-	import { LoaderCircle, SlidersHorizontal } from 'lucide-svelte'
+	import { DnDFIleInput, UploadButton } from '$lib/ui'
+	import { LoaderCircle, SlidersHorizontal, Upload as UploadIcon } from 'lucide-svelte'
 	import Upload from './Upload.svelte'
-	import ScrollArea from '$lib/components/ui/scroll-area/scroll-area.svelte'
 	import { Button } from '$lib/components/ui/button'
 	interface Props {
 		cards?: import('svelte').Snippet
@@ -26,12 +25,10 @@
 		if (page.url.pathname.includes('compress')) return 'compress'
 	})
 	let showPages = $derived(path === LINKS.pdfToImage ? true : false)
-
-	let optionsModal: HTMLDialogElement | undefined = $state()
 </script>
 
 {#snippet placeholder()}
-	{@html upload}
+	<UploadIcon class="size-8 mb-4" />
 	<p class="mb-2 text-sm">
 		<span class="font-semibold">{$t('click to upload')}</span>
 		{$t('or drag and drop')}
