@@ -19,7 +19,7 @@
 						<Button
 							href={route.href}
 							builders={[builder]}
-							variant={route.href === page.url.pathname ? 'default' : 'ghost'}
+							variant={page.url.pathname.includes(route.href) ? 'default' : 'ghost'}
 							size="icon"
 							class={cn(
 								'size-9',
@@ -45,7 +45,7 @@
 			{:else}
 				<Button
 					href={route.href}
-					variant={route.href === page.url.pathname ? 'default' : 'ghost'}
+					variant={page.url.pathname.includes(route.href) ? 'default' : 'ghost'}
 					size="sm"
 					class={cn('justify-start', {
 						'dark:bg-muted dark:hover:bg-muted dark:text-white dark:hover:text-white':
