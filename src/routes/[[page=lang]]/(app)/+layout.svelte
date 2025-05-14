@@ -19,6 +19,7 @@
 	let isCollapsed = $state(defaultCollapsed)
 
 	function onLayoutChange(sizes: number[]) {
+		console.log(sizes, windowWidth, collapsedSize)
 		document.cookie = `PaneForge:layout=${JSON.stringify(sizes)}`
 	}
 
@@ -31,7 +32,12 @@
 		isCollapsed = false
 		document.cookie = `PaneForge:collapsed=${false}`
 	}
+
+	let windowWidth = $state(0)
+	let collapsedSize = $derived(+(((36 + 18) / windowWidth) * 100).toFixed(2))
 </script>
+
+<svelte:window bind:innerWidth={windowWidth} />
 
 <!-- mobile header -->
 <header class="sm:hidden bg-background flex h-14 items-center gap-4 border-b px-4">
@@ -62,7 +68,7 @@
 >
 	<Resizable.Pane
 		defaultSize={defaultLayout[0]}
-		collapsedSize={6}
+		{collapsedSize}
 		collapsible
 		minSize={15}
 		maxSize={20}
@@ -83,7 +89,7 @@
 </Resizable.PaneGroup>
 
 {#snippet logo()}
-	<div class="my-4 p-2 flex items-center">
+	<div class="my-4 p-2 flex items-center {isCollapsed ? 'justify-center' : ''}">
 		<ChevronsDown
 			class="bg-gradient-to-tr from-primary via-primary/70 to-primary rounded-lg size-6 lg:size-9 border text-white"
 		/>

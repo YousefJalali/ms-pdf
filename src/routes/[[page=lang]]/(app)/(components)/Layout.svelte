@@ -85,7 +85,7 @@
 			{@render cards?.()}
 		</div>
 
-		<!-- Side Tools -->
+		<!-- Desktop Side -->
 		<div
 			class="hidden border-l lg:flex lg:grow-[3] 2xl:grow-[2.5] lg:basis-0 lg:w-auto w-full flex-col p-4 fixed bottom-0 left-0 max-h-[80vh] lg:max-h-none z-20 lg:relative"
 			data-testid="side"
@@ -101,6 +101,7 @@
 			</div>
 		</div>
 
+		<!-- Mobile Side -->
 		<div
 			class="flex mt-2 gap-2 fixed bottom-0 pb-6 left-1/2 -translate-x-1/2 w-full max-w-2xl px-6 lg:hidden bg-gradient-to-t from-base-100 sm:from-transparent"
 		>
