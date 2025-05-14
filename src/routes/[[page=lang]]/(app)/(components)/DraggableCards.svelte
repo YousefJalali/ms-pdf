@@ -4,7 +4,6 @@
 	import { docs, pages } from '$lib/stores'
 	import type { Page } from '$lib/types'
 	import PageCardOptions from './(PageCard)/PageCardOptions.svelte'
-	import { more, Popover } from '$lib/ui'
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js'
 	import { Button } from '$lib/components/ui/button'
 	import { Ellipsis } from 'lucide-svelte'
@@ -15,10 +14,6 @@
 
 	let { children }: Props = $props()
 
-	let popoverRef: any
-	let selectedPage: Page | null = $state(null)
-	let optionButtons: { [cardId: string]: HTMLButtonElement } = $state({})
-
 	function moveItem(arr: Page[], fromIndex: number, toIndex: number) {
 		var element = arr[fromIndex]
 		arr.splice(fromIndex, 1)
@@ -28,8 +23,6 @@
 	let oldIndex: number | null
 	const flipDurationMs = 300
 	function handleDndConsider(e: CustomEvent<DndEvent<Page>>) {
-		selectedPage = null
-
 		let {
 			items,
 			info: { trigger, id: pageId }
@@ -92,24 +85,11 @@
 		pages.set(items)
 		oldIndex = null
 	}
-
-	function closeOptionsModal() {
-		selectedPage = null
-	}
-	function openOptionsModal(page: Page) {
-		selectedPage = page
-	}
 </script>
 
-<svelte:window
-	onscroll={() => {
-		if (popoverRef) {
-			popoverRef.scrollHandler()
-		}
-	}}
-/>
-
-<div class="relative overflow-x-hidden lg:rounded-box h-full overflow-y-scroll p-4">
+<div
+	class="relative overflow-x-hidden lg:rounded-box h-full overflow-y-scroll p-4 pb-28 md:pb-12 lg:pb-4"
+>
 	<div
 		class="grid grid-cols-2 min-[460px]:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-6 gap-4"
 		use:dndzone={{
@@ -125,7 +105,6 @@
 			<div
 				class={`group focus:!outline-none z-0 h-fit relative ${page.isVisible ? 'block' : 'hidden'}`}
 				animate:flip={{ duration: flipDurationMs }}
-				style={selectedPage && selectedPage?.id !== page.id ? 'opacity:0.7;' : ''}
 			>
 				{#if page.isVisible}
 					<DropdownMenu.Root>
@@ -144,42 +123,15 @@
 							<PageCardOptions
 								doc={$docs[page.docId]}
 								{page}
-								onDelete={closeOptionsModal}
-								onPreview={closeOptionsModal}
+								onDelete={() => {}}
+								onPreview={() => {}}
 							/>
 						</DropdownMenu.Content>
 					</DropdownMenu.Root>
-					<!-- <button
-						class="btn btn-sm btn-ghost btn-circle bg-base-100 border border-base-300 absolute z-50 right-1 top-1 lg:hidden"
-						onclick={() => openOptionsModal(page)}
-						bind:this={optionButtons[page.id]}
-					>
-						{@html more}
-					</button> -->
 
 					{@render children?.({ page, pageIndex })}
 				{/if}
 			</div>
 		{/each}
 	</div>
-
-	<Popover
-		bind:this={popoverRef}
-		id="card-options-mobile"
-		data-testid="card-options-mobile"
-		selectedItemId={selectedPage?.id}
-		itemsElements={optionButtons}
-		onClose={() => (selectedPage = null)}
-	>
-		{#if selectedPage}
-			<ul class="menu bg-base-100 shadow">
-				<PageCardOptions
-					doc={$docs[selectedPage.docId]}
-					page={selectedPage}
-					onDelete={closeOptionsModal}
-					onPreview={closeOptionsModal}
-				/>
-			</ul>
-		{/if}
-	</Popover>
 </div>

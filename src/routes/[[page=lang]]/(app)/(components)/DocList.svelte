@@ -2,7 +2,7 @@
 	import { docs } from '$lib/stores'
 	import { formatBytes } from '$lib/utils'
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js'
-	import { Ellipsis, EllipsisVertical } from 'lucide-svelte'
+	import { Ellipsis } from 'lucide-svelte'
 	import { Button } from '$lib/components/ui/button'
 	import { Label } from '$lib/components/ui/label/index.js'
 	import { Switch } from '$lib/components/ui/switch/index.js'
@@ -78,53 +78,3 @@
 		</li>
 	{/each}
 </ul>
-
-<!-- {#if withOptions}
-	<Popover
-		bind:this={popoverRef}
-		id="doc-options"
-		data-testid="doc-options"
-		selectedItemId={selectedDoc?.docId}
-		itemsElements={docsEle}
-		onClose={() => (selectedDoc = null)}
-	>
-		{#if selectedDoc}
-			<ul
-				aria-label="doc-options-dropdown"
-				class="dropdown-content menu min-w-48 xl:min-w-56 bg-base-100 rounded-box z-[1000] w-fit p-2 shadow-lg"
-			>
-				{@render moreOptions?.()}
-				<li>
-					<label class="label cursor-pointer">
-						<span class="label-text">Show Pages</span>
-						<input
-							type="checkbox"
-							class="toggle toggle-primary toggle-sm"
-							checked={selectedDoc.showPages || selectedDoc.pageCount <= 1}
-							onchange={() => {
-								if (selectedDoc) {
-									docs.toggleShowPages(selectedDoc.docId)
-								}
-							}}
-							disabled={selectedDoc.pageCount <= 1}
-						/>
-					</label>
-				</li>
-				<li>
-					<a
-						aria-label="delete document"
-						class="text-error"
-						href={null}
-						onclick={() => {
-							if (selectedDoc) {
-								docs.deleteDoc(selectedDoc.docId)
-							}
-						}}
-					>
-						Delete Document
-					</a>
-				</li>
-			</ul>
-		{/if}
-	</Popover>
-{/if} -->
