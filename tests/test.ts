@@ -109,7 +109,7 @@ test.describe('merge', () => {
 	})
 
 	test('show & hide pages from doc list', async ({ page }) => {
-		const dropdown = page.getByLabel('doc-options-dropdown')
+		const dropdown = page.getByTestId('doc-options-dropdown')
 
 		//third page should be hidden
 		await expect(cards.nth(2)).toBeHidden()
@@ -125,6 +125,9 @@ test.describe('merge', () => {
 
 		//third page should be visible
 		await expect(cards.nth(2)).toBeVisible()
+
+		//click on more button
+		await docList.nth(1).getByLabel('doc-options-btn').click()
 
 		//hide pages
 		await dropdown.getByLabel('Show Pages').uncheck()
@@ -171,7 +174,7 @@ test.describe('merge', () => {
 
 		//delete second doc (2 pages)
 		await docList.nth(1).getByLabel('doc-options-btn').click()
-		await page.getByLabel('doc-options-dropdown').getByLabel('delete document').click()
+		await page.getByTestId('doc-options-dropdown').getByLabel('delete document').click()
 
 		await expect(cards).toHaveCount(1)
 	})

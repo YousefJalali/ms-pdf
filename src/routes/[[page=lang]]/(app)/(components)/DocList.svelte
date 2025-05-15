@@ -36,12 +36,18 @@
 				{#if withOptions}
 					<DropdownMenu.Root>
 						<DropdownMenu.Trigger asChild let:builder>
-							<Button builders={[builder]} size="icon" variant="ghost" class="h-8 w-8">
+							<Button
+								aria-label="doc-options-btn"
+								builders={[builder]}
+								size="icon"
+								variant="ghost"
+								class="h-8 w-8"
+							>
 								<Ellipsis class="h-4 w-4" />
 								<span class="sr-only">More</span>
 							</Button>
 						</DropdownMenu.Trigger>
-						<DropdownMenu.Content align="end">
+						<DropdownMenu.Content align="end" data-testid="doc-options-dropdown">
 							<DropdownMenu.Item>
 								<div class="flex items-center space-x-2">
 									<Label for="show-pages">Show Pages</Label>
