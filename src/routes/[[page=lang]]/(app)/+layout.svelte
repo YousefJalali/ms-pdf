@@ -4,22 +4,30 @@
 	import Nav from './(components)/Nav.svelte'
 	import { Button } from '$lib/components/ui/button'
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js'
-	import { ChevronDownIcon, ChevronsDown, Languages, PanelLeft } from 'lucide-svelte'
+	import { ChevronDownIcon, ChevronsDown, PanelLeft } from 'lucide-svelte'
 	import * as Sheet from '$lib/components/ui/sheet/index.js'
 
 	interface Props {
 		children?: import('svelte').Snippet
+		data: {
+			layout: number[] | undefined
+			collapsed: boolean | undefined
+		}
 	}
 
-	let { children }: Props = $props()
+	let { children, data }: Props = $props()
 
-	let defaultLayout = [265, 440, 655]
-	let defaultCollapsed = false
+	let { layout, collapsed } = data
 
+	let defaultLayout = [265, 655]
+	let defaultCollapsed = collapsed || false
+
+	let windowWidth = $state(0)
 	let isCollapsed = $state(defaultCollapsed)
+	let collapsedSize = $derived(+(((36 + 18) / windowWidth) * 100).toFixed(2))
+	let minNavSize = $derived(+((160 / windowWidth) * 100).toFixed(2))
 
 	function onLayoutChange(sizes: number[]) {
-		console.log(sizes, windowWidth, collapsedSize)
 		document.cookie = `PaneForge:layout=${JSON.stringify(sizes)}`
 	}
 
@@ -32,9 +40,6 @@
 		isCollapsed = false
 		document.cookie = `PaneForge:collapsed=${false}`
 	}
-
-	let windowWidth = $state(0)
-	let collapsedSize = $derived(+(((36 + 18) / windowWidth) * 100).toFixed(2))
 </script>
 
 <svelte:window bind:innerWidth={windowWidth} />
@@ -67,11 +72,11 @@
 	class="h-screen w-screen items-stretch"
 >
 	<Resizable.Pane
-		defaultSize={defaultLayout[0]}
+		defaultSize={layout ? layout[0] : defaultLayout[0]}
 		{collapsedSize}
 		collapsible
-		minSize={15}
-		maxSize={20}
+		minSize={minNavSize}
+		maxSize={25}
 		{onCollapse}
 		{onExpand}
 		class="hidden sm:block"
@@ -81,7 +86,7 @@
 
 	<Resizable.Handle withHandle />
 
-	<Resizable.Pane defaultSize={defaultLayout[2]}>
+	<Resizable.Pane defaultSize={layout ? layout[2] : defaultLayout[2]}>
 		<div class="flex h-full items-center justify-center">
 			{@render children?.()}
 		</div>
@@ -91,7 +96,7 @@
 {#snippet logo()}
 	<div class="my-4 p-2 flex items-center {isCollapsed ? 'justify-center' : ''}">
 		<ChevronsDown
-			class="bg-gradient-to-tr from-primary via-primary/70 to-primary rounded-lg size-6 lg:size-9 border text-white"
+			class="bg-gradient-to-tr from-primary via-primary/70 to-primary rounded-lg size-9 border text-white"
 		/>
 		{#if !isCollapsed}
 			<a class="btn btn-ghost btn-square ml-2 font-bold" href="/">PDF Daddy</a>
