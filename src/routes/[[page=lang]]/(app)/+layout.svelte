@@ -19,7 +19,7 @@
 
 	let { layout, collapsed } = data
 
-	let defaultLayout = [265, 655]
+	let defaultLayout = layout || [25, 75]
 	let defaultCollapsed = collapsed || false
 
 	let windowWidth = $state(0)
@@ -72,7 +72,7 @@
 	class="h-screen w-screen items-stretch"
 >
 	<Resizable.Pane
-		defaultSize={layout ? layout[0] : defaultLayout[0]}
+		defaultSize={defaultLayout[0]}
 		{collapsedSize}
 		collapsible
 		minSize={minNavSize}
@@ -86,7 +86,7 @@
 
 	<Resizable.Handle withHandle />
 
-	<Resizable.Pane defaultSize={layout ? layout[2] : defaultLayout[2]}>
+	<Resizable.Pane defaultSize={defaultLayout[1]}>
 		<div class="flex h-full items-center justify-center">
 			{@render children?.()}
 		</div>
