@@ -75,21 +75,6 @@
 			</Tooltip.Trigger>
 			<Tooltip.Content side="bottom">{dataTip}</Tooltip.Content>
 		</Tooltip.Root>
-		<!-- <li class="relative {label === 'delete' ? 'text-error' : ''} ">
-		<button
-			data-testid={dataTestId}
-			aria-label={label}
-			onclick={action}
-			class="absolute inset-0 z-50"
-		>
-		</button>
-		<a href={undefined} class="lg:p-1 lg:px-2">
-			<div class="lg:tooltip lg:tooltip-bottom" data-tip={dataTip}>
-				{@html icon}
-			</div>
-			<span class="lg:hidden whitespace-nowrap">{dataTip}</span>
-		</a>
-	</li> -->
 	{/each}
 {:else}
 	{#each actions as { label, action, Icon, dataTip, dataTestId }}

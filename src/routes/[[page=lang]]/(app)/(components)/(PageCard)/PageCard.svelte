@@ -26,8 +26,8 @@
 			style="background-color: {doc.color};"
 		></div>
 
-		<Card.Content class="p-2"
-			><div data-testid="thumbnail" class="h-full flex items-center aspect-[180/280]">
+		<Card.Content class="p-2">
+			<div data-testid="thumbnail" class="h-full flex items-center aspect-[180/280]">
 				<PageCardThumbnail {page} />
 			</div>
 		</Card.Content>
@@ -45,7 +45,7 @@
 
 	<div
 		data-testid="card-options-desktop"
-		class="absolute top-2 left-0 w-full hidden lg:group-hover:inline-flex justify-center"
+		class="gap-1 absolute top-2 left-0 w-full hidden lg:group-hover:inline-flex justify-center"
 	>
 		<PageCardOptions variant="menubar" {doc} {page} />
 	</div>

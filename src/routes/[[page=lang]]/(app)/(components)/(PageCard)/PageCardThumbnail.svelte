@@ -4,10 +4,10 @@
 	import { rotationStyle } from '$lib/utils'
 
 	interface Props {
-		page: Page;
+		page: Page
 	}
 
-	let { page }: Props = $props();
+	let { page }: Props = $props()
 
 	let thumbnail = $derived($thumbnails[page.pageId]?.src)
 </script>

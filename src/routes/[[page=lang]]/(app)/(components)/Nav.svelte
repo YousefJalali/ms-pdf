@@ -35,11 +35,11 @@
 					<Tooltip.Content side="right" class="flex items-center gap-4">
 						{route.title}
 
-						{#if route.label}
+						<!-- {#if route.label}
 							<span class="text-muted-foreground ml-auto">
 								{route.label}
 							</span>
-						{/if}
+						{/if} -->
 					</Tooltip.Content>
 				</Tooltip.Root>
 			{:else}
@@ -56,7 +56,7 @@
 
 					{route.title}
 
-					{#if route.label}
+					<!-- {#if route.label}
 						<span
 							class={cn('ml-auto', {
 								'text-background dark:text-white': route.href === page.url.pathname
@@ -64,7 +64,7 @@
 						>
 							{route.label}
 						</span>
-					{/if}
+					{/if} -->
 				</Button>
 			{/if}
 		{/each}
