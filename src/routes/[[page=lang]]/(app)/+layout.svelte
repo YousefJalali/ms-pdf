@@ -94,11 +94,13 @@
 </Resizable.PaneGroup>
 
 {#snippet logo()}
-	<div class="my-4 p-2 flex items-center {isCollapsed ? 'justify-center' : ''}">
+	<div
+		class="my-4 p-2 flex items-center {isCollapsed && windowWidth > 640 ? 'justify-center' : ''}"
+	>
 		<ChevronsDown
 			class="bg-gradient-to-tr from-primary via-primary/70 to-primary rounded-lg size-9 border text-white"
 		/>
-		{#if !isCollapsed}
+		{#if !(isCollapsed && windowWidth > 640)}
 			<a class="btn btn-ghost btn-square ml-2 font-bold" href="/">PDF Daddy</a>
 		{/if}
 	</div>
@@ -108,14 +110,14 @@
 	<div class="flex flex-col justify-between h-full">
 		<div>
 			{@render logo()}
-			<Nav {isCollapsed} />
+			<Nav isCollapsed={isCollapsed && windowWidth > 640} />
 		</div>
 
 		<DropdownMenu.Root>
 			<DropdownMenu.Trigger asChild let:builder>
 				<Button builders={[builder]} variant="outline" class="w-fit m-2 gap-2 text-xl p-2">
 					{$locale === 'ar' ? '🇸🇦' : '🇺🇸'}
-					{#if !isCollapsed}
+					{#if !(isCollapsed && windowWidth > 640)}
 						<ChevronDownIcon class="h-4 w-4 opacity-50" />
 					{/if}
 				</Button>

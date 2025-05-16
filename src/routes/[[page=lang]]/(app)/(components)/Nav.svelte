@@ -34,12 +34,6 @@
 
 					<Tooltip.Content side="right" class="flex items-center gap-4">
 						{route.title}
-
-						<!-- {#if route.label}
-							<span class="text-muted-foreground ml-auto">
-								{route.label}
-							</span>
-						{/if} -->
 					</Tooltip.Content>
 				</Tooltip.Root>
 			{:else}
@@ -55,16 +49,6 @@
 					<route.icon class="mr-2 size-4" aria-hidden="true" />
 
 					{route.title}
-
-					<!-- {#if route.label}
-						<span
-							class={cn('ml-auto', {
-								'text-background dark:text-white': route.href === page.url.pathname
-							})}
-						>
-							{route.label}
-						</span>
-					{/if} -->
 				</Button>
 			{/if}
 		{/each}
