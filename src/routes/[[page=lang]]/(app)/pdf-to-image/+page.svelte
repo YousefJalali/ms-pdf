@@ -18,6 +18,9 @@
 	import { Button } from '$lib/components/ui/button'
 	import { Reload } from 'svelte-radix'
 	import { ScrollArea } from '$lib/components/ui/scroll-area'
+	import { RotateCcw } from 'lucide-svelte'
+	import { Checkbox } from '$lib/components/ui/checkbox/index.js'
+	import { Badge } from '$lib/components/ui/badge'
 
 	const defaultFileName = generateFileName('Converted')
 	const QUALITY_LABEL: { [ket: number]: string } = {
@@ -154,7 +157,10 @@
 		title={$t('pdfToImage.downloaded.title')}
 		description={$t('pdfToImage.downloaded.description')}
 	>
-		<button class="btn btn-primary btn-outline btn-wide" onclick={reset}>Start Over</button>
+		<Button variant="outline" onclick={reset} class="mt-4">
+			<RotateCcw class="h-4 w-4 mr-2" />
+			Start Over</Button
+		>
 
 		<OtherTools />
 	</PageLoadingState>
@@ -168,7 +174,7 @@
 	<Layout>
 		{#snippet cards()}
 			<div
-				class="h-full overflow-y-scroll grid auto-rows-min grid-cols-2 min-[460px]:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-6 gap-2 lg:gap-4 bg-base-300 pb-14 lg:p-4"
+				class="h-full overflow-y-scroll grid auto-rows-min grid-cols-2 min-[460px]:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-6 gap-2 lg:gap-4 p-4 pb-28 lg:pb-4"
 			>
 				{#each Object.keys($thumbnails) as pageId}
 					<div
@@ -176,11 +182,10 @@
 						style="opacity: {Object.keys($selected).length && !$selected[pageId] ? 0.5 : 1};"
 					>
 						<div class="absolute top-2 right-2">
-							<input
-								type="checkbox"
+							<Checkbox
+								id={pageId}
 								checked={$selected[pageId]}
-								class="checkbox checkbox-primary bg-base-100"
-								onchange={() => handleSelected(pageId)}
+								onclick={() => handleSelected(pageId)}
 							/>
 						</div>
 
@@ -190,13 +195,10 @@
 							alt={pageId}
 						/>
 
-						<div
-							class="absolute bottom-3 left-1/2 -translate-x-1/2 flex py-0.5 px-2 rounded-btn"
-							style="background-color: {$docs[$thumbnails[pageId].docId].color};"
-						>
-							<span class="text-white relative text-xs"
-								>Page {$thumbnails[pageId].pageNumberInDoc}</span
-							>
+						<div class="absolute bottom-3 left-1/2 -translate-x-1/2">
+							<Badge style="background-color: {$docs[$thumbnails[pageId].docId].color};">
+								Page {$thumbnails[pageId].pageNumberInDoc}
+							</Badge>
 						</div>
 					</div>
 				{/each}
