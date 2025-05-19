@@ -1,11 +1,11 @@
 <script lang="ts">
 	import * as Resizable from '$lib/components/ui/resizable'
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js'
+	import * as Sheet from '$lib/components/ui/sheet/index.js'
 	import { locale, locales, setLang, langNames, type Lang } from '$lib/i18n'
 	import Nav from './(components)/Nav.svelte'
 	import { Button } from '$lib/components/ui/button'
-	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js'
 	import { ChevronDownIcon, ChevronsDown, PanelLeft } from 'lucide-svelte'
-	import * as Sheet from '$lib/components/ui/sheet/index.js'
 
 	interface Props {
 		children?: import('svelte').Snippet
@@ -87,7 +87,7 @@
 	<Resizable.Handle withHandle />
 
 	<Resizable.Pane defaultSize={defaultLayout[1]}>
-		<div class="flex h-full items-center justify-center">
+		<div class="flex flex-col h-full items-center justify-center">
 			{@render children?.()}
 		</div>
 	</Resizable.Pane>

@@ -16,11 +16,7 @@
 </script>
 
 {#if doc && page}
-	<Card.Root
-		class="sm:col-span-2"
-		data-x-chunk-name="dashboard-05-chunk-0"
-		data-x-chunk-description="A card for an orders dashboard with a description and a button to create a new order."
-	>
+	<Card.Root class="sm:col-span-2">
 		<div
 			class="absolute top-0 left-1/2 -translate-x-1/2 h-1 w-1/2 rounded-b-box"
 			style="background-color: {doc.color};"
