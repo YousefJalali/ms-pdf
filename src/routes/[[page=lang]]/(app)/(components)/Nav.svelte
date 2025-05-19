@@ -22,7 +22,7 @@
 							variant={page.url.pathname.includes(route.href) ? 'default' : 'ghost'}
 							size="icon"
 							class={cn(
-								'size-9',
+								'size-8',
 								route.variant === 'default' &&
 									'dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white'
 							)}

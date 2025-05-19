@@ -14,7 +14,7 @@
 	import { Reload } from 'svelte-radix'
 	import * as Tabs from '$lib/components/ui/tabs/index.js'
 	import * as Table from '$lib/components/ui/table/index.js'
-	import { ArrowRight, LoaderCircle, Plus, RotateCcw, Trash } from 'lucide-svelte'
+	import { ArrowRight, LoaderCircle, Plus, RotateCcw, Split, Trash } from 'lucide-svelte'
 	import { Label } from '$lib/components/ui/label'
 	import { Input } from '$lib/components/ui/input'
 	import EmptyStatePage from '../(components)/EmptyStatePage.svelte'
@@ -257,7 +257,12 @@
 		{/snippet}
 
 		{#snippet side()}
-			<Tabs.Root value="range" class="w-full">
+			<div class="mt-2">
+				<span class="font-semibold leading-none tracking-tight">Split Options</span>
+				<p class="text-muted-foreground text-sm line-clamp-1">Adjust the below</p>
+			</div>
+
+			<Tabs.Root value="range" class="w-full mt-4">
 				<Tabs.List class="grid w-full grid-cols-2">
 					<Tabs.Trigger value="range">Range</Tabs.Trigger>
 					<Tabs.Trigger value="all">All</Tabs.Trigger>
@@ -356,24 +361,33 @@
 					</p>
 				</Tabs.Content>
 			</Tabs.Root>
+
+			<div class="mt-auto sm:hidden">
+				{@render downloadBtn()}
+			</div>
 		{/snippet}
 
 		{#snippet cta()}
+			<Split class="size-4 mr-2" />
 			{$t('btn.split')}
 		{/snippet}
 
 		{#snippet download()}
-			<Button onclick={split} class="w-full">
-				{#if downloading}
-					<Reload class="mr-2 h-4 w-4 animate-spin" />
-				{/if}
-				{$t('download')}
-				{splitType === 'all'
-					? `(${$pages.length} PDFs)`
-					: Object.keys(ranges).length > 1
-						? `(${Object.keys(ranges).length} PDFs)`
-						: '(1 PDF)'}
-			</Button>
+			{@render downloadBtn()}
 		{/snippet}
 	</Layout>
 {/if}
+
+{#snippet downloadBtn()}
+	<Button onclick={split} class="w-full">
+		{#if downloading}
+			<Reload class="mr-2 h-4 w-4 animate-spin" />
+		{/if}
+		{$t('download')}
+		{splitType === 'all'
+			? `(${$pages.length} PDFs)`
+			: Object.keys(ranges).length > 1
+				? `(${Object.keys(ranges).length} PDFs)`
+				: '(1 PDF)'}
+	</Button>
+{/snippet}

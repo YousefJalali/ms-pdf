@@ -31,7 +31,7 @@
 		if (page.url.pathname.includes('image')) return 'pdfToImage'
 		if (page.url.pathname.includes('compress')) return 'compress'
 	})
-	let showPages = $derived(path === LINKS.pdfToImage ? true : false)
+	let showPages = $derived(path === 'pdfToImage' ? true : false)
 
 	let defaultLayout = [75, 25]
 </script>
@@ -65,16 +65,15 @@
 			class="hidden lg:block"
 		>
 			<div class="p-4 h-full flex flex-col" data-testid="side">
-				<!-- <Upload component={UploadButton} {showPages} /> -->
-
 				{@render docList()}
 
-				<Separator class="my-4" />
+				{#if side}
+					<Separator class="my-4" />
+				{/if}
 
 				{@render side?.()}
 
 				<div class="mt-auto">
-					<!-- <Separator class="my-4" /> -->
 					{@render download?.()}
 				</div>
 			</div>
@@ -97,8 +96,11 @@
 				</Button>
 			</Sheet.Trigger>
 
-			<Sheet.Content class="flex flex-col p-4 pt-8">
+			<Sheet.Content class="flex flex-col p-4 pt-10 gap-0">
 				{@render docList()}
+				{#if side}
+					<Separator class="my-4" />
+				{/if}
 				{@render side?.()}
 			</Sheet.Content>
 		</Sheet.Root>
@@ -111,7 +113,7 @@
 
 {#snippet mobileCTA()}
 	<div
-		class="flex mt-2 gap-2 fixed bottom-0 pb-6 left-1/2 -translate-x-1/2 w-full max-w-2xl px-6 sm:hidden bg-gradient-to-t from-background sm:from-transparent"
+		class="flex mt-2 gap-2 fixed bottom-0 pb-4 left-1/2 -translate-x-1/2 w-full max-w-2xl px-4 sm:hidden bg-gradient-to-t from-background sm:from-transparent"
 	>
 		{#if cta}
 			<Sheet.Root>
@@ -121,7 +123,11 @@
 					</Button>
 				</Sheet.Trigger>
 
-				<Sheet.Content class="flex flex-col">
+				<Sheet.Content class="flex flex-col p-4 pt-10">
+					{@render docList()}
+					{#if side}
+						<Separator class="my-4" />
+					{/if}
 					{@render side?.()}
 				</Sheet.Content>
 			</Sheet.Root>

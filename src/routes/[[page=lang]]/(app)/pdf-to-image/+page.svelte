@@ -8,21 +8,17 @@
 	import OtherTools from '../(components)/OtherTools.svelte'
 	import { afterNavigate } from '$app/navigation'
 	import type { CreateImage } from '$lib/types'
-	import DocList from '../(components)/DocList.svelte'
 	import { t } from '$lib/i18n'
-	import { Separator } from '$lib/components/ui/separator'
 	import { Slider } from '$lib/components/ui/slider'
 	import Label from '$lib/components/ui/label/label.svelte'
 	import * as RadioGroup from '$lib/components/ui/radio-group'
 	import Input from '$lib/components/ui/input/input.svelte'
 	import { Button } from '$lib/components/ui/button'
 	import { Reload } from 'svelte-radix'
-	import { ScrollArea } from '$lib/components/ui/scroll-area'
-	import { RotateCcw } from 'lucide-svelte'
+	import { ArrowRightLeft, RotateCcw } from 'lucide-svelte'
 	import { Checkbox } from '$lib/components/ui/checkbox/index.js'
 	import { Badge } from '$lib/components/ui/badge'
 	import * as Card from '$lib/components/ui/card/index.js'
-	import * as Accordion from '$lib/components/ui/accordion/index.js'
 
 	const defaultFileName = generateFileName('Converted')
 	const QUALITY_LABEL: { [ket: number]: string } = {
@@ -223,7 +219,8 @@
 			<div class="flex flex-col">
 				<div class="py-3">
 					<div class="flex items-center justify-between mb-2">
-						<Label for="quality">Quality</Label>
+						<!-- <Label>Quality</Label> -->
+						<span class="text-sm font-medium">Quality</span>
 						<span
 							class="text-muted-foreground hover:border-border w-12 rounded-md border border-transparent px-2 py-0.5 text-right text-sm"
 						>
@@ -231,7 +228,15 @@
 						</span>
 					</div>
 
-					<Slider id="quality" bind:value={quality} min={25} max={100} step={25} />
+					<Slider
+						id="quality"
+						bind:value={quality}
+						min={25}
+						max={100}
+						step={25}
+						class="[&_[role=slider]]:h-4 [&_[role=slider]]:w-4"
+						aria-label="quality"
+					/>
 
 					<span
 						class="text-muted-foreground text-xs font-normal leading-snug ml-auto block w-fit mt-1"
@@ -240,7 +245,7 @@
 				</div>
 
 				<div class="py-3">
-					<Label for="format">Format</Label>
+					<span class="text-sm font-medium">Format</span>
 
 					<RadioGroup.Root id="format" bind:value={imageFormat} class="grid grid-cols-3 gap-4 mt-2">
 						{#each IMAGE_FORMATS as format}
@@ -275,22 +280,31 @@
 					>
 				</div>
 			</div>
+
+			<div class="mt-auto sm:hidden">
+				{@render downloadBtn()}
+			</div>
 		{/snippet}
 
 		{#snippet cta()}
+			<ArrowRightLeft class="size-4 mr-2" />
 			Convert
 		{/snippet}
 
 		{#snippet download()}
-			<Button class="w-full" onclick={downloadHandler}>
-				{#if downloading}
-					<Reload class="mr-2 h-4 w-4 animate-spin" />
-				{/if}
-				Download
-				{Object.keys($selected).length
-					? `Selected (${Object.keys($selected).length})`
-					: `All (${Object.keys($thumbnails).length} images)`}
-			</Button>
+			{@render downloadBtn()}
 		{/snippet}
 	</Layout>
 {/if}
+
+{#snippet downloadBtn()}
+	<Button class="w-full" onclick={downloadHandler}>
+		{#if downloading}
+			<Reload class="mr-2 h-4 w-4 animate-spin" />
+		{/if}
+		Download
+		{Object.keys($selected).length
+			? `Selected (${Object.keys($selected).length})`
+			: `All (${Object.keys($thumbnails).length} image${Object.keys($thumbnails).length > 1 ? 's' : ''})`}
+	</Button>
+{/snippet}
