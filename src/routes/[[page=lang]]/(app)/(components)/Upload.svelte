@@ -4,14 +4,16 @@
 	import type { Snippet } from 'svelte'
 
 	interface Props {
-		component: any
+		Component: any
 		showPages?: boolean
 		placeholder?: Snippet
+		props?: any
 	}
 
-	let { component, showPages = false, placeholder }: Props = $props()
+	let { Component, showPages = false, placeholder, props }: Props = $props()
 
 	let files: FileList | null | undefined = $state()
+
 	const maxFileReached = () =>
 		alerts.add('error', `The maximum number of files you can upload is ${MAX_FILE_UPLOAD}`)
 
@@ -35,8 +37,6 @@
 			}
 		}
 	})
-
-	const SvelteComponent = $derived(component)
 </script>
 
-<SvelteComponent bind:files {placeholder} />
+<Component bind:files {placeholder} {props} />
