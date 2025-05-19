@@ -21,6 +21,8 @@
 	import { RotateCcw } from 'lucide-svelte'
 	import { Checkbox } from '$lib/components/ui/checkbox/index.js'
 	import { Badge } from '$lib/components/ui/badge'
+	import * as Card from '$lib/components/ui/card/index.js'
+	import * as Accordion from '$lib/components/ui/accordion/index.js'
 
 	const defaultFileName = generateFileName('Converted')
 	const QUALITY_LABEL: { [ket: number]: string } = {
@@ -174,51 +176,53 @@
 	<Layout>
 		{#snippet cards()}
 			<div
-				class="h-full overflow-y-scroll grid auto-rows-min grid-cols-2 min-[460px]:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-6 gap-2 lg:gap-4 p-4 pb-28 lg:pb-4"
+				class="relative overflow-x-hidden lg:rounded-box h-full overflow-y-scroll p-4 pb-28 md:pb-12 lg:pb-4 grid grid-cols-2 min-[460px]:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-6 gap-4"
 			>
 				{#each Object.keys($thumbnails) as pageId}
-					<div
-						class="relative h-fit bg-base-100 rounded-box py-3 border border-base-300"
+					<Card.Root
+						class="h-fit"
 						style="opacity: {Object.keys($selected).length && !$selected[pageId] ? 0.5 : 1};"
 					>
-						<div class="absolute top-2 right-2">
-							<Checkbox
-								id={pageId}
-								checked={$selected[pageId]}
-								onclick={() => handleSelected(pageId)}
-							/>
-						</div>
+						<Card.Content class="relative p-2">
+							<div class="absolute top-2 right-2">
+								<Checkbox
+									id={pageId}
+									checked={$selected[pageId]}
+									onclick={() => handleSelected(pageId)}
+								/>
+							</div>
+							<div class="h-full flex items-center aspect-[180/280]">
+								<img
+									class="mx-auto h-full object-contain"
+									src={URL.createObjectURL($thumbnails[pageId].src)}
+									alt={pageId}
+									height={200}
+								/>
+							</div>
+						</Card.Content>
 
-						<img
-							class="rounded-box w-[200px] h-[200px] object-scale-down"
-							src={URL.createObjectURL($thumbnails[pageId].src)}
-							alt={pageId}
-						/>
-
-						<div class="absolute bottom-3 left-1/2 -translate-x-1/2">
-							<Badge style="background-color: {$docs[$thumbnails[pageId].docId].color};">
+						<Card.Footer class="p-2 pt-0">
+							<Badge
+								class="mx-auto"
+								style="background-color: {$docs[$thumbnails[pageId].docId].color};"
+							>
 								Page {$thumbnails[pageId].pageNumberInDoc}
 							</Badge>
-						</div>
-					</div>
+						</Card.Footer>
+					</Card.Root>
 				{/each}
 			</div>
 		{/snippet}
 
 		{#snippet side()}
-			<div class="font-semibold text-sm">
-				Uploaded Docs ({Object.keys($docs).length})
+			<div class="mt-2">
+				<span class="font-semibold leading-none tracking-tight">Download Options</span>
+				<p class="text-muted-foreground text-sm line-clamp-1">Adjust the below</p>
 			</div>
 
-			<ScrollArea>
-				<DocList />
-			</ScrollArea>
-
-			<fieldset class="grid gap-6 rounded-lg border p-4 mt-4">
-				<legend class="-ml-1 px-1 text-sm font-medium">Download Options</legend>
-
-				<div>
-					<div class="flex items-center justify-between mb-3">
+			<div class="flex flex-col">
+				<div class="py-3">
+					<div class="flex items-center justify-between mb-2">
 						<Label for="quality">Quality</Label>
 						<span
 							class="text-muted-foreground hover:border-border w-12 rounded-md border border-transparent px-2 py-0.5 text-right text-sm"
@@ -226,23 +230,23 @@
 							{quality[0]}%
 						</span>
 					</div>
+
 					<Slider id="quality" bind:value={quality} min={25} max={100} step={25} />
+
 					<span
-						class="text-muted-foreground text-xs font-normal leading-snug ml-auto block w-fit mt-2"
+						class="text-muted-foreground text-xs font-normal leading-snug ml-auto block w-fit mt-1"
 						>{QUALITY_LABEL[quality[0]]}
 					</span>
 				</div>
 
-				<Separator />
+				<div class="py-3">
+					<Label for="format">Format</Label>
 
-				<div>
-					<Label for="format" class="mb-3">Format</Label>
-
-					<RadioGroup.Root id="format" bind:value={imageFormat} class="grid grid-cols-3 gap-4 mt-3">
+					<RadioGroup.Root id="format" bind:value={imageFormat} class="grid grid-cols-3 gap-4 mt-2">
 						{#each IMAGE_FORMATS as format}
 							<Label
 								for={format}
-								class="uppercase border-muted bg-popover hover:bg-accent hover:text-accent-foreground [&:has([data-state=checked])]:border-primary flex flex-col items-center justify-between rounded-md border-2 p-4"
+								class="uppercase border-muted bg-popover hover:bg-accent hover:text-accent-foreground [&:has([data-state=checked])]:border-primary flex flex-col items-center justify-between rounded-md border-2 p-2"
 							>
 								<RadioGroup.Item value={format} id={format} class="sr-only" aria-label={format} />
 
@@ -252,12 +256,10 @@
 					</RadioGroup.Root>
 				</div>
 
-				<Separator />
-
-				<div>
+				<div class="py-3">
 					<Label for="file-name">File Name</Label>
 
-					<div class="w-full text-sm flex items-center gap-2 mt-3">
+					<div class="w-full text-sm flex items-center gap-2 mt-2">
 						<Input
 							id="file-name"
 							bind:value={fileName}
@@ -272,7 +274,7 @@
 						>{`Avoid using: < > : " / \ | ? *`}</span
 					>
 				</div>
-			</fieldset>
+			</div>
 		{/snippet}
 
 		{#snippet cta()}
@@ -280,7 +282,7 @@
 		{/snippet}
 
 		{#snippet download()}
-			<Button class="w-full mt-4" onclick={downloadHandler}>
+			<Button class="w-full" onclick={downloadHandler}>
 				{#if downloading}
 					<Reload class="mr-2 h-4 w-4 animate-spin" />
 				{/if}

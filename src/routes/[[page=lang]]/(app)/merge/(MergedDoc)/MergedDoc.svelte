@@ -3,11 +3,9 @@
 	import { Button } from '$lib/components/ui/button'
 	import { t } from '$lib/i18n'
 	import { docs, mergedPdf, pages, previews, thumbnails } from '$lib/stores'
-	import { startOver } from '$lib/ui'
 	import { ArrowLeft, Download, RotateCcw } from 'lucide-svelte'
 	import OtherTools from '../../(components)/OtherTools.svelte'
 	import MergedDocPreview from './MergedDocPreview.svelte'
-	import ScrollArea from '$lib/components/ui/scroll-area/scroll-area.svelte'
 
 	let downloaded = $state(false)
 	let downloading = $state(false)

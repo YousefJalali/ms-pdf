@@ -1,7 +1,7 @@
 <script lang="ts">
 	import JSZip from 'jszip'
 	import { docs, pages, previews, thumbnails, uploadingDocs } from '$lib/stores'
-	import { arrowLongRight, PageLoadingState, plus, trash } from '$lib/ui'
+	import { PageLoadingState } from '$lib/ui'
 	import { generateFileName, getInputAsUint8Array } from '$lib/utils'
 	import Layout from '../(components)/Layout.svelte'
 	import OtherTools from '../(components)/OtherTools.svelte'
@@ -14,9 +14,10 @@
 	import { Reload } from 'svelte-radix'
 	import * as Tabs from '$lib/components/ui/tabs/index.js'
 	import * as Table from '$lib/components/ui/table/index.js'
-	import { ArrowRight, Plus, Trash } from 'lucide-svelte'
+	import { ArrowRight, LoaderCircle, Plus, RotateCcw, Trash } from 'lucide-svelte'
 	import { Label } from '$lib/components/ui/label'
 	import { Input } from '$lib/components/ui/input'
+	import EmptyStatePage from '../(components)/EmptyStatePage.svelte'
 
 	let splitType = $state('range')
 	let downloaded = $state(false)
@@ -219,23 +220,26 @@
 </svelte:head>
 
 {#if downloading}
-	<PageLoadingState
-		loading
+	<EmptyStatePage
+		Icon={LoaderCircle}
 		title={$t('split.downloading.title')}
 		description={$t('split.downloading.description')}
 	/>
 {:else if downloaded}
-	<PageLoadingState
+	<EmptyStatePage
 		title={$t('split.downloaded.title')}
 		description={$t('split.downloaded.description')}
 	>
-		<button class="btn btn-primary btn-outline btn-wide" onclick={reset}>Start Over</button>
+		<Button variant="outline" onclick={reset}>
+			<RotateCcw class="h-4 w-4 mr-2" />
+			Start Over
+		</Button>
 
 		<OtherTools />
-	</PageLoadingState>
+	</EmptyStatePage>
 {:else if !Object.keys($thumbnails).length && $uploadingDocs}
-	<PageLoadingState
-		loading
+	<EmptyStatePage
+		Icon={LoaderCircle}
 		title={$t('split.uploading.title')}
 		description={$t('split.uploading.description')}
 	/>
@@ -259,7 +263,7 @@
 					<Tabs.Trigger value="all">All</Tabs.Trigger>
 				</Tabs.List>
 				<Tabs.Content value="range">
-					<p class="text-sm opacity-80 text-center py-8 lg:p-4">
+					<p class="text-sm opacity-80 text-center py-8 lg:py-4">
 						{description['range']}
 					</p>
 
@@ -347,7 +351,7 @@
 				</Tabs.Content>
 
 				<Tabs.Content value="all">
-					<p class="text-sm opacity-80 text-center py-8 lg:p-4">
+					<p class="text-sm opacity-80 text-center py-8 lg:py-4">
 						{description['all']}
 					</p>
 				</Tabs.Content>

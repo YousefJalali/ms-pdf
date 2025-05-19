@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { docs, mergedPdf, pages, previews } from '$lib/stores'
 	import { t } from '$lib/i18n'
-	import { PageLoadingState } from '$lib/ui'
+	import * as Accordion from '$lib/components/ui/accordion/index.js'
 	import DocList from '../(components)/DocList.svelte'
 	import DraggableCards from '../(components)/DraggableCards.svelte'
 	import Layout from '../(components)/Layout.svelte'
@@ -9,8 +9,8 @@
 	import Merge from './(MergedDoc)/Merge.svelte'
 	import Preview from '../(components)/(PageCard)/Preview.svelte'
 	import PageCard from '../(components)/(PageCard)/PageCard.svelte'
-	import { Separator } from '$lib/components/ui/separator'
-	import ScrollArea from '$lib/components/ui/scroll-area/scroll-area.svelte'
+	import EmptyStatePage from '../(components)/EmptyStatePage.svelte'
+	import { LoaderCircle } from 'lucide-svelte'
 </script>
 
 <svelte:head>
@@ -22,8 +22,8 @@
 </svelte:head>
 
 {#if $mergedPdf.loading}
-	<PageLoadingState
-		loading
+	<EmptyStatePage
+		Icon={LoaderCircle}
 		title={$t('merge.merging.title')}
 		description={$t('merge.merging.description')}
 	/>
@@ -33,7 +33,7 @@
 	<Layout>
 		{#snippet cards()}
 			<DraggableCards>
-				{#snippet children({ page, pageIndex })}
+				{#snippet children({ page })}
 					<PageCard {page} />
 				{/snippet}
 			</DraggableCards>
@@ -41,16 +41,21 @@
 				<Preview />
 			{/if}
 		{/snippet}
-
+		<!-- 
 		{#snippet side()}
-			<div class="font-semibold text-sm">
-				Uploaded Docs ({Object.keys($docs).length})
-			</div>
-
-			<ScrollArea class="my-2">
-				<DocList withOptions />
-			</ScrollArea>
-		{/snippet}
+			<Accordion.Root value="doc list" class="w-full">
+				<Accordion.Item value="doc list" class="border-0">
+					<Accordion.Trigger class="p-0">
+						<div class="font-semibold text-sm">
+							Uploaded Docs ({Object.keys($docs).length})
+						</div>
+					</Accordion.Trigger>
+					<Accordion.Content>
+						<DocList withOptions />
+					</Accordion.Content>
+				</Accordion.Item>
+			</Accordion.Root>
+		{/snippet} -->
 
 		{#snippet download()}
 			<Merge />
