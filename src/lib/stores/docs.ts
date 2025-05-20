@@ -7,6 +7,7 @@ import { pages } from './pages'
 import { previews, thumbnails } from './images'
 import { mergedPdf } from './mergedPdf'
 import { alerts } from './alerts'
+import { TriangleAlert } from 'lucide-svelte'
 
 function uploading() {
 	const { subscribe, set } = writable<boolean>(false)
@@ -88,11 +89,11 @@ function handleFiles() {
 			uploadingDocs.set(false)
 
 			if (typeof error === 'string') {
-				alerts.add('error', error)
+				alerts.add(TriangleAlert, 'Error', error)
 			} else if (error instanceof ReferenceError) {
-				alerts.add('error', error.message)
+				alerts.add(TriangleAlert, 'Error', error.message)
 			} else {
-				alerts.add('error', 'Invalid Type')
+				alerts.add(TriangleAlert, 'Error', 'Invalid Type')
 			}
 		}
 	}

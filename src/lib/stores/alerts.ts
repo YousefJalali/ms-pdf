@@ -1,11 +1,11 @@
 import { v4 as uuidv4 } from 'uuid'
 import { get, writable } from 'svelte/store'
-import type { Alert, AlertType } from '$lib/types'
+import type { Alert, Icon } from '$lib/types'
 
 function handleAlerts() {
 	const { subscribe, set, update } = writable<Alert[]>([])
 
-	function add(type: AlertType, message: string) {
+	function add(Icon: Icon, title: string, message: string) {
 		let allAlerts = [...get(alerts)]
 
 		if (allAlerts.length >= 3) allAlerts.shift()
@@ -14,7 +14,8 @@ function handleAlerts() {
 
 		allAlerts.push({
 			id,
-			type,
+			Icon,
+			title,
 			message
 		})
 

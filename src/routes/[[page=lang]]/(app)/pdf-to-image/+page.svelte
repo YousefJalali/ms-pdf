@@ -1,7 +1,6 @@
 <script lang="ts">
 	import JSZip from 'jszip'
 	import { docs, pages, thumbnails, uploadingDocs } from '$lib/stores'
-	import { PageLoadingState } from '$lib/ui'
 	import { generateFileName, getPageAsBlob } from '$lib/utils'
 	import { writable } from 'svelte/store'
 	import Layout from '../(components)/Layout.svelte'
@@ -19,6 +18,7 @@
 	import { Checkbox } from '$lib/components/ui/checkbox/index.js'
 	import { Badge } from '$lib/components/ui/badge'
 	import * as Card from '$lib/components/ui/card/index.js'
+	import PageLoadingState from '../(components)/PageLoadingState.svelte'
 
 	const defaultFileName = generateFileName('Converted')
 	const QUALITY_LABEL: { [ket: number]: string } = {

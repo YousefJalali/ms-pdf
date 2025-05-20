@@ -1,7 +1,6 @@
 <script lang="ts">
 	import JSZip from 'jszip'
 	import { docs, pages, previews, thumbnails, uploadingDocs } from '$lib/stores'
-	import { PageLoadingState } from '$lib/ui'
 	import { generateFileName, getInputAsUint8Array } from '$lib/utils'
 	import Layout from '../(components)/Layout.svelte'
 	import OtherTools from '../(components)/OtherTools.svelte'

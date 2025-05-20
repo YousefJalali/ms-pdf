@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { MAX_FILE_UPLOAD } from '$lib/constants'
 	import { alerts, docs } from '$lib/stores'
+	import { TriangleAlert } from 'lucide-svelte'
 	import type { Snippet } from 'svelte'
 
 	interface Props {
@@ -15,7 +16,11 @@
 	let files: FileList | null | undefined = $state()
 
 	const maxFileReached = () =>
-		alerts.add('error', `The maximum number of files you can upload is ${MAX_FILE_UPLOAD}`)
+		alerts.add(
+			TriangleAlert,
+			'Max Exceeded',
+			`The maximum number of files you can upload is ${MAX_FILE_UPLOAD}`
+		)
 
 	$effect(() => {
 		if (files) {

@@ -9,7 +9,8 @@
 	import { Button, buttonVariants } from '$lib/components/ui/button'
 	import { LoaderCircle, SlidersHorizontal, Upload as UploadIcon } from 'lucide-svelte'
 
-	import { DnDFIleInput, UploadButton } from '$lib/ui'
+	import DnDFIleInput from '../(components)/DnDFIleInput.svelte'
+	import UploadButton from '../(components)/UploadButton.svelte'
 	import Upload from './Upload.svelte'
 	import EmptyStatePage from './EmptyStatePage.svelte'
 	import { ScrollArea } from '$lib/components/ui/scroll-area'

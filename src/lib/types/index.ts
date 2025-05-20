@@ -1,3 +1,4 @@
+import type { Plus } from 'lucide-svelte'
 import type { PDFPageProxy } from 'pdfjs-dist'
 
 export type PDFPage = PDFPageProxy
@@ -66,10 +67,11 @@ export type DocsDetails = {
 	}
 }
 
-export type AlertType = 'info' | 'success' | 'warning' | 'error'
+export type Icon = typeof Plus
 export type Alert = {
 	id: string
-	type: AlertType
+	Icon: Icon
+	title: string
 	message: string
 }
 

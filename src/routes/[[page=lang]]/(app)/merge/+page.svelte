@@ -1,8 +1,6 @@
 <script lang="ts">
-	import { docs, mergedPdf, pages, previews } from '$lib/stores'
+	import { mergedPdf, pages, previews } from '$lib/stores'
 	import { t } from '$lib/i18n'
-	import * as Accordion from '$lib/components/ui/accordion/index.js'
-	import DocList from '../(components)/DocList.svelte'
 	import DraggableCards from '../(components)/DraggableCards.svelte'
 	import Layout from '../(components)/Layout.svelte'
 	import MergedDoc from './(MergedDoc)/MergedDoc.svelte'
