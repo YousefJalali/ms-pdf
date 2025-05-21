@@ -170,7 +170,7 @@
 						></Accordion.Trigger>
 					</div>
 				</div>
-				<Accordion.Content class="pt-2 pb-16">
+				<Accordion.Content class="pb-16">
 					<DocList withOptions />
 				</Accordion.Content>
 			</Accordion.Item>

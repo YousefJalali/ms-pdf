@@ -16,7 +16,7 @@
 </script>
 
 {#if doc && page}
-	<Card.Root class="sm:col-span-2">
+	<Card.Root>
 		<div
 			class="absolute top-0 left-1/2 -translate-x-1/2 h-1 w-1/2 rounded-b-box"
 			style="background-color: {doc.color};"
