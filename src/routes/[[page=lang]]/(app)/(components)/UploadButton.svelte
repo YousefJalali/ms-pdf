@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { buttonVariants } from '$lib/components/ui/button'
+	import { cn } from '$lib/utils'
 	import { Plus } from 'lucide-svelte'
 
 	interface Props {
@@ -12,13 +13,19 @@
 
 	let { files = $bindable(), props = {} }: Props = $props()
 
-	let { iconOnly, attr } = props
+	let { iconOnly } = props
 </script>
 
 <label for="file-input-button">
 	<a
 		href={null}
-		class={buttonVariants({ variant: 'outline', size: iconOnly ? 'icon' : 'default' })}
+		class={cn(
+			buttonVariants({
+				variant: iconOnly ? 'default' : 'outline',
+				size: iconOnly ? 'icon' : 'default'
+			}),
+			'cursor-pointer'
+		)}
 	>
 		<Plus class="size-4" />
 
