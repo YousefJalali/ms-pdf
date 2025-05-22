@@ -17,13 +17,24 @@
 	import { Label } from '$lib/components/ui/label'
 	import { Input } from '$lib/components/ui/input'
 	import EmptyStatePage from '../(components)/EmptyStatePage.svelte'
+	import ScrollArea from '$lib/components/ui/scroll-area/scroll-area.svelte'
+
+	const description = {
+		all: $t('split.all.desc'),
+		range: $t('split.by.range.desc')
+	}
 
 	let splitType = $state('range')
 	let downloaded = $state(false)
+	let downloading = $state(false)
 	let ranges: { [pageIndex: number]: string } = $state({})
 	let rangeFrom = $state(1)
 	let rangeTo = $state(1)
 	let displayRanges: number[][] = $state([])
+	let docCount = $state(0)
+	let docsLength = $derived(Object.keys($docs).length)
+
+	//
 	$effect(() => {
 		displayRanges = Object.keys(ranges).map((from, i, arr) => {
 			console.log(ranges)
@@ -38,8 +49,6 @@
 	})
 
 	//add range if new doc is added
-	let docCount = $state(0)
-	let docsLength = $derived(Object.keys($docs).length)
 	$effect(() => {
 		if (docsLength > docCount && docsLength > 1) {
 			let lastDoc = $docs[Object.keys($docs)[docsLength - 1]]
@@ -83,7 +92,6 @@
 		pages.hideAll(ranges)
 	}
 
-	let downloading = $state(false)
 	async function download(blobs: Blob[]) {
 		let blob: Blob | null = null
 
@@ -190,11 +198,6 @@
 		}
 	}
 
-	const description = {
-		all: $t('split.all.desc'),
-		range: $t('split.by.range.desc')
-	}
-
 	function adjustRangeTo() {
 		if (rangeTo < rangeFrom) rangeTo = rangeFrom
 	}
@@ -250,120 +253,120 @@
 					<PageCard {page} />
 				{/snippet}
 			</DraggableCards>
+
 			{#if Object.keys($previews).length && $pages.length}
 				<Preview />
 			{/if}
 		{/snippet}
 
 		{#snippet side()}
-			<div class="mt-2">
+			<div>
 				<span class="font-semibold leading-none tracking-tight">Split Options</span>
 				<p class="text-muted-foreground text-sm line-clamp-1">Adjust the below</p>
 			</div>
 
-			<Tabs.Root value="range" class="w-full mt-4">
-				<Tabs.List class="grid w-full grid-cols-2">
-					<Tabs.Trigger value="range">Range</Tabs.Trigger>
-					<Tabs.Trigger value="all">All</Tabs.Trigger>
-				</Tabs.List>
-				<Tabs.Content value="range">
-					<p class="text-sm opacity-80 text-center py-8 lg:py-4">
-						{description['range']}
-					</p>
+			<ScrollArea class="h-full mt-4">
+				<Tabs.Root value="range" class="">
+					<Tabs.List class="grid w-full grid-cols-2 sticky top-0 z-10">
+						<Tabs.Trigger value="range">Range</Tabs.Trigger>
+						<Tabs.Trigger value="all">All</Tabs.Trigger>
+					</Tabs.List>
 
-					<Table.Root>
-						<Table.Header>
-							<Table.Row>
-								<Table.Head>From</Table.Head>
-								<Table.Head></Table.Head>
-								<Table.Head>To</Table.Head>
-								<Table.Head></Table.Head>
-							</Table.Row>
-						</Table.Header>
-						<Table.Body>
-							<Table.Row>
-								<Table.Cell class="w-[200px]">
-									<Label for="from" class="sr-only">From</Label>
-									<Input
-										id="from"
-										type="number"
-										min={1}
-										max={$pages.length}
-										bind:value={rangeFrom}
-										onblur={adjustRangeTo}
-									/>
-								</Table.Cell>
+					<Tabs.Content value="range">
+						<p class="text-sm opacity-80 text-center py-8 lg:py-4">
+							{description['range']}
+						</p>
 
-								<Table.Cell class="font-semibold">-</Table.Cell>
-
-								<Table.Cell class="w-[200px]">
-									<Label for="to" class="sr-only">To</Label>
-									<Input
-										id="to"
-										type="number"
-										min={1}
-										max={$pages.length}
-										bind:value={rangeTo}
-										onblur={adjustRangeTo}
-									/>
-								</Table.Cell>
-
-								<Table.Cell>
-									<Button variant="secondary" onclick={addRange} class="w-full">
-										<Plus class="size-4" />
-										<span class="md:hidden ml-2">
-											{$t('btn.range')}
-										</span>
-									</Button>
-								</Table.Cell>
-							</Table.Row>
-						</Table.Body>
-					</Table.Root>
-
-					<Table.Root>
-						<Table.Body>
-							{#each displayRanges as range, index}
+						<Table.Root class="relative">
+							<Table.Header class="sticky top-0">
+								<Table.Row>
+									<Table.Head>From</Table.Head>
+									<Table.Head></Table.Head>
+									<Table.Head>To</Table.Head>
+									<Table.Head></Table.Head>
+								</Table.Row>
+							</Table.Header>
+							<Table.Body>
 								<Table.Row>
 									<Table.Cell class="w-[200px]">
-										{$t('page')}
-										{range[0]}
+										<Label for="from" class="sr-only">From</Label>
+										<Input
+											id="from"
+											type="number"
+											min={1}
+											max={$pages.length}
+											bind:value={rangeFrom}
+											onblur={adjustRangeTo}
+										/>
 									</Table.Cell>
 
-									<Table.Cell class="font-semibold"
-										><ArrowRight class="size-4 opacity-40" /></Table.Cell
-									>
+									<Table.Cell class="font-semibold">-</Table.Cell>
 
 									<Table.Cell class="w-[200px]">
-										{$t('page')}
-										{range[1]}
+										<Label for="to" class="sr-only">To</Label>
+										<Input
+											id="to"
+											type="number"
+											min={1}
+											max={$pages.length}
+											bind:value={rangeTo}
+											onblur={adjustRangeTo}
+										/>
 									</Table.Cell>
 
 									<Table.Cell>
-										<Button
-											variant="ghost"
-											onclick={() => deleteRange(range[0] - 1)}
-											class="w-full text-red-500 disabled:text-gray-400"
-											disabled={index === 0}
-										>
-											<Trash class="size-4 " />
+										<Button variant="secondary" onclick={addRange} class="w-full">
+											<Plus class="size-4" />
+											<span class="md:hidden ml-2">
+												{$t('btn.range')}
+											</span>
 										</Button>
 									</Table.Cell>
 								</Table.Row>
-							{/each}
-						</Table.Body>
-					</Table.Root>
-				</Tabs.Content>
+							</Table.Body>
+						</Table.Root>
 
-				<Tabs.Content value="all">
-					<p class="text-sm opacity-80 text-center py-8 lg:py-4">
-						{description['all']}
-					</p>
-				</Tabs.Content>
-			</Tabs.Root>
+						<Table.Root>
+							<Table.Body>
+								{#each displayRanges as range, index}
+									<Table.Row>
+										<Table.Cell class="w-[200px]">
+											{$t('page')}
+											{range[0]}
+										</Table.Cell>
 
-			<div class="mt-auto sm:hidden">
-				{@render downloadBtn()}
-			</div>
+										<Table.Cell class="font-semibold"
+											><ArrowRight class="size-4 opacity-40" /></Table.Cell
+										>
+
+										<Table.Cell class="w-[200px]">
+											{$t('page')}
+											{range[1]}
+										</Table.Cell>
+
+										<Table.Cell>
+											<Button
+												variant="ghost"
+												onclick={() => deleteRange(range[0] - 1)}
+												class="w-full text-red-500 disabled:text-gray-400"
+												disabled={index === 0}
+											>
+												<Trash class="size-4 " />
+											</Button>
+										</Table.Cell>
+									</Table.Row>
+								{/each}
+							</Table.Body>
+						</Table.Root>
+					</Tabs.Content>
+
+					<Tabs.Content value="all">
+						<p class="text-sm opacity-80 text-center py-8 lg:py-4">
+							{description['all']}
+						</p>
+					</Tabs.Content>
+				</Tabs.Root>
+			</ScrollArea>
 		{/snippet}
 
 		{#snippet cta()}
@@ -372,21 +375,17 @@
 		{/snippet}
 
 		{#snippet download()}
-			{@render downloadBtn()}
+			<Button onclick={split} class="w-full">
+				{#if downloading}
+					<Reload class="mr-2 h-4 w-4 animate-spin" />
+				{/if}
+				{$t('download')}
+				{splitType === 'all'
+					? `(${$pages.length} PDFs)`
+					: Object.keys(ranges).length > 1
+						? `(${Object.keys(ranges).length} PDFs)`
+						: '(1 PDF)'}
+			</Button>
 		{/snippet}
 	</Layout>
 {/if}
-
-{#snippet downloadBtn()}
-	<Button onclick={split} class="w-full">
-		{#if downloading}
-			<Reload class="mr-2 h-4 w-4 animate-spin" />
-		{/if}
-		{$t('download')}
-		{splitType === 'all'
-			? `(${$pages.length} PDFs)`
-			: Object.keys(ranges).length > 1
-				? `(${Object.keys(ranges).length} PDFs)`
-				: '(1 PDF)'}
-	</Button>
-{/snippet}

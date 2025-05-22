@@ -1,21 +1,19 @@
 <script lang="ts">
 	import { docs, uploadingDocs } from '$lib/stores'
 	import { page } from '$app/state'
-	import { LINKS } from '$lib/constants'
 	import { t } from '$lib/i18n'
 	import * as Sheet from '$lib/components/ui/sheet'
 	import * as Resizable from '$lib/components/ui/resizable'
-	import * as Accordion from '$lib/components/ui/accordion/index.js'
-	import { Button, buttonVariants } from '$lib/components/ui/button'
-	import { LoaderCircle, SlidersHorizontal, Upload as UploadIcon } from 'lucide-svelte'
+	import { Button } from '$lib/components/ui/button'
+	import { ChevronUp, LoaderCircle, SlidersHorizontal, Upload as UploadIcon } from 'lucide-svelte'
 
 	import DnDFIleInput from '../(components)/DnDFIleInput.svelte'
 	import UploadButton from '../(components)/UploadButton.svelte'
 	import Upload from './Upload.svelte'
 	import EmptyStatePage from './EmptyStatePage.svelte'
-	import { ScrollArea } from '$lib/components/ui/scroll-area'
-	import Separator from '$lib/components/ui/separator/separator.svelte'
 	import DocList from './DocList.svelte'
+	import { ChevronDown } from 'svelte-radix'
+	import type { PaneAPI } from 'paneforge'
 
 	interface Props {
 		cards?: import('svelte').Snippet
@@ -35,6 +33,10 @@
 	let showPages = $derived(path === 'pdfToImage' ? true : false)
 
 	let defaultLayout = [75, 25]
+	let isDocListCollapsed = $state(false)
+
+	// svelte-ignore non_reactive_update
+	let sidePaneApi: PaneAPI
 </script>
 
 {#if !Object.keys($docs).length && $uploadingDocs}
@@ -65,19 +67,7 @@
 			defaultSize={defaultLayout[1]}
 			class="hidden lg:block"
 		>
-			<div class="p-4 h-full flex flex-col" data-testid="side">
-				{@render docList()}
-
-				{#if side}
-					<Separator class="my-4" />
-				{/if}
-
-				{@render side?.()}
-
-				<div class="mt-auto">
-					{@render download?.()}
-				</div>
-			</div>
+			{@render sidePane()}
 		</Resizable.Pane>
 	</Resizable.PaneGroup>
 
@@ -97,12 +87,8 @@
 				</Button>
 			</Sheet.Trigger>
 
-			<Sheet.Content class="flex flex-col p-4 pt-10 gap-0">
-				{@render docList()}
-				{#if side}
-					<Separator class="my-4" />
-				{/if}
-				{@render side?.()}
+			<Sheet.Content class="flex flex-col p-0 pt-10 gap-0">
+				{@render sidePane()}
 			</Sheet.Content>
 		</Sheet.Root>
 
@@ -124,12 +110,8 @@
 					</Button>
 				</Sheet.Trigger>
 
-				<Sheet.Content class="flex flex-col p-4 pt-10">
-					{@render docList()}
-					{#if side}
-						<Separator class="my-4" />
-					{/if}
-					{@render side?.()}
+				<Sheet.Content class="flex flex-col p-0 pt-10">
+					{@render sidePane()}
 				</Sheet.Content>
 			</Sheet.Root>
 		{:else}
@@ -150,30 +132,62 @@
 {/snippet}
 
 {#snippet docList()}
-	<ScrollArea class="relative">
-		<Accordion.Root value="doc list">
-			<Accordion.Item value="doc list" class="border-0">
-				<div class="flex items-center justify-between gap-1 pb-2">
-					<div class="flex items-center gap-2">
-						<div>
-							<span class="font-semibold leading-none tracking-tight">Documents</span>
-							<p class="text-muted-foreground text-sm line-clamp-1">
-								{Object.keys($docs).length} document{Object.keys($docs).length > 1 ? 's' : ''} uploaded
-							</p>
-						</div>
-					</div>
-
-					<div class="flex gap-1">
-						<Upload Component={UploadButton} {showPages} props={{ iconOnly: true }} />
-
-						<Accordion.Trigger class={buttonVariants({ variant: 'ghost', size: 'icon' })}
-						></Accordion.Trigger>
-					</div>
+	<div>
+		<div class="flex items-center justify-between gap-2 pb-2">
+			<div class="flex items-center gap-2">
+				<div>
+					<span class="font-semibold leading-none tracking-tight">Documents </span>
+					<p class="text-muted-foreground text-sm line-clamp-1">
+						{Object.keys($docs).length} document{Object.keys($docs).length > 1 ? 's' : ''} uploaded
+					</p>
 				</div>
-				<Accordion.Content class="pb-16">
-					<DocList withOptions />
-				</Accordion.Content>
-			</Accordion.Item>
-		</Accordion.Root>
-	</ScrollArea>
+			</div>
+
+			<div class="flex gap-1">
+				<Upload Component={UploadButton} {showPages} props={{ iconOnly: true }} />
+
+				{#if isDocListCollapsed}
+					<Button variant="outline" size="icon" onclick={() => sidePaneApi.expand()}>
+						<ChevronDown class="size-4" />
+						<span class="sr-only">Collapse</span>
+					</Button>
+				{:else}
+					<Button variant="outline" size="icon" onclick={() => sidePaneApi.collapse()}>
+						<ChevronUp class="size-4" />
+						<span class="sr-only">Expand</span>
+					</Button>
+				{/if}
+			</div>
+		</div>
+
+		<DocList withOptions />
+	</div>
+{/snippet}
+
+{#snippet sidePane()}
+	<Resizable.PaneGroup direction="vertical">
+		<Resizable.Pane
+			bind:pane={sidePaneApi}
+			defaultSize={50}
+			minSize={20}
+			maxSize={90}
+			collapsible
+			collapsedSize={15}
+			onCollapse={() => (isDocListCollapsed = true)}
+			onExpand={() => (isDocListCollapsed = false)}
+			class="pt-4 px-4"
+		>
+			{@render docList()}
+		</Resizable.Pane>
+
+		<Resizable.Handle withHandle />
+
+		<Resizable.Pane defaultSize={50} minSize={25} maxSize={90} class="p-4 flex flex-col">
+			{@render side?.()}
+		</Resizable.Pane>
+
+		<div class="mt-auto p-4 pt-0">
+			{@render download?.()}
+		</div>
+	</Resizable.PaneGroup>
 {/snippet}
