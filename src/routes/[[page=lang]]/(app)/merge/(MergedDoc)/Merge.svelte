@@ -77,10 +77,10 @@
 
 <Button class="w-full" onclick={merge} disabled={$pages.length < 2 || $mergedPdf.loading}>
 	{#if $mergedPdf.loading}
-		<Reload class="mr-2 h-4 w-4 animate-spin" />
+		<Reload class="w-4 h-4 mr-2 pointer-events-none animate-spin" />
 		Merging...
 	{:else}
-		<Merge class="mr-2 h-4 w-4" />
+		<Merge class="w-4 h-4 mr-2 pointer-events-none" />
 		Merge
 	{/if}
 </Button>

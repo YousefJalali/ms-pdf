@@ -233,7 +233,7 @@
 		description={$t('split.downloaded.description')}
 	>
 		<Button variant="outline" onclick={reset}>
-			<RotateCcw class="h-4 w-4 mr-2" />
+			<RotateCcw class="w-4 h-4 mr-2 pointer-events-none" />
 			Start Over
 		</Button>
 
@@ -262,18 +262,18 @@
 		{#snippet side()}
 			<div>
 				<span class="font-semibold leading-none tracking-tight">Split Options</span>
-				<p class="text-muted-foreground text-sm line-clamp-1">Adjust the below</p>
+				<p class="text-sm text-muted-foreground line-clamp-1">Adjust the below</p>
 			</div>
 
 			<ScrollArea class="h-full mt-4">
 				<Tabs.Root value="range" class="">
-					<Tabs.List class="grid w-full grid-cols-2 sticky top-0 z-10">
+					<Tabs.List class="sticky top-0 z-10 grid w-full grid-cols-2">
 						<Tabs.Trigger value="range">Range</Tabs.Trigger>
 						<Tabs.Trigger value="all">All</Tabs.Trigger>
 					</Tabs.List>
 
 					<Tabs.Content value="range">
-						<p class="text-sm opacity-80 text-center py-8 lg:py-4">
+						<p class="py-8 text-sm text-center opacity-80 lg:py-4">
 							{description['range']}
 						</p>
 
@@ -316,8 +316,8 @@
 
 									<Table.Cell>
 										<Button variant="secondary" onclick={addRange} class="w-full">
-											<Plus class="size-4" />
-											<span class="md:hidden ml-2">
+											<Plus class="pointer-events-none size-4" />
+											<span class="ml-2 md:hidden">
 												{$t('btn.range')}
 											</span>
 										</Button>
@@ -351,7 +351,7 @@
 												class="w-full text-red-500 disabled:text-gray-400"
 												disabled={index === 0}
 											>
-												<Trash class="size-4 " />
+												<Trash class="pointer-events-none size-4 " />
 											</Button>
 										</Table.Cell>
 									</Table.Row>
@@ -361,7 +361,7 @@
 					</Tabs.Content>
 
 					<Tabs.Content value="all">
-						<p class="text-sm opacity-80 text-center py-8 lg:py-4">
+						<p class="py-8 text-sm text-center opacity-80 lg:py-4">
 							{description['all']}
 						</p>
 					</Tabs.Content>
@@ -370,14 +370,14 @@
 		{/snippet}
 
 		{#snippet cta()}
-			<Split class="size-4 mr-2" />
+			<Split class="mr-2 size-4" />
 			{$t('btn.split')}
 		{/snippet}
 
 		{#snippet download()}
 			<Button onclick={split} class="w-full">
 				{#if downloading}
-					<Reload class="mr-2 h-4 w-4 animate-spin" />
+					<Reload class="w-4 h-4 mr-2 pointer-events-none animate-spin" />
 				{/if}
 				{$t('download')}
 				{splitType === 'all'

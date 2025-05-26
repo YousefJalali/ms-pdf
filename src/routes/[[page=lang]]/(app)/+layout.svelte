@@ -45,12 +45,12 @@
 <svelte:window bind:innerWidth={windowWidth} />
 
 <!-- mobile header -->
-<header class="sm:hidden bg-background flex h-14 items-center gap-4 border-b px-4">
+<header class="flex items-center gap-4 px-4 border-b sm:hidden bg-background h-14">
 	<Sheet.Root>
 		<Sheet.Trigger asChild let:builder>
 			<div class="flex items-center justify-between w-full">
 				<Button builders={[builder]} size="icon" variant="outline">
-					<PanelLeft class="h-5 w-5" />
+					<PanelLeft class="w-5 h-5 pointer-events-none" />
 					<span class="sr-only">Toggle Menu</span>
 				</Button>
 
@@ -69,7 +69,7 @@
 <Resizable.PaneGroup
 	direction="horizontal"
 	{onLayoutChange}
-	class="h-screen w-screen items-stretch"
+	class="items-stretch w-screen h-screen"
 >
 	<Resizable.Pane
 		defaultSize={defaultLayout[0]}
@@ -87,7 +87,7 @@
 	<Resizable.Handle withHandle />
 
 	<Resizable.Pane defaultSize={defaultLayout[1]}>
-		<div class="flex flex-col h-full items-center justify-center">
+		<div class="flex flex-col items-center justify-center h-full">
 			{@render children?.()}
 		</div>
 	</Resizable.Pane>
@@ -98,10 +98,10 @@
 		class="my-4 p-2 flex items-center {isCollapsed && windowWidth > 640 ? 'justify-center' : ''}"
 	>
 		<ChevronsDown
-			class="bg-gradient-to-tr from-primary via-primary/70 to-primary rounded-lg size-9 border text-white"
+			class="text-white border rounded-lg bg-gradient-to-tr from-primary via-primary/70 to-primary size-9"
 		/>
 		{#if !(isCollapsed && windowWidth > 640)}
-			<a class="btn btn-ghost btn-square ml-2 font-bold" href="/">PDF Daddy</a>
+			<a class="ml-2 font-bold btn btn-ghost btn-square" href="/">PDF Daddy</a>
 		{/if}
 	</div>
 {/snippet}
@@ -115,10 +115,10 @@
 
 		<DropdownMenu.Root>
 			<DropdownMenu.Trigger asChild let:builder>
-				<Button builders={[builder]} variant="outline" class="w-fit m-2 gap-2 text-xl p-2">
+				<Button builders={[builder]} variant="outline" class="gap-2 p-2 m-2 text-xl w-fit">
 					{$locale === 'ar' ? '🇸🇦' : '🇺🇸'}
 					{#if !(isCollapsed && windowWidth > 640)}
-						<ChevronDownIcon class="h-4 w-4 opacity-50" />
+						<ChevronDownIcon class="w-4 h-4 opacity-50 pointer-events-none" />
 					{/if}
 				</Button>
 			</DropdownMenu.Trigger>

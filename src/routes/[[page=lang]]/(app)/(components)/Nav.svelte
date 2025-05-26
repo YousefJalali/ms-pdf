@@ -27,7 +27,7 @@
 									'dark:bg-muted dark:text-muted-foreground dark:hover:bg-muted dark:hover:text-white'
 							)}
 						>
-							<route.icon class="size-4" aria-hidden="true" />
+							<route.icon class="pointer-events-none size-4" aria-hidden="true" />
 							<span class="sr-only">{route.title}</span>
 						</Button>
 					</Tooltip.Trigger>
@@ -46,7 +46,7 @@
 							route.href === page.url.pathname
 					})}
 				>
-					<route.icon class="mr-2 size-4" aria-hidden="true" />
+					<route.icon class="mr-2 pointer-events-none size-4" aria-hidden="true" />
 
 					{route.title}
 				</Button>

@@ -88,7 +88,7 @@
 </script>
 
 <div
-	class="relative overflow-x-hidden lg:rounded-box h-full overflow-y-scroll p-4 pb-28 md:pb-12 lg:pb-4"
+	class="relative h-full p-4 overflow-x-hidden overflow-y-scroll lg:rounded-box pb-28 md:pb-12 lg:pb-4"
 >
 	<div
 		class="grid grid-cols-[repeat(auto-fill,minmax(9rem,1fr))] gap-4"
@@ -113,9 +113,9 @@
 								builders={[builder]}
 								size="icon"
 								variant="outline"
-								class="h-8 w-8 absolute z-50 right-2 top-2 lg:hidden rounded-lg"
+								class="absolute z-50 w-8 h-8 rounded-lg right-2 top-2 lg:hidden"
 							>
-								<Ellipsis class="h-4 w-4" />
+								<Ellipsis class="w-4 h-4 pointer-events-none" />
 								<span class="sr-only">More</span>
 							</Button>
 						</DropdownMenu.Trigger>

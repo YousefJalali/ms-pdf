@@ -53,7 +53,7 @@
 {:else}
 	{@render mobileHeaderTools()}
 
-	<Resizable.PaneGroup direction="horizontal" class="h-screen w-screen items-stretch">
+	<Resizable.PaneGroup direction="horizontal" class="items-stretch w-screen h-screen">
 		<Resizable.Pane defaultSize={defaultLayout[0]}>
 			{@render cards?.()}
 		</Resizable.Pane>
@@ -76,23 +76,23 @@
 
 {#snippet mobileHeaderTools()}
 	<div
-		class="lg:hidden sticky top-0 z-50 flex items-center gap-4 justify-between sm:justify-start w-full p-4"
+		class="sticky top-0 z-50 flex items-center justify-between w-full gap-4 p-4 lg:hidden sm:justify-start"
 	>
 		<Upload Component={UploadButton} {showPages} />
 
 		<Sheet.Root>
 			<Sheet.Trigger>
 				<Button variant="outline">
-					<SlidersHorizontal class="size-5" />
+					<SlidersHorizontal class="pointer-events-none size-5" />
 				</Button>
 			</Sheet.Trigger>
 
-			<Sheet.Content class="flex flex-col p-0 pt-10 gap-0">
+			<Sheet.Content class="flex flex-col gap-0 p-0 pt-10">
 				{@render sidePane()}
 			</Sheet.Content>
 		</Sheet.Root>
 
-		<div class="hidden sm:flex lg:hidden ml-auto">
+		<div class="hidden ml-auto sm:flex lg:hidden">
 			{@render download?.()}
 		</div>
 	</div>
@@ -100,7 +100,7 @@
 
 {#snippet mobileCTA()}
 	<div
-		class="flex mt-2 gap-2 fixed bottom-0 pb-4 left-1/2 -translate-x-1/2 w-full max-w-2xl px-4 sm:hidden bg-gradient-to-t from-background sm:from-transparent"
+		class="fixed bottom-0 flex w-full max-w-2xl gap-2 px-4 pb-4 mt-2 -translate-x-1/2 left-1/2 sm:hidden bg-gradient-to-t from-background sm:from-transparent"
 	>
 		{#if cta}
 			<Sheet.Root>
@@ -123,7 +123,7 @@
 {/snippet}
 
 {#snippet placeholder()}
-	<UploadIcon class="size-8 mb-4" />
+	<UploadIcon class="mb-4 size-8" />
 	<p class="mb-2 text-sm">
 		<span class="font-semibold">{$t('click to upload')}</span>
 		{$t('or drag and drop')}
@@ -137,7 +137,7 @@
 			<div class="flex items-center gap-2">
 				<div>
 					<span class="font-semibold leading-none tracking-tight">Documents </span>
-					<p class="text-muted-foreground text-sm line-clamp-1">
+					<p class="text-sm text-muted-foreground line-clamp-1">
 						{Object.keys($docs).length} document{Object.keys($docs).length > 1 ? 's' : ''} uploaded
 					</p>
 				</div>
@@ -146,16 +146,18 @@
 			<div class="flex gap-1">
 				<Upload Component={UploadButton} {showPages} props={{ iconOnly: true }} />
 
-				{#if isDocListCollapsed}
-					<Button variant="outline" size="icon" onclick={() => sidePaneApi.expand()}>
-						<ChevronDown class="size-4" />
-						<span class="sr-only">Collapse</span>
-					</Button>
-				{:else}
-					<Button variant="outline" size="icon" onclick={() => sidePaneApi.collapse()}>
-						<ChevronUp class="size-4" />
-						<span class="sr-only">Expand</span>
-					</Button>
+				{#if side}
+					{#if isDocListCollapsed}
+						<Button variant="outline" size="icon" onclick={() => sidePaneApi.expand()}>
+							<ChevronDown class="pointer-events-none size-4" />
+							<span class="sr-only">Collapse</span>
+						</Button>
+					{:else}
+						<Button variant="outline" size="icon" onclick={() => sidePaneApi.collapse()}>
+							<ChevronUp class="pointer-events-none size-4" />
+							<span class="sr-only">Expand</span>
+						</Button>
+					{/if}
 				{/if}
 			</div>
 		</div>
@@ -175,18 +177,20 @@
 			collapsedSize={15}
 			onCollapse={() => (isDocListCollapsed = true)}
 			onExpand={() => (isDocListCollapsed = false)}
-			class="pt-4 px-4"
+			class="px-4 pt-4"
 		>
 			{@render docList()}
 		</Resizable.Pane>
 
-		<Resizable.Handle withHandle />
+		{#if side}
+			<Resizable.Handle withHandle />
 
-		<Resizable.Pane defaultSize={50} minSize={25} maxSize={90} class="p-4 flex flex-col">
-			{@render side?.()}
-		</Resizable.Pane>
+			<Resizable.Pane defaultSize={50} minSize={25} maxSize={90} class="flex flex-col p-4">
+				{@render side?.()}
+			</Resizable.Pane>
+		{/if}
 
-		<div class="mt-auto p-4 pt-0">
+		<div class="p-4 pt-0 mt-auto">
 			{@render download?.()}
 		</div>
 	</Resizable.PaneGroup>

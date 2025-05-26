@@ -44,21 +44,21 @@
 	})
 </script>
 
-<div class="flex flex-col items-center justify-center h-full max-w-lg mx-auto px-4 text-center">
+<div class="flex flex-col items-center justify-center h-full max-w-lg px-4 mx-auto text-center">
 	{#if downloading}
-		<h1 class="font-semibold tracking-tight text-3xl my-3">{$t('merge.downloading.title')}</h1>
-		<p class="text-muted-foreground text-sm">{$t('merge.downloading.description')}</p>
+		<h1 class="my-3 text-3xl font-semibold tracking-tight">{$t('merge.downloading.title')}</h1>
+		<p class="text-sm text-muted-foreground">{$t('merge.downloading.description')}</p>
 	{:else if downloaded}
-		<h1 class="font-semibold tracking-tight text-3xl my-3">{$t('merge.downloaded.title')}</h1>
-		<p class="text-muted-foreground text-sm">{$t('merge.downloaded.description')}</p>
+		<h1 class="my-3 text-3xl font-semibold tracking-tight">{$t('merge.downloaded.title')}</h1>
+		<p class="text-sm text-muted-foreground">{$t('merge.downloaded.description')}</p>
 		<Button variant="outline" onclick={reset} class="mt-4">
-			<RotateCcw class="h-4 w-4 mr-2" />
+			<RotateCcw class="w-4 h-4 mr-2 pointer-events-none" />
 			Start Over
 		</Button>
 		<OtherTools />
 	{:else}
-		<h1 class="font-semibold tracking-tight text-3xl my-4">{$t('merge.merged.title')}</h1>
-		<p class="text-muted-foreground text-sm">{$t('merge.merged.description')}</p>
+		<h1 class="my-4 text-3xl font-semibold tracking-tight">{$t('merge.merged.title')}</h1>
+		<p class="text-sm text-muted-foreground">{$t('merge.merged.description')}</p>
 		<div
 			data-testid="preview merged"
 			class="my-8 mx-auto border w-[380px] h-[480px] overflow-y-scroll [&>img]:mx-auto [&>img]:m-0 divide-y-2"
@@ -73,15 +73,17 @@
 			{/each}
 		</div>
 
-		<p class="text-muted-foreground text-sm">
+		<p class="text-sm text-muted-foreground">
 			When you're ready, click the button to download your new document.
 		</p>
-		<div class="flex w-fit mx-auto gap-4 my-4">
+		<div class="flex gap-4 mx-auto my-4 w-fit">
 			<Button class="gap-2" variant="outline" onclick={() => mergedPdf.reset()}>
-				<ArrowLeft class="h-4 w-4" />
+				<ArrowLeft class="w-4 h-4 pointer-events-none" />
 				<span class="hidden lg:inline-block">Back to Editing</span></Button
 			>
-			<Button onclick={downloadPdf}>Download <Download class="ml-2 h-4 w-4" /></Button>
+			<Button onclick={downloadPdf}
+				>Download <Download class="w-4 h-4 ml-2 pointer-events-none" /></Button
+			>
 		</div>
 	{/if}
 </div>

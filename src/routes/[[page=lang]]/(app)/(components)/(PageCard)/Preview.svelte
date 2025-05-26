@@ -58,24 +58,31 @@
 					style={transform[currentPageId]}
 					src={URL.createObjectURL($previews[currentPageId].src)}
 					alt={`preview page ${pageNumber} of ${doc.name}`}
-					class="origin-left absolute top-0 left-1/2 -translate-x-1/2 h-full w-auto object-scale-down select-none"
+					class="absolute top-0 object-scale-down w-auto h-full origin-left -translate-x-1/2 select-none left-1/2"
 				/>
 			{:else}
-				<div class="h-full flex justify-center items-center bg-muted">
+				<div class="flex items-center justify-center h-full bg-muted">
 					<Reload data-testid="preview-loading" class="size-5 animate-spin" />
 				</div>
 			{/if}
 		</div>
 		<Dialog.Footer>
-			<div class="flex justify-between items-center w-fit mx-auto">
-				<Button variant="outline" onclick={prev} disabled={currentPageIndex === 0}>
-					<ChevronLeft class="size-5" />
+			<div class="flex items-center justify-between mx-auto w-fit">
+				<Button size="icon" variant="outline" onclick={prev} disabled={currentPageIndex === 0}>
+					<ChevronLeft class="pointer-events-none size-5" />
+					<span class="sr-only">Back</span>
 				</Button>
-				<div class="text-sm px-4">
+				<div class="px-4 text-sm">
 					Page {pageNumber}
 				</div>
-				<Button variant="outline" onclick={next} disabled={currentPageIndex === $pages.length - 1}>
-					<ChevronRight class="size-5" />
+				<Button
+					size="icon"
+					variant="outline"
+					onclick={next}
+					disabled={currentPageIndex === $pages.length - 1}
+				>
+					<ChevronRight class="pointer-events-none size-5" />
+					<span class="sr-only">Next</span>
 				</Button>
 			</div>
 		</Dialog.Footer>

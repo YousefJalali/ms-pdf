@@ -152,9 +152,9 @@
 <header
 	class="w-[90%] md:w-[70%] lg:w-[75%] lg:max-w-screen-xl top-5 mx-auto sticky border z-40 rounded-2xl flex justify-between items-center p-2 bg-card shadow-md dark:shadow-dark shadow-light"
 >
-	<a href="/" class="font-bold text-lg flex items-center">
+	<a href="/" class="flex items-center text-lg font-bold">
 		<ChevronsDown
-			class="bg-gradient-to-tr from-primary via-primary/70 to-primary rounded-lg w-9 h-9 mr-2 border text-white"
+			class="mr-2 text-white border rounded-lg pointer-events-none bg-gradient-to-tr from-primary via-primary/70 to-primary w-9 h-9"
 		/>
 		PDF Daddy
 	</a>
@@ -175,7 +175,7 @@
 						<SheetTitle class="flex items-center">
 							<a href="/" class="flex items-center">
 								<ChevronsDown
-									class="bg-gradient-to-tr from-primary/70 via-primary to-primary/70 rounded-lg size-9 mr-2 border text-white"
+									class="mr-2 text-white border rounded-lg pointer-events-none bg-gradient-to-tr from-primary/70 via-primary to-primary/70 size-9"
 								/>
 								ShadcnSvelte
 							</a>
@@ -185,7 +185,7 @@
 					<div class="flex flex-col gap-2">
 						{#each routeList as { href, label }}
 							<a on:click={() => (isOpen = false)} {href}>
-								<Button variant="ghost" class="justify-start text-base w-full">
+								<Button variant="ghost" class="justify-start w-full text-base">
 									{label}
 								</Button>
 							</a>
@@ -193,14 +193,14 @@
 					</div>
 				</div>
 
-				<SheetFooter class="flex-col sm:flex-col justify-start items-start">
+				<SheetFooter class="flex-col items-start justify-start sm:flex-col">
 					<Separator class="mb-2" />
 					<!-- <ToggleTheme /> -->
 				</SheetFooter>
 			</SheetContent>
 		</Sheet>
 	</div>
-	<div class="hidden lg:flex items-center gap-1">
+	<div class="items-center hidden gap-1 lg:flex">
 		<!-- Navigation Links -->
 		{#each routeList as { href, label }}
 			<a {href} class={buttonVariants({ variant: 'ghost', size: 'default' })}>
@@ -224,8 +224,8 @@
 </header>
 
 <section class="container">
-	<div class="grid place-items-center lg:max-w-screen-xl gap-8 mx-auto py-20 md:py-32">
-		<div class="text-center space-y-8">
+	<div class="grid gap-8 py-20 mx-auto place-items-center lg:max-w-screen-xl md:py-32">
+		<div class="space-y-8 text-center">
 			<span
 				class="focus:ring-ring inline-flex items-center rounded-full border px-2.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 text-foreground text-sm py-2"
 				><span class="mr-2 text-primary"
@@ -235,7 +235,7 @@
 					></span
 				> <span>Design is out now!</span></span
 			>
-			<div class="max-w-screen-md mx-auto text-center text-5xl md:text-6xl font-bold">
+			<div class="max-w-screen-md mx-auto text-5xl font-bold text-center md:text-6xl">
 				<h1>
 					Transform <span
 						class="text-transparent bg-gradient-to-r from-[#D247BF] to-primary bg-clip-text"
@@ -263,7 +263,7 @@
 				alt="dashboard using shadcn-svelte"
 			/>
 			<div
-				class="absolute bottom-0 left-0 w-full h-20 md:h-28 bg-gradient-to-b from-background/0 via-background/50 to-background rounded-lg"
+				class="absolute bottom-0 left-0 w-full h-20 rounded-lg md:h-28 bg-gradient-to-b from-background/0 via-background/50 to-background"
 			></div>
 		</div>
 	</div>
@@ -272,25 +272,25 @@
 <section id="tools" class="container py-24 sm:py-32">
 	<div class="grid lg:grid-cols-2 place-items-center lg:gap-24">
 		<div>
-			<h2 class="text-lg text-primary mb-2 tracking-wider">Tools</h2>
-			<h2 class="text-3xl md:text-4xl font-bold mb-4">Powerful PDF Tools in One Place</h2>
-			<p class="text-xl text-muted-foreground mb-8">
+			<h2 class="mb-2 text-lg tracking-wider text-primary">Tools</h2>
+			<h2 class="mb-4 text-3xl font-bold md:text-4xl">Powerful PDF Tools in One Place</h2>
+			<p class="mb-8 text-xl text-muted-foreground">
 				Merge or split your PDFs effortlessly. Our tools help you organize documents with speed and
 				precision.
 			</p>
 		</div>
-		<div class="grid lg:grid-cols-2 gap-4 w-full">
+		<div class="grid w-full gap-4 lg:grid-cols-2">
 			{#each TOOLS as tool, i}
 				<a
 					href={`${$locale}/${tool.link}`}
-					class="text-card-foreground rounded-lg border shadow-sm bg-muted/50 dark:bg-card hover:bg-background dark:hover:bg-background transition-all delay-75 group/number"
+					class="transition-all delay-75 border rounded-lg shadow-sm text-card-foreground bg-muted/50 dark:bg-card hover:bg-background dark:hover:bg-background group/number"
 				>
 					<div class="flex flex-col space-y-1.5 p-6 pb-0">
 						<div class="flex justify-between">
 							<span class="mb-6">{@html tool.icon}</span>
 
 							<span
-								class="text-5xl text-muted-foreground/15 font-medium transition-all delay-75 group-hover/number:text-muted-foreground/30"
+								class="text-5xl font-medium transition-all delay-75 text-muted-foreground/15 group-hover/number:text-muted-foreground/30"
 								>0{i + 1}</span
 							>
 						</div>
@@ -313,19 +313,19 @@
 </section>
 
 <section id="features" class="container py-24 sm:py-32">
-	<h2 class="text-lg text-primary text-center mb-2 tracking-wider">Features</h2>
-	<h2 class="text-3xl md:text-4xl text-center font-bold mb-4">
+	<h2 class="mb-2 text-lg tracking-wider text-center text-primary">Features</h2>
+	<h2 class="mb-4 text-3xl font-bold text-center md:text-4xl">
 		What Makes Our PDF Tools Stand Out
 	</h2>
-	<h3 class="md:w-1/2 mx-auto text-xl text-center text-muted-foreground mb-8">
+	<h3 class="mx-auto mb-8 text-xl text-center md:w-1/2 text-muted-foreground">
 		All-in-one PDF toolkit built for speed, simplicity, and control — no downloads, no watermarks,
 		just productivity.
 	</h3>
-	<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+	<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
 		{#each features as feature}
-			<div class="text-card-foreground rounded-lg h-full bg-background border-0 shadow-none">
+			<div class="h-full border-0 rounded-lg shadow-none text-card-foreground bg-background">
 				<div class="flex-col space-y-1.5 p-6 pb-0 flex justify-center items-center">
-					<div class="bg-primary/20 p-2 rounded-full ring-8 ring-primary/10 mb-4">
+					<div class="p-2 mb-4 rounded-full bg-primary/20 ring-8 ring-primary/10">
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							width="24"
@@ -349,7 +349,7 @@
 					</div>
 				</div>
 
-				<div class="p-6 text-muted-foreground text-center">
+				<div class="p-6 text-center text-muted-foreground">
 					{feature.description}
 				</div>
 			</div>
@@ -358,11 +358,11 @@
 </section>
 
 <section id="contact" class="container py-24 sm:py-32">
-	<section class="grid grid-cols-1 md:grid-cols-2 gap-8">
+	<section class="grid grid-cols-1 gap-8 md:grid-cols-2">
 		<div>
 			<div class="mb-4">
-				<h2 class="text-lg text-primary mb-2 tracking-wider">Contact</h2>
-				<h2 class="text-3xl md:text-4xl font-bold">Connect With Us</h2>
+				<h2 class="mb-2 text-lg tracking-wider text-primary">Contact</h2>
+				<h2 class="text-3xl font-bold md:text-4xl">Connect With Us</h2>
 			</div>
 			<p class="mb-8 text-muted-foreground lg:w-5/6">
 				Have questions or feedback? We'd love to hear from you. Whether you're facing an issue or
@@ -372,10 +372,10 @@
 
 		<!-- Form -->
 		<Card class="bg-muted/60 dark:bg-card">
-			<CardHeader class="text-primary text-2xl" />
+			<CardHeader class="text-2xl text-primary" />
 			<CardContent>
 				<form on:submit={handleSubmit} class="grid gap-4">
-					<div class="flex flex-col md:flex-row gap-8">
+					<div class="flex flex-col gap-8 md:flex-row">
 						<div class="flex flex-col w-full gap-1.5">
 							<Label for="firstName">First Name</Label>
 							<Input
@@ -446,9 +446,9 @@
 </section>
 
 <section id="faq" class="container md:w-[700px] py-24 sm:py-32">
-	<div class="text-center mb-8">
-		<h2 class="text-lg text-primary text-center mb-2 tracking-wider">FAQS</h2>
-		<h2 class="text-3xl md:text-4xl text-center font-bold">Common Questions</h2>
+	<div class="mb-8 text-center">
+		<h2 class="mb-2 text-lg tracking-wider text-center text-primary">FAQS</h2>
+		<h2 class="text-3xl font-bold text-center md:text-4xl">Common Questions</h2>
 	</div>
 
 	<Accordion type="single" class="w-full">
@@ -464,7 +464,7 @@
 		{/each}
 	</Accordion>
 
-	<h3 class="font-medium mt-4">
+	<h3 class="mt-4 font-medium">
 		Still have questions?
 		<a href="#contact" class="text-muted-foreground">
 			<span class="underline">Contact us</span>
@@ -473,19 +473,19 @@
 </section>
 
 <footer id="footer" class="container py-24 pb-16 sm:py-32 sm:pb-24">
-	<div class="p-10 bg-muted/50 dark:bg-card border rounded-2xl">
+	<div class="p-10 border bg-muted/50 dark:bg-card rounded-2xl">
 		<div class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-6 gap-x-12 gap-y-8">
 			<div class="col-span-full xl:col-span-2">
-				<a href="/" class="flex font-bold items-center">
+				<a href="/" class="flex items-center font-bold">
 					<ChevronsDown
-						class="bg-gradient-to-tr from-primary via-primary/70 to-primary rounded-lg w-9 h-9 mr-2 border text-white"
+						class="mr-2 text-white border rounded-lg bg-gradient-to-tr from-primary via-primary/70 to-primary w-9 h-9"
 					/>
 					<h3 class="text-2xl">PDF Daddy</h3>
 				</a>
 			</div>
 
 			<div class="flex flex-col gap-2">
-				<h3 class="font-bold text-lg">Contact</h3>
+				<h3 class="text-lg font-bold">Contact</h3>
 				<div><a href="https://github.com" class="opacity-60 hover:opacity-100">Github</a></div>
 				<div><a href="https://twitter.com" class="opacity-60 hover:opacity-100">Twitter</a></div>
 				<div>
@@ -494,21 +494,21 @@
 			</div>
 
 			<div class="flex flex-col gap-2">
-				<h3 class="font-bold text-lg">Platforms</h3>
-				<div><span class="opacity-60 hover:opacity-100 cursor-default">iOS</span></div>
-				<div><span class="opacity-60 hover:opacity-100 cursor-default">Android</span></div>
-				<div><span class="opacity-60 hover:opacity-100 cursor-default">Web</span></div>
+				<h3 class="text-lg font-bold">Platforms</h3>
+				<div><span class="cursor-default opacity-60 hover:opacity-100">iOS</span></div>
+				<div><span class="cursor-default opacity-60 hover:opacity-100">Android</span></div>
+				<div><span class="cursor-default opacity-60 hover:opacity-100">Web</span></div>
 			</div>
 
 			<div class="flex flex-col gap-2">
-				<h3 class="font-bold text-lg">Help</h3>
+				<h3 class="text-lg font-bold">Help</h3>
 				<div><a href="#contact" class="opacity-60 hover:opacity-100">Contact Us</a></div>
 				<div><a href="#faq" class="opacity-60 hover:opacity-100">FAQ</a></div>
 				<div><a href="#contact" class="opacity-60 hover:opacity-100">Feedback</a></div>
 			</div>
 
 			<div class="flex flex-col gap-2">
-				<h3 class="font-bold text-lg">Socials</h3>
+				<h3 class="text-lg font-bold">Socials</h3>
 				<div><a href="https://twitch.tv" class="opacity-60 hover:opacity-100">Twitch</a></div>
 				<div><a href="https://discord.com" class="opacity-60 hover:opacity-100">Discord</a></div>
 				<div><a href="https://dribbble.com" class="opacity-60 hover:opacity-100">Dribbble</a></div>
@@ -523,7 +523,7 @@
 				<a
 					target="_blank"
 					href="https://github.com/yousefjalali"
-					class="text-primary transition-all border-primary hover:border-b-2"
+					class="transition-all text-primary border-primary hover:border-b-2"
 					rel="noreferrer"
 				>
 					Yousef Jalali

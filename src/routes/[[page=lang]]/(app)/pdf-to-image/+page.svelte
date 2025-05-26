@@ -156,7 +156,7 @@
 		description={$t('pdfToImage.downloaded.description')}
 	>
 		<Button variant="outline" onclick={reset} class="mt-4">
-			<RotateCcw class="h-4 w-4 mr-2" />
+			<RotateCcw class="w-4 h-4 mr-2 pointer-events-none" />
 			Start Over</Button
 		>
 
@@ -189,7 +189,7 @@
 							</div>
 							<div class="h-full flex items-center aspect-[180/280]">
 								<img
-									class="mx-auto h-full object-contain"
+									class="object-contain h-full mx-auto"
 									src={URL.createObjectURL($thumbnails[pageId].src)}
 									alt={pageId}
 									height={200}
@@ -213,7 +213,7 @@
 		{#snippet side()}
 			<div class="mt-2">
 				<span class="font-semibold leading-none tracking-tight">Download Options</span>
-				<p class="text-muted-foreground text-sm line-clamp-1">Adjust the below</p>
+				<p class="text-sm text-muted-foreground line-clamp-1">Adjust the below</p>
 			</div>
 
 			<div class="flex flex-col">
@@ -239,7 +239,7 @@
 					/>
 
 					<span
-						class="text-muted-foreground text-xs font-normal leading-snug ml-auto block w-fit mt-1"
+						class="block mt-1 ml-auto text-xs font-normal leading-snug text-muted-foreground w-fit"
 						>{QUALITY_LABEL[quality[0]]}
 					</span>
 				</div>
@@ -264,7 +264,7 @@
 				<div class="py-3">
 					<Label for="file-name">File Name</Label>
 
-					<div class="w-full text-sm flex items-center gap-2 mt-2">
+					<div class="flex items-center w-full gap-2 mt-2 text-sm">
 						<Input
 							id="file-name"
 							bind:value={fileName}
@@ -275,7 +275,7 @@
 						.{Object.keys($selected).length === 1 ? imageFormat : 'zip'}
 					</div>
 
-					<span class="text-muted-foreground text-xs font-normal leading-snug"
+					<span class="text-xs font-normal leading-snug text-muted-foreground"
 						>{`Avoid using: < > : " / \ | ? *`}</span
 					>
 				</div>
@@ -287,7 +287,7 @@
 		{/snippet}
 
 		{#snippet cta()}
-			<ArrowRightLeft class="size-4 mr-2" />
+			<ArrowRightLeft class="mr-2 size-4" />
 			Convert
 		{/snippet}
 
@@ -300,7 +300,7 @@
 {#snippet downloadBtn()}
 	<Button class="w-full" onclick={downloadHandler}>
 		{#if downloading}
-			<Reload class="mr-2 h-4 w-4 animate-spin" />
+			<Reload class="w-4 h-4 mr-2 pointer-events-none animate-spin" />
 		{/if}
 		Download
 		{Object.keys($selected).length

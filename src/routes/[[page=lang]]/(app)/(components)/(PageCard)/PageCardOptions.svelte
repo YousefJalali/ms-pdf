@@ -69,7 +69,7 @@
 					data-testid={dataTestId}
 					onclick={action}
 				>
-					<Icon class="size-4 {label === 'delete' ? 'text-red-500' : ''}" />
+					<Icon class="pointer-events-none size-4 {label === 'delete' ? 'text-red-500' : ''}" />
 					<span class="sr-only">{label}</span>
 				</Button>
 			</Tooltip.Trigger>
@@ -84,7 +84,7 @@
 			onclick={action}
 			class={label === 'delete' ? 'text-red-500' : ''}
 		>
-			<Icon class="size-4 mr-2" />
+			<Icon class="mr-2 size-4" />
 			{dataTip}
 		</DropdownMenu.Item>
 	{/each}

@@ -17,7 +17,7 @@
 
 <ul data-testid="doc list">
 	{#each Object.values($docs) as doc}
-		<li class="relative group py-3 px-1 flex flex-1 items-center">
+		<li class="relative flex items-center flex-1 px-1 py-3 group">
 			<span class="w-fit flex items-center justify-center [&_svg]:size-6 mr-2">
 				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
 					<path
@@ -29,7 +29,7 @@
 
 			<div class="grid gap-0.5">
 				<p class="text-sm font-medium leading-normal line-clamp-2">{doc.name}</p>
-				<p class="text-muted-foreground text-xs">
+				<p class="text-xs text-muted-foreground">
 					{doc.pageCount} page{doc.pageCount > 1 ? 's' : ''} - {formatBytes(doc.size)}
 				</p>
 			</div>
@@ -43,9 +43,9 @@
 								builders={[builder]}
 								size="icon"
 								variant="ghost"
-								class="h-8 w-8"
+								class="w-8 h-8"
 							>
-								<Ellipsis class="h-4 w-4" />
+								<Ellipsis class="w-4 h-4 pointer-events-none" />
 								<span class="sr-only">More</span>
 							</Button>
 						</DropdownMenu.Trigger>
