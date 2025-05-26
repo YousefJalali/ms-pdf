@@ -32,12 +32,18 @@
 	})
 	let showPages = $derived(path === 'pdfToImage' ? true : false)
 
+	let windowHeight = $state(0)
 	let defaultLayout = [75, 25]
 	let isDocListCollapsed = $state(false)
 
 	// svelte-ignore non_reactive_update
 	let sidePaneApi: PaneAPI
+
+	//60 is header height in px
+	let docListHeaderCollapsedSize = $derived(+((60 / windowHeight) * 100).toFixed(2))
 </script>
+
+<svelte:window bind:innerHeight={windowHeight} />
 
 {#if !Object.keys($docs).length && $uploadingDocs}
 	<EmptyStatePage
@@ -171,10 +177,9 @@
 		<Resizable.Pane
 			bind:pane={sidePaneApi}
 			defaultSize={50}
-			minSize={20}
 			maxSize={90}
 			collapsible
-			collapsedSize={15}
+			collapsedSize={docListHeaderCollapsedSize}
 			onCollapse={() => (isDocListCollapsed = true)}
 			onExpand={() => (isDocListCollapsed = false)}
 			class="px-4 pt-4"
@@ -185,7 +190,12 @@
 		{#if side}
 			<Resizable.Handle withHandle />
 
-			<Resizable.Pane defaultSize={50} minSize={25} maxSize={90} class="flex flex-col p-4">
+			<Resizable.Pane
+				defaultSize={50}
+				minSize={25}
+				maxSize={100 - docListHeaderCollapsedSize}
+				class="flex flex-col p-4"
+			>
 				{@render side?.()}
 			</Resizable.Pane>
 		{/if}
