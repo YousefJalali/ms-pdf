@@ -188,7 +188,6 @@
 	}
 
 	export function splittedDocsCount() {
-		console.log('called', displayRanges.length)
 		return displayRanges.length
 	}
 </script>
