@@ -46,12 +46,17 @@
 
 <Dialog.Root open={showModal} onOpenChange={closeModal}>
 	<Dialog.Content class="sm:max-w-[425px]">
-		<!-- <Dialog.Header>
-			<Dialog.Title>{doc.name}</Dialog.Title>
-			<Dialog.Description>
+		<div
+			class="absolute w-1/3 h-1 -translate-x-1/2 left-1/2 top-2 bg-primary rounded-3xl"
+			style="background-color: {doc.color}"
+		></div>
+		<Dialog.Header>
+			<Dialog.Title class="text-center line-clamp-1">{doc.name.replaceAll('.pdf', '')}</Dialog.Title
+			>
+			<!-- <Dialog.Description>
 				Make changes to your profile here. Click save when you're done.
-			</Dialog.Description>
-		</Dialog.Header> -->
+			</Dialog.Description> -->
+		</Dialog.Header>
 		<div bind:this={imgContainer} class="relative overflow-hidden h-[70vh] w-full mx-auto">
 			{#if $previews[currentPageId]?.src && currentPage}
 				<img
