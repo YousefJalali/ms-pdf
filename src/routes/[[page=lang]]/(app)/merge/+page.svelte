@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { mergedPdf, pages, previews } from '$lib/stores'
 	import { t } from '$lib/i18n'
-	import DraggableCards from '../(components)/DraggableCards.svelte'
+	import Draggable from '../(components)/Draggable.svelte'
 	import Layout from '../(components)/Layout.svelte'
 	import MergedDoc from './(MergedDoc)/MergedDoc.svelte'
 	import Merge from './(MergedDoc)/Merge.svelte'
@@ -9,6 +9,7 @@
 	import PageCard from '../(components)/(PageCard)/PageCard.svelte'
 	import EmptyStatePage from '../(components)/EmptyStatePage.svelte'
 	import { LoaderCircle } from 'lucide-svelte'
+	import CardsGrid from '../(components)/CardsGrid.svelte'
 </script>
 
 <svelte:head>
@@ -30,11 +31,13 @@
 {:else}
 	<Layout>
 		{#snippet cards()}
-			<DraggableCards>
-				{#snippet children({ page })}
-					<PageCard {page} />
-				{/snippet}
-			</DraggableCards>
+			<CardsGrid>
+				<Draggable>
+					{#snippet children({ page })}
+						<PageCard {page} />
+					{/snippet}
+				</Draggable>
+			</CardsGrid>
 			{#if Object.keys($previews).length && $pages.length}
 				<Preview />
 			{/if}
@@ -44,7 +47,7 @@
 			<Accordion.Root value="doc list" class="w-full">
 				<Accordion.Item value="doc list" class="border-0">
 					<Accordion.Trigger class="p-0">
-						<div class="font-semibold text-sm">
+						<div class="text-sm font-semibold">
 							Uploaded Docs ({Object.keys($docs).length})
 						</div>
 					</Accordion.Trigger>

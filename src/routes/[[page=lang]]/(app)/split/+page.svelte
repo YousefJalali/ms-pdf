@@ -4,7 +4,7 @@
 	import { generateFileName } from '$lib/utils'
 	import Layout from '../(components)/Layout.svelte'
 	import OtherTools from '../(components)/OtherTools.svelte'
-	import DraggableCards from '../(components)/DraggableCards.svelte'
+	import Draggable from '../(components)/Draggable.svelte'
 	import PageCard from '../(components)/(PageCard)/PageCard.svelte'
 	import Preview from '../(components)/(PageCard)/Preview.svelte'
 	import { t } from '$lib/i18n'
@@ -15,6 +15,7 @@
 	import EmptyStatePage from '../(components)/EmptyStatePage.svelte'
 	import SplitOptions from './SplitOptions.svelte'
 	import ScrollArea from '$lib/components/ui/scroll-area/scroll-area.svelte'
+	import CardsGrid from '../(components)/CardsGrid.svelte'
 
 	// svelte-ignore non_reactive_update
 	let options: SplitOptions
@@ -113,11 +114,13 @@
 {:else}
 	<Layout>
 		{#snippet cards()}
-			<DraggableCards>
-				{#snippet children({ page, pageIndex })}
-					<PageCard {page} />
-				{/snippet}
-			</DraggableCards>
+			<CardsGrid>
+				<Draggable>
+					{#snippet children({ page, pageIndex })}
+						<PageCard {page} />
+					{/snippet}
+				</Draggable>
+			</CardsGrid>
 
 			{#if Object.keys($previews).length && $pages.length}
 				<Preview />

@@ -19,6 +19,7 @@
 	import { Badge } from '$lib/components/ui/badge'
 	import * as Card from '$lib/components/ui/card/index.js'
 	import PageLoadingState from '../(components)/PageLoadingState.svelte'
+	import CardsGrid from '../(components)/CardsGrid.svelte'
 
 	const defaultFileName = generateFileName('Converted')
 	const QUALITY_LABEL: { [ket: number]: string } = {
@@ -171,43 +172,43 @@
 {:else}
 	<Layout>
 		{#snippet cards()}
-			<div
-				class="relative overflow-x-hidden lg:rounded-box h-full overflow-y-scroll p-4 pb-28 md:pb-12 lg:pb-4 grid grid-cols-2 min-[460px]:grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-6 gap-4"
-			>
-				{#each Object.keys($thumbnails) as pageId}
-					<Card.Root
-						class="h-fit"
-						style="opacity: {Object.keys($selected).length && !$selected[pageId] ? 0.5 : 1};"
-					>
-						<Card.Content class="relative p-2">
-							<div class="absolute top-2 right-2">
-								<Checkbox
-									id={pageId}
-									checked={$selected[pageId]}
-									onclick={() => handleSelected(pageId)}
-								/>
-							</div>
-							<div class="h-full flex items-center aspect-[180/280]">
-								<img
-									class="object-contain h-full mx-auto"
-									src={URL.createObjectURL($thumbnails[pageId].src)}
-									alt={pageId}
-									height={200}
-								/>
-							</div>
-						</Card.Content>
+			<CardsGrid>
+				<div>
+					{#each Object.keys($thumbnails) as pageId}
+						<Card.Root
+							class="h-fit"
+							style="opacity: {Object.keys($selected).length && !$selected[pageId] ? 0.5 : 1};"
+						>
+							<Card.Content class="relative p-2">
+								<div class="absolute top-2 right-2">
+									<Checkbox
+										id={pageId}
+										checked={$selected[pageId]}
+										onclick={() => handleSelected(pageId)}
+									/>
+								</div>
+								<div class="h-full flex items-center aspect-[180/280]">
+									<img
+										class="object-contain h-full mx-auto"
+										src={URL.createObjectURL($thumbnails[pageId].src)}
+										alt={pageId}
+										height={200}
+									/>
+								</div>
+							</Card.Content>
 
-						<Card.Footer class="p-2 pt-0">
-							<Badge
-								class="mx-auto"
-								style="background-color: {$docs[$thumbnails[pageId].docId].color};"
-							>
-								Page {$thumbnails[pageId].pageNumberInDoc}
-							</Badge>
-						</Card.Footer>
-					</Card.Root>
-				{/each}
-			</div>
+							<Card.Footer class="p-2 pt-0">
+								<Badge
+									class="mx-auto"
+									style="background-color: {$docs[$thumbnails[pageId].docId].color};"
+								>
+									Page {$thumbnails[pageId].pageNumberInDoc}
+								</Badge>
+							</Card.Footer>
+						</Card.Root>
+					{/each}
+				</div>
+			</CardsGrid>
 		{/snippet}
 
 		{#snippet side()}

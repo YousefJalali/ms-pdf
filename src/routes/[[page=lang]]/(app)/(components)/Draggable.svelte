@@ -88,50 +88,45 @@
 </script>
 
 <div
-	class="relative h-full p-4 overflow-x-hidden overflow-y-scroll lg:rounded-box pb-28 md:pb-12 lg:pb-4"
+	use:dndzone={{
+		items: $pages,
+		flipDurationMs,
+		dropTargetStyle: {}
+	}}
+	onconsider={handleDndConsider}
+	onfinalize={handleDndFinalize}
+	data-testid="drop zone"
 >
-	<div
-		class="grid grid-cols-[repeat(auto-fill,minmax(9rem,1fr))] gap-4"
-		use:dndzone={{
-			items: $pages,
-			flipDurationMs,
-			dropTargetStyle: {}
-		}}
-		onconsider={handleDndConsider}
-		onfinalize={handleDndFinalize}
-		data-testid="drop zone"
-	>
-		{#each $pages as page, pageIndex (page.id)}
-			<div
-				class={`group focus:!outline-none z-0 h-fit relative ${page.isVisible ? 'block' : 'hidden'}`}
-				animate:flip={{ duration: flipDurationMs }}
-			>
-				{#if page.isVisible}
-					<DropdownMenu.Root>
-						<DropdownMenu.Trigger asChild let:builder>
-							<Button
-								builders={[builder]}
-								size="icon"
-								variant="outline"
-								class="absolute z-50 w-8 h-8 rounded-lg right-2 top-2 lg:hidden"
-							>
-								<Ellipsis class="w-4 h-4 pointer-events-none" />
-								<span class="sr-only">More</span>
-							</Button>
-						</DropdownMenu.Trigger>
-						<DropdownMenu.Content align="end">
-							<PageCardOptions
-								doc={$docs[page.docId]}
-								{page}
-								onDelete={() => {}}
-								onPreview={() => {}}
-							/>
-						</DropdownMenu.Content>
-					</DropdownMenu.Root>
+	{#each $pages as page, pageIndex (page.id)}
+		<div
+			class={`group focus:!outline-none z-0 h-fit relative ${page.isVisible ? 'block' : 'hidden'}`}
+			animate:flip={{ duration: flipDurationMs }}
+		>
+			{#if page.isVisible}
+				<DropdownMenu.Root>
+					<DropdownMenu.Trigger asChild let:builder>
+						<Button
+							builders={[builder]}
+							size="icon"
+							variant="outline"
+							class="absolute z-50 w-8 h-8 rounded-lg right-2 top-2 lg:hidden"
+						>
+							<Ellipsis class="w-4 h-4 pointer-events-none" />
+							<span class="sr-only">More</span>
+						</Button>
+					</DropdownMenu.Trigger>
+					<DropdownMenu.Content align="end">
+						<PageCardOptions
+							doc={$docs[page.docId]}
+							{page}
+							onDelete={() => {}}
+							onPreview={() => {}}
+						/>
+					</DropdownMenu.Content>
+				</DropdownMenu.Root>
 
-					{@render children?.({ page, pageIndex })}
-				{/if}
-			</div>
-		{/each}
-	</div>
+				{@render children?.({ page, pageIndex })}
+			{/if}
+		</div>
+	{/each}
 </div>
