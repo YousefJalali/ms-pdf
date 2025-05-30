@@ -1,3 +1,5 @@
+import { translations } from '$lib/constants/translations'
+import { generateFileName } from '$lib/custom-utils'
 import { expect, test, type Locator } from '@playwright/test'
 
 test.describe('split', () => {
@@ -27,15 +29,89 @@ test.describe('split', () => {
 		cardsDelete = page.getByTestId('card-delete')
 	})
 
-	test('doc name should be in the drop zone after upload', async ({ page }) => {
-		await expect(dropZone).toBeVisible()
-		await expect(dropZone).toContainText(firstDoc)
-		await expect(dropZone).toContainText(secondDoc)
+	test('split tabs functionality', async ({ page }) => {
+		await expect(side).toBeVisible()
+		await expect(side.getByTestId('split-tabs')).toBeVisible()
+
+		//split by range tab
+		await side.getByTestId('split-tabs').getByText('Range').click()
+		await expect(side.getByPlaceholder('e.g. 1-5, 8')).toBeVisible()
+
+		//split all pages tab
+		await side.getByTestId('split-tabs').getByText('all').click()
+		await expect(side.getByText(translations['en']['split.all.desc'])).toBeVisible()
+		await expect(side.getByPlaceholder('e.g. 1-5, 8')).toBeHidden()
 	})
 
-	test('range radio buttons should be visible', async ({ page }) => {
-		await expect(side).toBeVisible()
-		await expect(side.getByLabel('Split By Range')).toBeVisible()
+	test('range should be added when doc is uploaded', async ({ page }) => {
+		await expect(side.getByTestId('split-ranges')).toBeVisible()
+
+		await expect(side.getByTestId('split-ranges').getByText('1 - 1 (1 Page)')).toBeVisible()
+		await expect(side.getByTestId('split-ranges').getByText('2 - 3 (2 Pages)')).toBeVisible()
+	})
+
+	test('merge deleted range with the previous one', async ({ page }) => {
+		await expect(side.getByTestId('split-ranges')).toBeVisible()
+
+		await expect(side.getByTestId('split-ranges').getByText('1 - 1 (1 Page)')).toBeVisible()
+		await expect(side.getByTestId('split-ranges').getByText('2 - 3 (2 Pages)')).toBeVisible()
+
+		await side.getByTestId('split-ranges').getByRole('button').nth(1).click()
+
+		await expect(side.getByTestId('split-ranges').getByRole('button')).toHaveCount(1)
+		await expect(side.getByTestId('split-ranges').getByText('2 - 3 (2 Pages)')).toBeHidden()
+
+		await expect(side.getByTestId('split-ranges').getByText('1 - 3 (3 Pages)')).toBeVisible()
+	})
+
+	test('add/delete range', async ({ page }) => {
+		await expect(side.getByTestId('split-ranges')).toBeVisible()
+
+		await expect(side.getByTestId('split-ranges').getByRole('button')).toHaveCount(2)
+		await expect(side.getByTestId('split-ranges').getByText('1 - 1 (1 Page)')).toBeVisible()
+		await expect(side.getByTestId('split-ranges').getByText('2 - 3 (2 Pages)')).toBeVisible()
+
+		await side.getByPlaceholder('e.g. 1-5, 8').fill('2 - 2')
+
+		await side.getByPlaceholder('e.g. 1-5, 8').press('Enter')
+		await expect(side.getByTestId('split-ranges').getByRole('button')).toHaveCount(3)
+		await expect(side.getByTestId('split-ranges').getByText('1 - 1 (1 Page)')).toBeVisible()
+		await expect(side.getByTestId('split-ranges').getByText('2 - 2 (1 Page)')).toBeVisible()
+		await expect(side.getByTestId('split-ranges').getByText('3 - 3 (1 Page)')).toBeVisible()
+
+		//delete middle range
+		await side.getByTestId('split-ranges').getByRole('button').nth(0).click()
+		await expect(side.getByTestId('split-ranges').getByRole('button')).toHaveCount(2)
+		await expect(side.getByTestId('split-ranges').getByText('1 - 2 (2 Pages)')).toBeVisible()
+		await expect(side.getByTestId('split-ranges').getByText('3 - 3 (1 Page)')).toBeVisible()
+	})
+
+	test('if there is only one range, it cant be deleted', async ({ page }) => {
+		await expect(side.getByTestId('split-ranges')).toBeVisible()
+
+		await expect(side.getByTestId('split-ranges').getByRole('button')).toHaveCount(2)
+		await expect(side.getByTestId('split-ranges').getByText('1 - 1 (1 Page)')).toBeVisible()
+		await expect(side.getByTestId('split-ranges').getByText('2 - 3 (2 Pages)')).toBeVisible()
+
+		await side.getByTestId('split-ranges').getByRole('button').nth(0).click()
+		await expect(side.getByTestId('split-ranges').getByRole('button')).toHaveCount(1)
+		await expect(side.getByTestId('split-ranges').getByText('1 - 3 (3 Pages)')).toBeVisible()
+		await expect(side.getByTestId('split-ranges').getByRole('button').nth(0)).toBeDisabled()
+	})
+
+	test('download splitted docs', async ({ page }) => {
+		//click on merge button
+		await page.getByRole('button', { name: 'download (2 PDFs)' }).click()
+
+		// Start waiting for download before clicking. Note no await.
+		const downloadPromise = page.waitForEvent('download')
+		await page.getByRole('button', { name: 'Download' }).click()
+		const download = await downloadPromise
+
+		expect(download.suggestedFilename()).toEqual(`${generateFileName('Split')}.zip`)
+
+		// Wait for the download process to complete and save the downloaded file somewhere.
+		// await download.saveAs('./tests/' + download.suggestedFilename())
 	})
 })
 

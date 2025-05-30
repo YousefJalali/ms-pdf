@@ -67,8 +67,7 @@ export const translations = {
 		'btn.range': 'Range',
 		'label.uploaded.docs': 'Uploaded Docs',
 		'label.download.options': 'Download Options',
-		'split.by.range.desc':
-			'Specify the page ranges you want to split. Enter the start and end page numbers to extract specific sections of your PDF.',
+		'split.by.range.desc': 'Select the page range to extract by entering the start and end pages.',
 		'split.all.desc':
 			'Split your PDF into individual pages, creating a separate file for each page. Ideal for when you need to extract every page separately.',
 		pages: 'Pages',

@@ -173,7 +173,7 @@
 {/snippet}
 
 {#snippet sidePane()}
-	<Resizable.PaneGroup direction="vertical">
+	<Resizable.PaneGroup direction="vertical" data-testid="side">
 		<Resizable.Pane
 			bind:pane={sidePaneApi}
 			defaultSize={50}

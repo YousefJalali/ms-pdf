@@ -16,23 +16,21 @@
 	import SplitOptions from './SplitOptions.svelte'
 	import ScrollArea from '$lib/components/ui/scroll-area/scroll-area.svelte'
 	import CardsGrid from '../(components)/CardsGrid.svelte'
+	import { ranges, split } from './splitStore'
 
 	// svelte-ignore non_reactive_update
 	let options: SplitOptions
 	let downloaded = $state(false)
 	let downloading = $state(false)
 	let activeTab = $state('range')
-	let splittedDocsCount = $state(1)
 
-	//get the number of pages in the current split from the options component
-	$effect(() => {
-		splittedDocsCount = options?.splittedDocsCount()
-	})
+	// let ranges: { [pageIndex: number]: string } = $state({})
+	let rangesCount = $derived(Object.keys($ranges).length)
 
 	async function downloadDocs() {
 		downloading = true
 
-		let blobs: Blob[] = await options.split()
+		let blobs: Blob[] = await split()
 
 		let blob: Blob | null = null
 
@@ -43,7 +41,7 @@
 		} else {
 			const zip = new JSZip()
 
-			let i = 0
+			let i = 1
 			for (let blob of blobs) {
 				if (blob instanceof Blob) {
 					zip.file(`Split (${i}).pdf`, blob, {
@@ -134,8 +132,8 @@
 			</div>
 
 			<ScrollArea class="h-full mt-4">
-				<Tabs.Root bind:value={activeTab} class="">
-					<Tabs.List class="sticky top-0 z-10 grid w-full grid-cols-2">
+				<Tabs.Root bind:value={activeTab}>
+					<Tabs.List class="sticky top-0 z-10 grid w-full grid-cols-2" data-testid="split-tabs">
 						<Tabs.Trigger value="range">Range</Tabs.Trigger>
 						<Tabs.Trigger value="all">All</Tabs.Trigger>
 					</Tabs.List>
@@ -160,8 +158,8 @@
 
 				{activeTab === 'all'
 					? `(${$pages.length} PDFs)`
-					: splittedDocsCount > 1
-						? `(${splittedDocsCount} PDFs)`
+					: rangesCount > 1
+						? `(${rangesCount} PDFs)`
 						: '(1 PDF)'}
 			</Button>
 		{/snippet}
